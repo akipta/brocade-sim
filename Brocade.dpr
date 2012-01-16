@@ -717,7 +717,9 @@ writeln('ipx disabled               appletalk disabled');
   End;
 
   Procedure display_show_int;
-
+  // This neends to be changed to show all ethernet port - 360 in theis - e.g. theis need to be split
+  // so that the string passed to page_display < then 4096; whcih looks like the max.
+  // thinking take a mod numner * 10 and do in blocks.
   var
     lines                  : array[1..2700] of string;
     loop, index, mac_base  : integer;
@@ -908,7 +910,7 @@ writeln('ipx disabled               appletalk disabled');
                 lines[loop+2] := lines[loop+2] + 'Disabled  None   None None  None  No  100  0   0012.f2cf.1200 '
              else
                 lines[loop+2] := lines[loop+2] + 'Down      None   None None  None  No  100  0   0012.f2cf.1200 ';
-//  Need truncate the desc field here
+             //  show intrface brieft will only show the first 8 chars
              lines[loop+2] := lines[loop+2] + leftstr(interfaces[loop].descript,8);
          end;
        lines[loop+1] := 'ENDofLINES';
