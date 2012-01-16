@@ -50,6 +50,7 @@ Var
   port_count : integer;
 
   // menus
+  top_menu : array[1..7] of string;
   Show_menu : array[1..80] of string;
   config_term_menu : array[1..106] of string;
   enable_menu : array[1..50] of string;
@@ -262,7 +263,7 @@ Var
   Begin
        len := Length(findword)-1;
 //       writeln('wordlist, ',findword);
-       for loop := 1 to high(list) do
+       for loop := 0 to high(list) do
           begin
             astring := Copy(list[loop], 3, len) + '?';
             if astring = findword then
@@ -459,6 +460,18 @@ Var
   //     readln;
 
   end;
+
+  Procedure init_top_menu;
+
+  Begin
+    top_menu[1] := '  enable            Enter Privileged mode                          --> done';
+    top_menu[2] := '  exit              Exit from EXEC mode                            --> done';
+    top_menu[3] := '  ping              Ping IP node                                   --> done';
+    top_menu[4] := '  show              Display system information                     --> done';
+    top_menu[5] := '  stop-traceroute   Stop current TraceRoute                        --> done';
+    top_menu[6] := '  traceroute        TraceRoute to IP Node                          --> done';
+    top_menu[7] := 'ENDofLINES';
+  End;
 
   procedure init_show_menu;
 
@@ -2200,17 +2213,6 @@ writeln('ipx disabled               appletalk disabled');
 //    page_display(lines);
   End;
 
-  Procedure Display_top_help;
-
-  Begin
-    writeln('  enable            Enter Privileged mode                          --> done');
-    writeln('  exit              Exit from EXEC mode                            --> done');
-    writeln('  ping              Ping IP node                                   --> done');
-    writeln('  show              Display system information                     --> done');
-    writeln('  stop-traceroute   Stop current TraceRoute                        --> done');
-    writeln('  traceroute        TraceRoute to IP Node                          --> done');
-  End;
-
   Procedure enable_loop;
 
   var
@@ -2300,78 +2302,39 @@ writeln('ipx disabled               appletalk disabled');
        end_program := false; what_level := 1;
        Hostname := 'Fastiron'; level := level1;
        repeat
-             input := '';
+//             input := '';
+             word_list[1] := ''; word_list[1] := '';
              repeat
                 write(hostname, level);
                 input := get_command;
                 writeln;
              until input <> '';
+             get_words;
+             if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
+                    begin
+                      help_match(word_list[1],top_menu);
+                    end
+             else
              case input[1] of
-                'e' : if input = 'e?' then
-                        Begin
-                         writeln('  enable            Enter Privileged mode');
-                         Writeln('  exit              Exit from EXEC mode');
-                        End
-                      else
-                      if (input = 'en') or (input = 'ena') or (input = 'enab')
-                         or (input = 'enabl') or (input = 'enable') then
+                'e' : if is_word(word_list[1],'enable') = true then
                          Begin
                             level := level2;
                             inc(what_level);
                             Enable_Loop;
-//                            write('level is ,',what_level);
                          End
                       else
-                         if (input = 'ex') or (input = 'exi') or (input = 'exit')then
-                           Begin
-                             if what_level = 1 then
-                                end_program := true
-                             else
-                                Begin
-                                    level := level1;
-                                    dec(what_level)
-                                End;
-                           End;
-                'p' : if (input = 'pi') or (input = 'pin') or (input = 'ping') then
-                        writeln('*  Ping not implemented in Brocade-Sim')
-                      else
-                        if (input = 'p?') or (input = 'pi?') or (input = 'pin?') or (input = 'ping?') then
-                          writeln('ping              Ping IP node');
-                's' : if (input = 's?') then
-                        Begin
-                          writeln('  show              Display system information');
-                          writeln('  stop-traceroute   Stop current TraceRoute');
-                        End
-                      else
-                         begin
-                             if (input = 'sh?') or (input = 'sho?') or (input = 'show?') then
-                               writeln('  show              Display system information')
-                             else
-                               if (input = 'st') or (input = 'sto') or (input = 'stop')
-                                or (input = 'stop-') or (input = 'stop-t') or (input = 'stop-tr')
-                                or (input = 'stop-tra') or (input = 'stop-trace') or
-                                (input = 'stop-tracer') or (input = 'stop-tracero') or
-                                (input = 'stop-tracerou') or (input = 'stop-tracerout')
-                                or (input = 'stop-traceroute') then
-                                  writeln('*  There is no Trace Route Operation in progress!')
-                               else
-                                  begin
-                                      display_show
-                                  end;
-
-                         end;
-                't' : if (input = 'tr') or (input = 'tra') or (input = 'trac') or (input = 'trace')
-                      or (input = 'tracer') or (input = 'tracero') or (input = 'tracerout')
-                        or (input = 'traceroute') then
-                          writeln('*  TreaceRoute not implemented in Brocade-Sim');
-                chr(9)  : writeln('* No auto complete sorry in Brocade-Sim');
-                '?' : Display_Top_Help;
-                chr(0): write;
+                         if is_word(word_list[1],'exit')then
+                            end_program := true;
+                'p' : if is_word(word_list[1],'ping') then
+                        writeln('  Ping not implemented in Brocade-Sim');
+                's' : if is_word(word_list[1],'stop-traceroute') then
+                                  writeln('  There is no Trace Route Operation in progress!');
+                't' : if is_word(word_list[1],'traceroute') = true then
+                          writeln('  TreaceRoute not implemented in Brocade-Sim');
+                '?' : page_Display(top_menu);
                 else
-                  bad_command(input);
+                   bad_command(input);
              end;
-             input := chr(0); //must set it to a none value
-//             writeln('what is , ',what_level,'   ',input);
        until (end_program = True);
   End; // of my_loop
 
@@ -2380,6 +2343,7 @@ begin
   try
     // Set gobal var
     skip_page_display := false;
+    init_top_menu;
     init_show_menu;
     init_config_term_menu;
     init_enable_menu;
