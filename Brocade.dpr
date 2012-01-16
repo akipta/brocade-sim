@@ -83,7 +83,7 @@ Var
       gotoxy(1,24);
   End;
 
-  function check_int(validport : string) : boolean;
+  function check_int(validport : shortstring) : boolean;
 
   var
     loop : integer;
@@ -358,7 +358,7 @@ Var
                                     begin
                                           interfaces[port_count].no_config := true;
                                           interfaces[port_count].admin_disable := false;
-                                          interfaces[port_count].port_no := inttostr(slot) + '/' + inttostr(loop2);
+                                          interfaces[port_count].port_no := shortstring(inttostr(slot) + '/' + inttostr(loop2));
                                           interfaces[port_count].descript := '';
                                           interfaces[port_count].speed := 'auto';
                                           interfaces[port_count].speed_actual := '1Gbit';
@@ -673,7 +673,7 @@ writeln('ipx disabled               appletalk disabled');
       index := 1; mac_base := 1201;
       for loop := 1 to 100 do
         begin
-            lines[index] := 'GigabitEthernet' + interfaces[loop].port_no +' is down, line protocol is down';
+            lines[index] := 'GigabitEthernet' + string(interfaces[loop].port_no) +' is down, line protocol is down';
 //            writeln(' --> ',lines[index]); readkey;
             inc(index);
             lines[index] := '  Hardware is GigabitEthernet, address is 0012.f2cf.1200 (bia 0012.f2cf.' + inttostr(mac_base);
@@ -748,7 +748,7 @@ writeln('ipx disabled               appletalk disabled');
       page_display(lines);
   End;
 
-  Procedure display_show_int_eth(port : string);
+  Procedure display_show_int_eth(port : shortstring);
 
   var
     lines                  : array[1..50] of string;
@@ -759,7 +759,7 @@ writeln('ipx disabled               appletalk disabled');
       for loop := 1 to 360 do
         if interfaces[loop].port_no = port then
             begin
-            lines[index] := 'GigabitEthernet' + interfaces[loop].port_no +' is down, line protocol is down';
+            lines[index] := 'GigabitEthernet' + string(interfaces[loop].port_no) +' is down, line protocol is down';
 //            writeln(' --> ',lines[index]); readkey;
             inc(index);
             lines[index] := '  Hardware is GigabitEthernet, address is 0012.f2cf.1200 (bia 0012.f2cf.' + inttostr(mac_base);
@@ -845,12 +845,12 @@ writeln('ipx disabled               appletalk disabled');
        for loop := 1 to port_count do
          begin
              if length(interfaces[loop].port_no) < 4 then
-                lines[loop+2] := interfaces[loop].port_no + '     '
+                lines[loop+2] := string(interfaces[loop].port_no) + '     '
              else
                if length(interfaces[loop].port_no) < 5 then
-                   lines[loop+2] := interfaces[loop].port_no + '    '
+                   lines[loop+2] := string(interfaces[loop].port_no) + '    '
                else
-                   lines[loop+2] := interfaces[loop].port_no + '   ';
+                   lines[loop+2] := string(interfaces[loop].port_no) + '   ';
              if interfaces[loop].admin_disable = true then
                 lines[loop+2] := lines[loop+2] + 'Disabled  None   None None  None  No  100  0   0012.f2cf.1200 '
              else
@@ -1343,12 +1343,12 @@ writeln('ipx disabled               appletalk disabled');
              if interfaces[loop].bpdu = true then
               begin
                 if length(interfaces[loop].port_no) < 4 then
-                      lines[index] := '        ' + interfaces[loop].port_no + '     0'
+                      lines[index] := '        ' + string(interfaces[loop].port_no) + '     0'
                 else
                      if length(interfaces[loop].port_no) < 5 then
-                         lines[index] := '        ' + interfaces[loop].port_no + '    0'
+                         lines[index] := '        ' + string(interfaces[loop].port_no) + '    0'
                      else
-                         lines[index] := '        ' + interfaces[loop].port_no + '   0';
+                         lines[index] := '        ' + string(interfaces[loop].port_no) + '   0';
                 inc(index);
               end;
          end;
@@ -1515,8 +1515,8 @@ writeln('ipx disabled               appletalk disabled');
                  else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) and (is_word(word_list[3],'ethernet') = TRUE)then
                     begin
-                        if check_int(word_list[4]) = true then
-                           display_show_int_eth(word_list[4])
+                        if check_int(shortstring(word_list[4])) = true then
+                           display_show_int_eth(shortstring(word_list[4]))
                         else
                           Writeln('port not valid');
                     end
@@ -1570,9 +1570,6 @@ writeln('ipx disabled               appletalk disabled');
   end;
 
   procedure init_config_term_menu;
-
-  var
-    lines : array[1..106] of string;
 
   begin
     config_term_menu[1] :=   '  aaa                           Define authentication method list';
@@ -1873,7 +1870,7 @@ writeln('ipx disabled               appletalk disabled');
      end_int_loop : boolean;
 
   begin
-        word_count := 1; end_int_loop := false;
+        end_int_loop := false;
         show_input := input;
         Inc(what_level);
         repeat
@@ -1913,12 +1910,12 @@ writeln('ipx disabled               appletalk disabled');
            'd' : if (is_word(word_list[1],'disable')) = true then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].admin_disable := true
                     end;
            'i' : if (is_word(word_list[1],'interface') = true) and (is_word(word_list[2],'ethernet') = true) then
                     begin
-                         if check_int(word_list[3]) = true then
+                         if check_int(shortstring(word_list[3])) = true then
                              intid := word_list[3]
                           else
                              writeln('port not valid');
@@ -1926,7 +1923,7 @@ writeln('ipx disabled               appletalk disabled');
            'p' : if (is_word(word_list[1],'port-name')) = true then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].descript := word_list[2];
                     end;
            's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
@@ -1935,14 +1932,14 @@ writeln('ipx disabled               appletalk disabled');
                   if (is_word(word_list[1],'stp-bpdu-guard')) = true then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].bpdu := true;
                     end
                   else
                   if (is_word(word_list[1],'spanning-tree') = true) and (is_word(word_list[2],'root-protect') = true)then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].root_guard := true;
                     end
                   else
@@ -1951,43 +1948,43 @@ writeln('ipx disabled               appletalk disabled');
                            if (is_word(word_list[2],'10-full')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '10-full';
                                end;
                            if (is_word(word_list[2],'10-half')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '10-half';
                                end;
                            if (is_word(word_list[2],'100-half')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '100-half';
                                end;
                            if (is_word(word_list[2],'100-full')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '100-full';
                                end;
                            if (is_word(word_list[2],'1000-full-master')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '1000-full-master';
                                end;
                            if (is_word(word_list[2],'1000-full-slave')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '1000-full-slave';
                                end;
                            if (is_word(word_list[2],'auto')) = true then
                                begin
                                   for find_int := 1 to port_count do
-                                     if interfaces[find_int].port_no = intid then
+                                     if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := 'auto';
                                end;
                       end
@@ -1999,14 +1996,14 @@ writeln('ipx disabled               appletalk disabled');
            'n' : if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'stp-bpdu-guard') = true) then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].bpdu := false;
                     end
                  else
                  if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'spanning-tree') = true) and (is_word(word_list[3],'root-protect') = true)then
                     begin
                          for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].root_guard := false;
                     end;
            'q' : if (show_input = 'qu') or (show_input = 'qui') or (show_input = 'quit')then
@@ -2025,7 +2022,7 @@ writeln('ipx disabled               appletalk disabled');
                      if (is_word(word_list[1],'enable')) = true then
                         begin
                            for find_int := 1 to port_count do
-                             if interfaces[find_int].port_no = intid then
+                             if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].admin_disable := false
                         end;
           #0 :;
@@ -2041,9 +2038,6 @@ writeln('ipx disabled               appletalk disabled');
   procedure configure_term_loop;
 
   var
-     strLength, word_count, a : integer;
-     word_list : array[1..10] of string;
-     show_input : string;
      end_con_term : boolean;
 
      procedure looking_for_help;
@@ -2080,45 +2074,27 @@ writeln('ipx disabled               appletalk disabled');
 
   begin
         end_con_term := false;
-        show_input := input;
         Inc(what_level);
         level := level3;
         repeat
-        show_input := #0;  a := 1; word_count := 1;
+        input := #0;
         word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
         repeat
             write(hostname, level);
-            show_input := get_command;
+            input := get_command;
             writeln;
-//            readln(show_input);
-        until show_input <> '';
-        strlength := length(show_input);
-        while (show_input[a] <> '') and (a <= strlength)do
-          begin
-               while (show_input[a] <> ' ') and (a <= strlength)do
-                 Begin
-                     word_list[word_count] := word_list[word_count] + show_input[a];
-                     if show_input[a] <> '' then
-                        begin
-                            inc(a);
-//                            write(show_input[a]);
-                        end
-                     else
-                        break;
-                 End;
-               inc(a);
-               inc(word_count);
-          end;
+        until input <> '';
+        get_words;
         if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
            Begin
                 help_match(word_list[1], config_term_menu)
            End
         else
-        case show_input[1] of
+        case input[1] of
            '?' : page_display(config_term_menu);
            'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
                      begin
-                          if check_int(word_list[3]) = true then
+                          if check_int(shortstring(word_list[3])) = true then
                              int_loop(word_list[3])
                           else
                              writeln('port not valid');
@@ -2135,32 +2111,32 @@ writeln('ipx disabled               appletalk disabled');
                         end
                      else
                         writeln('Incomplete command.');
-           's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
+           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                writeln('Incomplete command.')
                  else
                      begin
-                         input := show_input;
+                         input := input;
                          display_show;
                      end;
-           'q' : if (show_input = 'qu') or (show_input = 'qui') or (show_input = 'quit')then
+           'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
                      End
                   else
-                     if (show_input = 'q?') or (show_input = 'qu?') or (input = 'qui?') or (show_input = 'quit?') then
+                     if (input = 'q?') or (input = 'qu?') or (input = 'qui?') or (input = 'quit?') then
                        writeln('  quit                      Exit to User level');
-          'e' : if (show_input = 'ex') or (show_input = 'exi') or (show_input = 'exit')then
+          'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
                      End
                   else
-                     if (show_input = 'e?') or (show_input = 'ex?') or (input = 'exi?') or (show_input = 'exit?') then
+                     if (input = 'e?') or (input = 'ex?') or (input = 'exi?') or (input = 'exit?') then
                        writeln('  exit                      Exit current level');
-          'v' : if (is_help(show_input) = TRUE) then
+          'v' : if (is_help(input) = TRUE) then
                     begin
                         looking_for_help
                     end
@@ -2168,7 +2144,7 @@ writeln('ipx disabled               appletalk disabled');
                   if (is_word(word_list[1],'vlan') = TRUE) then
                     if (is_number(word_list[2]) = TRUE) then
                       begin
-                        vlans[strtoint(word_list[2])].id := word_list[2];
+                        vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
                         vlans[strtoint(word_list[2])].name := word_list[4];
                         vlan_loop(word_list[2]);
                       end
@@ -2177,7 +2153,7 @@ writeln('ipx disabled               appletalk disabled');
           #0 :;
            else
                     begin
-                      bad_command(show_input);
+                      bad_command(input);
                     end;
         end;
         until end_con_term = true;
@@ -2319,7 +2295,6 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      end_program : boolean;
-     exit_key : char;
 
   Begin //my_loop
        end_program := false; what_level := 1;
