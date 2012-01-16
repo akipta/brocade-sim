@@ -473,6 +473,46 @@ Var
     top_menu[7] := 'ENDofLINES';
   End;
 
+procedure init_enable_menu;
+
+  Begin
+    enable_menu[1] := '  alias                     Display configured aliases';
+    enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image';
+    enable_menu[3] := '  clear                     Clear table/statistics/keys';
+    enable_menu[4] := '  clock                     Set clock';
+    enable_menu[5] := '  configure                 Enter configuration mode';
+    enable_menu[6] := '  copy                      Copy between flash, tftp, config/code';
+    enable_menu[7] := '  debug                     Enable debugging functions (see also ''undebug'')';
+    enable_menu[8] := '  disable                   Disable a module before removing it';
+    enable_menu[9] := '  dot1x                     802.1X';
+    enable_menu[10] := '  enable                    Enable a disabled module';
+    enable_menu[11] := '  erase                     Erase image/configuration from flash';
+    enable_menu[12] := '  execute                   Execute commands in batch';
+    enable_menu[13] := '  exit                      Exit Privileged mode';
+    enable_menu[14] := '  kill                      Kill active CLI session';
+    enable_menu[15] := '  ncopy                     Copy a file';
+    enable_menu[16] := '  page-display              Display data one page at a time         --> Done';
+    enable_menu[17] := '  phy                       PHY related commands';
+    enable_menu[18] := '  ping                      Ping IP node';
+    enable_menu[19] := '  port                      Port security command';
+    enable_menu[20] := '  quit                      Exit to User level';
+    enable_menu[21] := '  reload                    Halt and perform a warm restart';
+    enable_menu[22] := '  show                      Display system information';
+    enable_menu[23] := '  skip-page-display         Enable continuous display               --> Done';
+    enable_menu[24] := '  sntp                      Simple Network Time Protocol commands';
+    enable_menu[25] := '  stop-traceroute           Stop TraceRoute operation';
+    enable_menu[26] := '  switch-over-active-role   Switch over the active role to standby mgmt blade';
+    enable_menu[27] := '  telnet                    Telnet by name or IP address';
+    enable_menu[28] := '  terminal                  display syslog';
+    enable_menu[29] := '  trace-l2                  TraceRoute L2';
+    enable_menu[30] := '  traceroute                TraceRoute to IP node';
+    enable_menu[31] := '  undebug                   Disable debugging functions (see also ''debug'')';
+    enable_menu[32] := '  verify                    Verify object contents';
+    enable_menu[33] := '  whois                     WHOIS lookup';
+    enable_menu[34] := '  write                     Write running configuration to flash or terminal';
+    enable_menu[35] := 'ENDofLINES';
+  End;
+
   procedure init_show_menu;
 
 //  var
@@ -2131,24 +2171,18 @@ writeln('ipx disabled               appletalk disabled');
                          input := input;
                          display_show;
                      end;
-           'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
+           'q' : if is_word(word_list[1],'quit') = true then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
-                     End
-                  else
-                     if (input = 'q?') or (input = 'qu?') or (input = 'qui?') or (input = 'quit?') then
-                       writeln('  quit                      Exit to User level');
-          'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
+                     End;
+          'e' : if is_word(word_list[1], 'exit') = true then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
-                     End
-                  else
-                     if (input = 'e?') or (input = 'ex?') or (input = 'exi?') or (input = 'exit?') then
-                       writeln('  exit                      Exit current level');
+                     End;
           'v' : if (is_help(input) = TRUE) then
                     begin
                         looking_for_help
@@ -2172,47 +2206,6 @@ writeln('ipx disabled               appletalk disabled');
         until end_con_term = true;
   end; // of config_term
 
-  procedure init_enable_menu;
-
-  Begin
-    enable_menu[1] := '  alias                     Display configured aliases';
-    enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image';
-    enable_menu[3] := '  clear                     Clear table/statistics/keys';
-    enable_menu[4] := '  clock                     Set clock';
-    enable_menu[5] := '  configure                 Enter configuration mode';
-    enable_menu[6] := '  copy                      Copy between flash, tftp, config/code';
-    enable_menu[7] := '  debug                     Enable debugging functions (see also ''undebug'')';
-    enable_menu[8] := '  disable                   Disable a module before removing it';
-    enable_menu[9] := '  dot1x                     802.1X';
-    enable_menu[10] := '  enable                    Enable a disabled module';
-    enable_menu[11] := '  erase                     Erase image/configuration from flash';
-    enable_menu[12] := '  execute                   Execute commands in batch';
-    enable_menu[13] := '  exit                      Exit Privileged mode';
-    enable_menu[14] := '  kill                      Kill active CLI session';
-    enable_menu[15] := '  ncopy                     Copy a file';
-    enable_menu[16] := '  page-display              Display data one page at a time         --> Done';
-    enable_menu[17] := '  phy                       PHY related commands';
-    enable_menu[18] := '  ping                      Ping IP node';
-    enable_menu[19] := '  port                      Port security command';
-    enable_menu[20] := '  quit                      Exit to User level';
-    enable_menu[21] := '  reload                    Halt and perform a warm restart';
-    enable_menu[22] := '  show                      Display system information';
-    enable_menu[23] := '  skip-page-display         Enable continuous display               --> Done';
-    enable_menu[24] := '  sntp                      Simple Network Time Protocol commands';
-    enable_menu[25] := '  stop-traceroute           Stop TraceRoute operation';
-    enable_menu[26] := '  switch-over-active-role   Switch over the active role to standby mgmt blade';
-    enable_menu[27] := '  telnet                    Telnet by name or IP address';
-    enable_menu[28] := '  terminal                  display syslog';
-    enable_menu[29] := '  trace-l2                  TraceRoute L2';
-    enable_menu[30] := '  traceroute                TraceRoute to IP node';
-    enable_menu[31] := '  undebug                   Disable debugging functions (see also ''debug'')';
-    enable_menu[32] := '  verify                    Verify object contents';
-    enable_menu[33] := '  whois                     WHOIS lookup';
-    enable_menu[34] := '  write                     Write running configuration to flash or terminal';
-    enable_menu[35] := 'ENDofLINES';
-//    page_display(lines);
-  End;
-
   Procedure enable_loop;
 
   var
@@ -2225,7 +2218,6 @@ writeln('ipx disabled               appletalk disabled');
             write(hostname, level);
             input := get_command;
             writeln;
-//            readln(input);
          until input <> '';
          word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
          word_list[4] := ''; word_list[5] := '';
@@ -2289,7 +2281,6 @@ writeln('ipx disabled               appletalk disabled');
             '?' : page_Display(enable_menu);
             chr(0) : write;
          end;
-        input := chr(0); //must set it to a none value
        until (end_enabled = True);
   End; // of enable_loop
 
@@ -2318,8 +2309,7 @@ writeln('ipx disabled               appletalk disabled');
              case input[1] of
                 'e' : if is_word(word_list[1],'enable') = true then
                          Begin
-                            level := level2;
-                            inc(what_level);
+                            level := level2; inc(what_level);
                             Enable_Loop;
                          End
                       else
