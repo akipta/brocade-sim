@@ -52,6 +52,8 @@ Var
   // menus
   Show_menu : array[1..80] of string;
   config_term_menu : array[1..106] of string;
+  enable_menu : array[1..50] of string;
+  Interface_menu : array[1..69] of string;
 
   procedure splash_screen;
 
@@ -59,7 +61,7 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version 0.1f                                               ║');
+      writeln(' ║   Brocade-Sim : Version 0.1g                                               ║');
       writeln(' ║                 Dated 16/01/2012                                           ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp                                             ║');
@@ -1442,13 +1444,10 @@ writeln('ipx disabled               appletalk disabled');
         a := 1; word_count := 1;
         show_input := input;
         strlength := length(show_input);
-//        writeln('the lenght is, ',strlength); readln;
-
         while (show_input[a] <> '') and (a <= strlength)do
           begin
                while (show_input[a] <> ' ') and (a <= strlength)do
                  Begin
-//                     write(show_input[a]);
                      word_list[word_count] := word_list[word_count] + show_input[a];
                      if show_input[a] <> '' then
                         begin
@@ -1791,85 +1790,81 @@ writeln('ipx disabled               appletalk disabled');
         until end_vlan_loop = true;
   end;
 
-  procedure int_loop(intid : string);
-
-    procedure int_help;
-
-    var
-        lines : array[1..69] of string;
+    procedure init_interface_menu;
 
     begin
-      lines[1] := '  100-fx                  100 FX Mode';
-      lines[2] := '  100-tx                  100 TX Mode';
-      lines[3] := '  acl-logging             enable logging of deny acl';
-      lines[4] := '  acl-mirror-port         Set acl based inbound mirroring';
-      lines[5] := '  arp                     Assign IP ARP option to this interface';
-      lines[6] := '  broadcast               Set maximum Layer 2 broadcast packets allowed';
-      lines[7] := '                          per second';
-      lines[8] := '  cdp                     Configure CDP on interface';
-      lines[9] := '  clear                   Clear table/statistics/keys';
-      lines[10] := '  dhcp                    Assign IP DHCP Snoop option to this interface';
-      lines[11] := '  disable                 Disable the interface                        --> done';
-      lines[12] := '  dot1x                   802.1X';
-      lines[13] := '  dual-mode               Accept both Tag and Untag traffic';
-      lines[14] := '  enable                  Enable the interface                         --> done';
-      lines[15] := '  end                     End Configuration level and go to Privileged';
-      lines[16] := '                          level';
-      lines[17] := '  exit                    Exit current level';
-      lines[18] := '  fdp                     Configure FDP on interface';
-      lines[19] := '  flow-control            Enable 802.3x flow control on full duplex port';
-      lines[20] := '  gig-default             Global Gig port default options';
-      lines[21] := '  inline                  inline power configuration';
-      lines[22] := '  ip-multicast-disable    Disable PIM, DVMRP and vlan IGMP snooping on';
-      lines[23] := '                          this port';
-      lines[24] := '  ipg-gmii                1G IPG setting';
-      lines[25] := '  ipg-mii                 10/100M IPG setting';
-      lines[26] := '  ipg-xgmii               10G IPG setting';
-      lines[27] := '  ipv6-multicast-disable  Disable IPv6 PIM and vlan MLD snooping on this';
-      lines[28] := '                          port';
-      lines[29] := '  link-aggregate          802.3ad Link Aggregation';
-      lines[30] := '  link-error-disable      Link Debouncing Control';
-      lines[31] := '  load-interval           Configure Load Interval';
-      lines[32] := '  loop-detection          shut down this port if receiving packets';
-      lines[33] := '                          originated from this port';
-      lines[34] := '  mac                     Apply MAC filter';
-      lines[35] := '  mac-authentication      Configure MAC Address authentication on';
-      lines[36] := '                          interface';
-      lines[37] := '  mac-learn-disable       Disable MAC learning on interface';
-      lines[38] := '  mdi-mdix                Set to MDI, MDIX or Auto';
-      lines[39] := '  monitor                 Set as monitored port';
-      lines[40] := '  multicast               Set maximum multicast packets allowed per second';
-      lines[41] := '  no                      Undo/disable commands';
-      lines[42] := '  optical-monitor         Enable optical monitoring with default';
-      lines[43] := '                          alarm/warn interval(3 minutes';
-      lines[44] := '  port                    Configure Port Security';
-      lines[45] := '  port-name               Assign alphanumeric port name                --> done';
-      lines[46] := '  priority                Set QOS priority';
-      lines[47] := '  pvst-mode               Interoperate with Cisco PVST+ for';
-      lines[48] := '                          multi-spanning tree';
-      lines[49] := '  quit                    Exit to User level';
-      lines[50] := '  rate-limit              Configure rate limiting to interface';
-      lines[51] := '  restart-vsrp-port       Set option to restart the VSRP port when Master';
-      lines[52] := '                          becomes Backup';
-      lines[53] := '  sflow                   Set sflow interface parameters';
-      lines[54] := '  show                    Show system information';
-      lines[55] := '  snmp-server             Set onboard SNMP server interface properties';
-      lines[56] := '  source-guard            Assign IP Source Guard option to this interface';
-      lines[57] := '  spanning-tree           Set STP port parameters';
-      lines[58] := '  speed-duplex            Set to 100 or 10, half or full               --> done';
-      lines[59] := '  stp-bpdu-guard          set the spanning tree bpdu guard on the port --> done';
-      lines[60] := '  stp-protect             enable or disable stp-protect';
-      lines[61] := '  trust                   Change the trust mode';
-      lines[62] := '  unknown-unicast         Set maximum unknown unicast packets allowed per';
-      lines[63] := '                          second';
-      lines[64] := '  use-radius-server       Configure a radius server to be used on';
-      lines[65] := '                          interface';
-      lines[66] := '  voice-vlan              voice over IP vlan configuration';
-      lines[67] := '  write                   Write running configuration to flash or terminal';
-      lines[68] := '  <cr>';
-      lines[69] := 'ENDofLINES';
-      page_display(lines);
-    end;
+      interface_menu[1] := '  100-fx                  100 FX Mode';
+      interface_menu[2] := '  100-tx                  100 TX Mode';
+      interface_menu[3] := '  acl-logging             enable logging of deny acl';
+      interface_menu[4] := '  acl-mirror-port         Set acl based inbound mirroring';
+      interface_menu[5] := '  arp                     Assign IP ARP option to this interface';
+      interface_menu[6] := '  broadcast               Set maximum Layer 2 broadcast packets allowed';
+      interface_menu[7] := '                          per second';
+      interface_menu[8] := '  cdp                     Configure CDP on interface';
+      interface_menu[9] := '  clear                   Clear table/statistics/keys';
+      interface_menu[10] := '  dhcp                    Assign IP DHCP Snoop option to this interface';
+      interface_menu[11] := '  disable                 Disable the interface                        --> done';
+      interface_menu[12] := '  dot1x                   802.1X';
+      interface_menu[13] := '  dual-mode               Accept both Tag and Untag traffic';
+      interface_menu[14] := '  enable                  Enable the interface                         --> done';
+      interface_menu[15] := '  end                     End Configuration level and go to Privileged';
+      interface_menu[16] := '                          level';
+      interface_menu[17] := '  exit                    Exit current level';
+      interface_menu[18] := '  fdp                     Configure FDP on interface';
+      interface_menu[19] := '  flow-control            Enable 802.3x flow control on full duplex port';
+      interface_menu[20] := '  gig-default             Global Gig port default options';
+      interface_menu[21] := '  inline                  inline power configuration';
+      interface_menu[22] := '  ip-multicast-disable    Disable PIM, DVMRP and vlan IGMP snooping on';
+      interface_menu[23] := '                          this port';
+      interface_menu[24] := '  ipg-gmii                1G IPG setting';
+      interface_menu[25] := '  ipg-mii                 10/100M IPG setting';
+      interface_menu[26] := '  ipg-xgmii               10G IPG setting';
+      interface_menu[27] := '  ipv6-multicast-disable  Disable IPv6 PIM and vlan MLD snooping on this';
+      interface_menu[28] := '                          port';
+      interface_menu[29] := '  link-aggregate          802.3ad Link Aggregation';
+      interface_menu[30] := '  link-error-disable      Link Debouncing Control';
+      interface_menu[31] := '  load-interval           Configure Load Interval';
+      interface_menu[32] := '  loop-detection          shut down this port if receiving packets';
+      interface_menu[33] := '                          originated from this port';
+      interface_menu[34] := '  mac                     Apply MAC filter';
+      interface_menu[35] := '  mac-authentication      Configure MAC Address authentication on';
+      interface_menu[36] := '                          interface';
+      interface_menu[37] := '  mac-learn-disable       Disable MAC learning on interface';
+      interface_menu[38] := '  mdi-mdix                Set to MDI, MDIX or Auto';
+      interface_menu[39] := '  monitor                 Set as monitored port';
+      interface_menu[40] := '  multicast               Set maximum multicast packets allowed per second';
+      interface_menu[41] := '  no                      Undo/disable commands';
+      interface_menu[42] := '  optical-monitor         Enable optical monitoring with default';
+      interface_menu[43] := '                          alarm/warn interval(3 minutes';
+      interface_menu[44] := '  port                    Configure Port Security';
+      interface_menu[45] := '  port-name               Assign alphanumeric port name                --> done';
+      interface_menu[46] := '  priority                Set QOS priority';
+      interface_menu[47] := '  pvst-mode               Interoperate with Cisco PVST+ for';
+      interface_menu[48] := '                          multi-spanning tree';
+      interface_menu[49] := '  quit                    Exit to User level';
+      interface_menu[50] := '  rate-limit              Configure rate limiting to interface';
+      interface_menu[51] := '  restart-vsrp-port       Set option to restart the VSRP port when Master';
+      interface_menu[52] := '                          becomes Backup';
+      interface_menu[53] := '  sflow                   Set sflow interface parameters';
+      interface_menu[54] := '  show                    Show system information';
+      interface_menu[55] := '  snmp-server             Set onboard SNMP server interface properties';
+      interface_menu[56] := '  source-guard            Assign IP Source Guard option to this interface';
+      interface_menu[57] := '  spanning-tree           Set STP port parameters';
+      interface_menu[58] := '  speed-duplex            Set to 100 or 10, half or full               --> done';
+      interface_menu[59] := '  stp-bpdu-guard          set the spanning tree bpdu guard on the port --> done';
+      interface_menu[60] := '  stp-protect             enable or disable stp-protect';
+      interface_menu[61] := '  trust                   Change the trust mode';
+      interface_menu[62] := '  unknown-unicast         Set maximum unknown unicast packets allowed per';
+      interface_menu[63] := '                          second';
+      interface_menu[64] := '  use-radius-server       Configure a radius server to be used on';
+      interface_menu[65] := '                          interface';
+      interface_menu[66] := '  voice-vlan              voice over IP vlan configuration';
+      interface_menu[67] := '  write                   Write running configuration to flash or terminal';
+      interface_menu[68] := '  <cr>';
+      interface_menu[69] := 'ENDofLINES';
+  end;
+
+  procedure int_loop(intid : string);
 
   var
      strLength, word_count, a, find_int : integer;
@@ -1908,8 +1903,13 @@ writeln('ipx disabled               appletalk disabled');
                inc(a);
                inc(word_count);
             end;
+          if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
+             Begin
+                help_match(word_list[1], interface_menu)
+             End
+          else
           case show_input[1] of
-           '?' : int_help;
+           '?' : page_display(interface_menu);
            'd' : if (is_word(word_list[1],'disable')) = true then
                     begin
                          for find_int := 1 to port_count do
@@ -2014,10 +2014,7 @@ writeln('ipx disabled               appletalk disabled');
                         level := level3;
                         dec(what_level);
                         end_int_loop := true;
-                     End
-                  else
-                     if (show_input = 'q?') or (show_input = 'qu?') or (input = 'qui?') or (show_input = 'quit?') then
-                       writeln('  quit                      Exit to User level');
+                     End;
           'e' : if (show_input = 'ex') or (show_input = 'exi') or (show_input = 'exit')then
                      Begin
                         level := level3;
@@ -2025,9 +2022,6 @@ writeln('ipx disabled               appletalk disabled');
                         end_int_loop := true;
                      End
                   else
-                     if (show_input = 'e?') or (show_input = 'ex?') or (input = 'exi?') or (show_input = 'exit?') then
-                       writeln('  exit                      Exit current level')
-                     else
                      if (is_word(word_list[1],'enable')) = true then
                         begin
                            for find_int := 1 to port_count do
@@ -2189,48 +2183,45 @@ writeln('ipx disabled               appletalk disabled');
         until end_con_term = true;
   end; // of config_term
 
-  procedure display_enable;
-
-  var
-    lines : array[1..50] of string;
+  procedure init_enable_menu;
 
   Begin
-    lines[1] := '  alias                     Display configured aliases';
-    lines[2] := '  boot                      Boot system from bootp/tftp server/flash image';
-    lines[3] := '  clear                     Clear table/statistics/keys';
-    lines[4] := '  clock                     Set clock';
-    lines[5] := '  configure                 Enter configuration mode';
-    lines[6] := '  copy                      Copy between flash, tftp, config/code';
-    lines[7] := '  debug                     Enable debugging functions (see also ''undebug'')';
-    lines[8] := '  disable                   Disable a module before removing it';
-    lines[9] := '  dot1x                     802.1X';
-    lines[10] := '  enable                    Enable a disabled module';
-    lines[11] := '  erase                     Erase image/configuration from flash';
-    lines[12] := '  execute                   Execute commands in batch';
-    lines[13] := '  exit                      Exit Privileged mode';
-    lines[14] := '  kill                      Kill active CLI session';
-    lines[15] := '  ncopy                     Copy a file';
-    lines[16] := '  page-display              Display data one page at a time         --> Done';
-    lines[17] := '  phy                       PHY related commands';
-    lines[18] := '  ping                      Ping IP node';
-    lines[19] := '  port                      Port security command';
-    lines[20] := '  quit                      Exit to User level';
-    lines[21] := '  reload                    Halt and perform a warm restart';
-    lines[22] := '  show                      Display system information';
-    lines[23] := '  skip-page-display         Enable continuous display               --> Done';
-    lines[24] := '  sntp                      Simple Network Time Protocol commands';
-    lines[25] := '  stop-traceroute           Stop TraceRoute operation';
-    lines[26] := '  switch-over-active-role   Switch over the active role to standby mgmt blade';
-    lines[27] := '  telnet                    Telnet by name or IP address';
-    lines[28] := '  terminal                  display syslog';
-    lines[29] := '  trace-l2                  TraceRoute L2';
-    lines[30] := '  traceroute                TraceRoute to IP node';
-    lines[31] := '  undebug                   Disable debugging functions (see also ''debug'')';
-    lines[32] := '  verify                    Verify object contents';
-    lines[33] := '  whois                     WHOIS lookup';
-    lines[34] := '  write                     Write running configuration to flash or terminal';
-    lines[35] := 'ENDofLINES';
-    page_display(lines);
+    enable_menu[1] := '  alias                     Display configured aliases';
+    enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image';
+    enable_menu[3] := '  clear                     Clear table/statistics/keys';
+    enable_menu[4] := '  clock                     Set clock';
+    enable_menu[5] := '  configure                 Enter configuration mode';
+    enable_menu[6] := '  copy                      Copy between flash, tftp, config/code';
+    enable_menu[7] := '  debug                     Enable debugging functions (see also ''undebug'')';
+    enable_menu[8] := '  disable                   Disable a module before removing it';
+    enable_menu[9] := '  dot1x                     802.1X';
+    enable_menu[10] := '  enable                    Enable a disabled module';
+    enable_menu[11] := '  erase                     Erase image/configuration from flash';
+    enable_menu[12] := '  execute                   Execute commands in batch';
+    enable_menu[13] := '  exit                      Exit Privileged mode';
+    enable_menu[14] := '  kill                      Kill active CLI session';
+    enable_menu[15] := '  ncopy                     Copy a file';
+    enable_menu[16] := '  page-display              Display data one page at a time         --> Done';
+    enable_menu[17] := '  phy                       PHY related commands';
+    enable_menu[18] := '  ping                      Ping IP node';
+    enable_menu[19] := '  port                      Port security command';
+    enable_menu[20] := '  quit                      Exit to User level';
+    enable_menu[21] := '  reload                    Halt and perform a warm restart';
+    enable_menu[22] := '  show                      Display system information';
+    enable_menu[23] := '  skip-page-display         Enable continuous display               --> Done';
+    enable_menu[24] := '  sntp                      Simple Network Time Protocol commands';
+    enable_menu[25] := '  stop-traceroute           Stop TraceRoute operation';
+    enable_menu[26] := '  switch-over-active-role   Switch over the active role to standby mgmt blade';
+    enable_menu[27] := '  telnet                    Telnet by name or IP address';
+    enable_menu[28] := '  terminal                  display syslog';
+    enable_menu[29] := '  trace-l2                  TraceRoute L2';
+    enable_menu[30] := '  traceroute                TraceRoute to IP node';
+    enable_menu[31] := '  undebug                   Disable debugging functions (see also ''debug'')';
+    enable_menu[32] := '  verify                    Verify object contents';
+    enable_menu[33] := '  whois                     WHOIS lookup';
+    enable_menu[34] := '  write                     Write running configuration to flash or terminal';
+    enable_menu[35] := 'ENDofLINES';
+//    page_display(lines);
   End;
 
   Procedure Display_top_help;
@@ -2261,59 +2252,28 @@ writeln('ipx disabled               appletalk disabled');
          word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
          word_list[4] := ''; word_list[5] := '';
          get_words;
+         if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
+                    begin
+                      help_match(word_list[1],enable_menu);
+                    end
+         else
          case input[1] of
-            'a' : if (input = 'a?') or (input = 'al?') or (input = 'ali?') or (input = 'alia?') or (input = 'alias?') then
-                     writeln('  alias                     Display configured aliases');
-            'b' : if (input = 'b?') or (input = 'bo?') or (input = 'boo?') or (input = 'boot?') then
-                     writeln('  boot                      Boot system from bootp/tftp server/flash image');
-            'c' : if (input = 'c?') then
-                     begin
-                        writeln('  clear                     Clear table/statistics/keys');
-                        writeln('  clock                     Set clock');
-                        writeln('  configure                 Enter configuration mode');
-                        writeln('  copy                      Copy between flash, tftp, config/code');
-                     end
+            'a' : ;
+            'b' : ;
+            'c' : if (is_word(word_list[1],'configure') = true) and (is_word(word_list[2],'terminal') = true)then
+                     Configure_term_loop
                   else
-                     if (input = 'cl?') then
-                       begin
-                           writeln('  clear                     Clear table/statistics/keys');
-                           writeln('  clock                     Set clock');
-                       end
-                     else
-                       if (input = 'co?') then
-                         begin
-                           writeln('  configure                 Enter configuration mode');
-                           writeln('  copy                      Copy between flash, tftp, config/code');
-                         end
-                       else
-                         if (is_word(word_list[1],'configure') = true) and (is_word(word_list[2],'terminal') = true)then
-                           Configure_term_loop
-                         else
-                           bad_command(input);
-            'd' : if (input = 'de') or (input = 'deb') or (input = 'debu') or (input = 'debug') then
-                        writeln('*  Debug not implemented in Brocade-Sim')
-                  else
-                  if (input = 'd?') or (input = 'de?') or (input = 'deb?') or (input = 'debu?') or (input = 'debug?') then
-                      writeln('  debug                     Enable debugging functions (see also ''undebug'')');
-            'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
+                     bad_command(input);
+            'd' : if (is_word(word_list[1],'debug') = true) then
+                        writeln('*  Debug not implemented in Brocade-Sim');
+            'e' : if (is_word(word_list[1],'exit') = true) then
                      Begin
                         level := level1;
                         dec(what_level);
                         end_enabled := true;
-                     End
-                  else
-                    if (input = 'e?') then
-                     begin
-                        writeln('  enable                    Enable a disabled module');
-                        writeln('  erase                     Erase image/configuration from flash');
-                        writeln('  execute                   Execute commands in batch');
-                        writeln('  exit                      Exit Privileged mode');
-                     end;
-            'k' : if (input = 'ki') or (input = 'kil') or (input = 'kill') then
+                     End;
+            'k' : if (is_word(word_list[1],'kill') = true) then
                         writeln('*  Kill not implemented in Brocade-Sim')
-                  else
-                  if (input = 'k?') or (input = 'ki?') or (input = 'kil?') or (input = 'kill?') then
-                      writeln('  kill                      Kill active CLI session')
                   else
                      if (input = 'kill ?') then
                         begin
@@ -2321,112 +2281,37 @@ writeln('ipx disabled               appletalk disabled');
                           writeln('  ssh       SSH session');
                           writeln('  telnet    Telnet session');
                         end;
-            'n' : if (input = 'nc') or (input = 'nco') or (input = 'ncop') or (input = 'ncopy') then
-                        writeln('*  ncopy not implemented in Brocade-Sim')
-                  else
-                  if (input = 'n?') or (input = 'nc?') or (input = 'nco?') or (input = 'ncop?') or (input = 'ncopy?') then
-                      writeln('  ncopy                     Copy a file');
-            'p' : if input = 'p?' then
-                    begin
-                      writeln('  page-display              Display data one page at a time');
-                      writeln('  phy                       PHY related commands');
-                      writeln('  ping                      Ping IP node');
-                      writeln('  port                      Port security command');
-                    end
-                  else
-                      if (input = 'pi') or (input = 'pin') or (input = 'ping') then
+            'n' : if (is_word(word_list[1],'ncopy') = true) then
+                        writeln('*  ncopy not implemented in Brocade-Sim');
+            'p' : if (input = 'pi') or (input = 'pin') or (input = 'ping') then
                         writeln('*  Ping not implemented in Brocade-Sim')
-                      else
-                        if (input = 'p?') or (input = 'pi?') or (input = 'pin?') or (input = 'ping?') then
-                          writeln('ping              Ping IP node')
                         else
                         if (is_word(input,'page-display') = TRUE) then
-                                 skip_page_display := false;
-//                          writeln('Incomplete command. (Your input was ',input);
+                            skip_page_display := false;
             'r' : if (input = 're') or (input = 'rel') or (input = 'relo') or (input = 'reloa') or (input = 'reload') then
-                        writeln('*  Reload not implemented in Brocade-Sim as yet')
-                  else
-                  if (input = 'r?') or (input = 're?') or (input = 'rel?') or (input = 'relo?') or (input = 'reloa?') or (input = 'reload?') then
-                      writeln('  reload                    Halt and perform a warm restart');
-            's' : if input = 's?'  then
-                        Begin
-                          writeln('  show                      Display system information');
-                          writeln('  skip-page-display         Enable continuous display');
-                          writeln('  sntp                      Simple Network Time Protocol commands');
-                          writeln('  stop-traceroute           Stop TraceRoute operation');
-                          writeln('  switch-over-active-role   Switch over the active role to standby mgmt blade');
-                        End
-                      else
-                         begin
-                             if (is_word(word_list[1],'skip-page-display') = TRUE) then
-                                 skip_page_display := true;
-                             if (is_word(word_list[1],'show') = TRUE) then
-                                 display_show;
-//                             if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[1],'module') = TRUE)then
-
-                         end;
-
-            't' : if input = 't?'  then
-                        Begin
-                          writeln('  telnet                    Telnet by name or IP address');
-                          writeln('  terminal                  display syslog');
-                          writeln('  trace-l2                  TraceRoute L2');
-                          writeln('  traceroute                TraceRoute to IP node');
-                        End
-                  else
-                     if input = 'te?'  then
-                        Begin
-                          writeln('  telnet                    Telnet by name or IP address');
-                          writeln('  terminal                  display syslog');
-                        End
-                     else
-                        if input = 'tr?'  then
-                        Begin
-                          writeln('  trace-l2                  TraceRoute L2');
-                          writeln('  traceroute                TraceRoute to IP node');
-                        End;
+                     writeln('*  Reload not implemented in Brocade-Sim as yet');
+            's' : if (is_word(word_list[1],'skip-page-display') = TRUE) then
+                     skip_page_display := true;
+            't' : ;
             'u' : if (input = 'un') or (input = 'und') or (input = 'unde') or (input = 'undeb') or (input = 'undebug') then
-                        writeln('*  Undebug not implemented in Brocade-Sim')
-                  else
-                    if (input = 'u?') or (input = 'un?') or (input = 'und?') or (input = 'unde?') or (input = 'undebu?') or (input = 'undebug?') then
-                        writeln('undebug                   Disable debugging functions (see also ''debug'')');
+                        writeln('*  Undebug not implemented in Brocade-Sim');
             'v' : if (input = 've') or (input = 'ver') or (input = 'veri') or (input = 'verif') or (input = 'verify') then
                         writeln('*  verify not implemented in Brocade-Sim');
-
-            'w' : if input = 'w?' then
-                    begin
-                     writeln('  whois                     WHOIS lookup');
-                     writeln('  write                     Write running configuration to flash or terminal');
-                    end
-                  else
-                  if (input = 'wr') or (input = 'wri') or (input = 'writ') or (input = 'write') then
+            'w' : if (input = 'wr') or (input = 'wri') or (input = 'writ') or (input = 'write') then
                     writeln('*  Write not implemented in Brocade-Sim as yet')
                   else
-                    if (input = 'wr?') or (input = 'wri?') or (input = 'writ?') or (input = 'write?') then
-                    writeln('  write                     Write running configuration to flash or terminal')
-                  else
                     if (input = 'wh') or (input = 'who') or (input = 'whoi') or (input = 'whowis') then
-                       writeln('*  Whois not implemented in Brocade-Sim as yet')
-                    else
-                    if (input = 'wh?') or (input = 'who?') or (input = 'whoi?') or (input = 'whowis?') then
-                        writeln('  whois                     WHOIS lookup');
+                       writeln('*  Whois not implemented in Brocade-Sim as yet');
             'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
                      Begin
                         level := level1;
                         dec(what_level);
                         end_enabled := true;
-                     End
-                  else
-                     if (input = 'q?') or (input = 'qu?') or (input = 'qui?') or (input = 'quit?') then
-                       writeln('  quit                      Exit to User level');
-
-            chr(9)  : writeln('you pressed TAB');
-            '?' : Display_enable;
-
+                     End;
+            '?' : page_Display(enable_menu);
             chr(0) : write;
-             end;
-             input := chr(0); //must set it to a none value
-//             writeln('what is , ',what_level,'   ',input);
+         end;
+        input := chr(0); //must set it to a none value
        until (end_enabled = True);
   End; // of enable_loop
 
@@ -2445,9 +2330,7 @@ writeln('ipx disabled               appletalk disabled');
                 write(hostname, level);
                 input := get_command;
                 writeln;
-//                readln(input);
              until input <> '';
-//             writeln(x_pos,'   ',y_pos,'   ',tempstr,' r ',result);
              case input[1] of
                 'e' : if input = 'e?' then
                         Begin
@@ -2524,6 +2407,8 @@ begin
     skip_page_display := false;
     init_show_menu;
     init_config_term_menu;
+    init_enable_menu;
+    init_interface_menu;
     Splash_screen;
     Read_config;
     read_startup_config;
