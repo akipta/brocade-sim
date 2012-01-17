@@ -55,6 +55,7 @@ Var
   config_term_menu : array[1..106] of string;
   enable_menu : array[1..50] of string;
   Interface_menu : array[1..69] of string;
+  vlan_menu : array[1..30] of string;
 
   procedure splash_screen;
 
@@ -598,6 +599,226 @@ procedure init_enable_menu;
     show_menu[77] := '  |                      Output modifiers';
     show_menu[78] := '  <cr>';
     show_menu[79] := 'ENDofLINES';
+  end;
+
+  procedure init_config_term_menu;
+
+  begin
+    config_term_menu[1] :=   '  aaa                           Define authentication method list';
+    config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)';
+    config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
+    config_term_menu[4] :=   '                                bytes';
+    config_term_menu[5] :=   '  alias                         Configure alias or display configured alias';
+    config_term_menu[6] :=   '  all-client                    Restrict all remote management to a host';
+    config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
+    config_term_menu[8] :=   '  banner                        Define a login banner';
+    config_term_menu[9] :=   '  batch                         Define a group of commands';
+    config_term_menu[10] :=  '  boot                          Set system boot options';
+    config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
+    config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
+    config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
+    config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options';
+    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys';
+    config_term_menu[16] :=  '  clock                         Set system time and date';
+    config_term_menu[17] :=  '  console                       Configure console port';
+    config_term_menu[18] :=  '  crypto                        Crypto configuration';
+    config_term_menu[19] :=  '  crypto-ssl                    Crypto ssl configuration';
+    config_term_menu[20] :=  '  default-vlan-id               Change Id of default VLAN, default is 1';
+    config_term_menu[21] :=  '  dot1x-enable                  Enable dot1x system authentication control';
+    config_term_menu[22] :=  '  enable                        Password, page-mode and other options';
+    config_term_menu[23] :=  '  end                           End Configuration level and go to Privileged';
+    config_term_menu[24] :=  '                                level';
+    config_term_menu[25] :=  '  errdisable                    Set Error Disable Attributions';
+    config_term_menu[26] :=  '  exit                          Exit current level';
+    config_term_menu[27] :=  '  extern-config-file            extern configuration file';
+    config_term_menu[28] :=  '  fan-speed                     set fan speed';
+    config_term_menu[29] :=  '  fan-threshold                 set temperature threshold for fan speed';
+    config_term_menu[30] :=  '  fast                          Fast spanning tree options';
+    config_term_menu[31] :=  '  fdp                           Global FDP configuration subcommands';
+    config_term_menu[32] :=  '  flow-control                  Enable 802.3x flow control on full duplex port';
+    config_term_menu[33] :=  '  gig-default                   Set Gig port default options';
+    config_term_menu[34] :=  '  hostname                      Rename this switching router       --> done';
+    config_term_menu[35] :=  '  interface                     Port commands                      --> done';
+    config_term_menu[36] :=  '  ip                            IP settings';
+    config_term_menu[37] :=  '  ipv6                          IPv6 settings';
+    config_term_menu[38] :=  '  jumbo                         gig port jumbo frame support (10240 bytes)';
+    config_term_menu[39] :=  '  legacy-inline-power           set legacy (capacitance-based) PD detection -';
+    config_term_menu[40] :=  '                                default';
+    config_term_menu[41] :=  '  link-config                   Link Configuration';
+    config_term_menu[42] :=  '  link-keepalive                Link Layer Keepalive';
+    config_term_menu[43] :=  '  lldp                          Configure Link Layer Discovery Protocol';
+    config_term_menu[44] :=  '  lock-address                  Limit number of addresses for a port';
+    config_term_menu[45] :=  '  logging                       Event logging settings';
+    config_term_menu[46] :=  '  mac                           Set up MAC filtering';
+    config_term_menu[47] :=  '  mac-age-time                  Set aging period for all MAC interfaces';
+    config_term_menu[48] :=  '  mac-authentication            Configure MAC authentication';
+    config_term_menu[49] :=  '  max-acl-log-num               maximum number of ACL log per minute (0 to';
+    config_term_menu[50] :=  '                                4096, default 256)';
+    config_term_menu[51] :=  '  mirror-port                   Enable a port to act as mirror-port';
+    config_term_menu[52] :=  '  module                        Specify module type';
+    config_term_menu[53] :=  '  mstp                          Configure MSTP (IEEE 802.1s)';
+    config_term_menu[54] :=  '  no                            Undo/disable commands';
+    config_term_menu[55] :=  '  optical-monitor               Enable optical monitoring with default';
+    config_term_menu[56] :=  '                                alarm/warn interval(3 minutes)';
+    config_term_menu[57] :=  '  password-change               Restrict access methods with right to change';
+    config_term_menu[58] :=  '                                password';
+    config_term_menu[59] :=  '  port                          UDP and Port Security Configuration';
+    config_term_menu[60] :=  '  privilege                     Augment default privilege profile';
+    config_term_menu[61] :=  '  protected-link-group          Define a Group of ports as Protected Links';
+    config_term_menu[62] :=  '  pvlan-preference              Unknown unicast/broadcast traffic handling';
+    config_term_menu[63] :=  '  qos                           Quality of service commands';
+    config_term_menu[64] :=  '  qos-tos                       IPv4 ToS based QoS settings';
+    config_term_menu[65] :=  '  quit                          Exit to User level';
+    config_term_menu[66] :=  '  radius-server                 Configure RADIUS server';
+    config_term_menu[67] :=  '  rarp                          Enter a static IP RARP entry';
+    config_term_menu[68] :=  '  rate-limit-arp                Set limit on received ARP per second';
+    config_term_menu[69] :=  '  relative-utilization          Display port utilization relative to selected';
+    config_term_menu[70] :=  '                                uplinks';
+    config_term_menu[71] :=  '  reserved-vlan-map             Map Reserved vlan Id to some other value not';
+    config_term_menu[72] :=  '                                used';
+    config_term_menu[73] :=  '  rmon                          Configure RMON settings';
+    config_term_menu[74] :=  '  router                        Enable routing protocols';
+    config_term_menu[75] :=  '  scale-timer                   Scale timer by factor for documented features';
+    config_term_menu[76] :=  '  service                       Set services such as password encryption';
+    config_term_menu[77] :=  '  set-active-mgmt               Configure the active mgmt slot';
+    config_term_menu[78] :=  '  set-pwr-fan-speed             Power Fan Speed configuratio';
+    config_term_menu[79] :=  '  sflow                         Set sflow params';
+    config_term_menu[80] :=  '  show                          Show system information';
+    config_term_menu[81] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
+    config_term_menu[82] :=  '  snmp-server                   Set onboard SNMP server properties';
+    config_term_menu[83] :=  '  sntp                          Set SNTP server and poll interval';
+    config_term_menu[84] :=  '  spanning-tree                 Set spanning tree parameters';
+    config_term_menu[85] :=  '  ssh                           Restrict ssh access by ACL';
+    config_term_menu[86] :=  '  stp-group                     Spanning Tree Group settings';
+    config_term_menu[87] :=  '  system-max                    Configure system-wide maximum values';
+    config_term_menu[88] :=  '  tacacs-server                 Configure TACACS server';
+    config_term_menu[89] :=  '  tag-type                      Customize value used to identify 802.1Q Tagged';
+    config_term_menu[90] :=  '                                Packets';
+    config_term_menu[91] :=  '  telnet                        Set telnet access and timeout';
+    config_term_menu[92] :=  '  tftp                          Restrict tftp access';
+    config_term_menu[93] :=  '  topology-group                configure topology vlan group for L2 protocols';
+    config_term_menu[94] :=  '  traffic-policy                Define Traffic Policy (TP)';
+    config_term_menu[95] :=  '  transmit-counter              Define Transmit Queue Counter';
+    config_term_menu[96] :=  '  trunk                         Trunk group settings';
+    config_term_menu[97] :=  '  unalias                       Remove an alias';
+    config_term_menu[98] :=  '  username                      Create or update user account';
+    config_term_menu[99] :=  '  vlan                          VLAN settings                      --> done';
+    config_term_menu[100] := '  vlan-group                    VLAN group settings';
+    config_term_menu[101] := '  web                           Restrict web management access to a certain IP';
+    config_term_menu[102] := '                                node';
+    config_term_menu[103] := '  web-management                Web management options';
+    config_term_menu[104] := '  write                         Write running configuration to flash or terminal';
+    config_term_menu[105] := '  <cr>';
+    config_term_menu[106] := 'ENDofLINES';
+  end;
+
+  procedure init_interface_menu;
+
+  begin
+      interface_menu[1] := '  100-fx                  100 FX Mode';
+      interface_menu[2] := '  100-tx                  100 TX Mode';
+      interface_menu[3] := '  acl-logging             enable logging of deny acl';
+      interface_menu[4] := '  acl-mirror-port         Set acl based inbound mirroring';
+      interface_menu[5] := '  arp                     Assign IP ARP option to this interface';
+      interface_menu[6] := '  broadcast               Set maximum Layer 2 broadcast packets allowed';
+      interface_menu[7] := '                          per second';
+      interface_menu[8] := '  cdp                     Configure CDP on interface';
+      interface_menu[9] := '  clear                   Clear table/statistics/keys';
+      interface_menu[10] := '  dhcp                    Assign IP DHCP Snoop option to this interface';
+      interface_menu[11] := '  disable                 Disable the interface                        --> done';
+      interface_menu[12] := '  dot1x                   802.1X';
+      interface_menu[13] := '  dual-mode               Accept both Tag and Untag traffic';
+      interface_menu[14] := '  enable                  Enable the interface                         --> done';
+      interface_menu[15] := '  end                     End Configuration level and go to Privileged';
+      interface_menu[16] := '                          level';
+      interface_menu[17] := '  exit                    Exit current level';
+      interface_menu[18] := '  fdp                     Configure FDP on interface';
+      interface_menu[19] := '  flow-control            Enable 802.3x flow control on full duplex port';
+      interface_menu[20] := '  gig-default             Global Gig port default options';
+      interface_menu[21] := '  inline                  inline power configuration';
+      interface_menu[22] := '  ip-multicast-disable    Disable PIM, DVMRP and vlan IGMP snooping on';
+      interface_menu[23] := '                          this port';
+      interface_menu[24] := '  ipg-gmii                1G IPG setting';
+      interface_menu[25] := '  ipg-mii                 10/100M IPG setting';
+      interface_menu[26] := '  ipg-xgmii               10G IPG setting';
+      interface_menu[27] := '  ipv6-multicast-disable  Disable IPv6 PIM and vlan MLD snooping on this';
+      interface_menu[28] := '                          port';
+      interface_menu[29] := '  link-aggregate          802.3ad Link Aggregation';
+      interface_menu[30] := '  link-error-disable      Link Debouncing Control';
+      interface_menu[31] := '  load-interval           Configure Load Interval';
+      interface_menu[32] := '  loop-detection          shut down this port if receiving packets';
+      interface_menu[33] := '                          originated from this port';
+      interface_menu[34] := '  mac                     Apply MAC filter';
+      interface_menu[35] := '  mac-authentication      Configure MAC Address authentication on';
+      interface_menu[36] := '                          interface';
+      interface_menu[37] := '  mac-learn-disable       Disable MAC learning on interface';
+      interface_menu[38] := '  mdi-mdix                Set to MDI, MDIX or Auto';
+      interface_menu[39] := '  monitor                 Set as monitored port';
+      interface_menu[40] := '  multicast               Set maximum multicast packets allowed per second';
+      interface_menu[41] := '  no                      Undo/disable commands';
+      interface_menu[42] := '  optical-monitor         Enable optical monitoring with default';
+      interface_menu[43] := '                          alarm/warn interval(3 minutes';
+      interface_menu[44] := '  port                    Configure Port Security';
+      interface_menu[45] := '  port-name               Assign alphanumeric port name                --> done';
+      interface_menu[46] := '  priority                Set QOS priority';
+      interface_menu[47] := '  pvst-mode               Interoperate with Cisco PVST+ for';
+      interface_menu[48] := '                          multi-spanning tree';
+      interface_menu[49] := '  quit                    Exit to User level';
+      interface_menu[50] := '  rate-limit              Configure rate limiting to interface';
+      interface_menu[51] := '  restart-vsrp-port       Set option to restart the VSRP port when Master';
+      interface_menu[52] := '                          becomes Backup';
+      interface_menu[53] := '  sflow                   Set sflow interface parameters';
+      interface_menu[54] := '  show                    Show system information';
+      interface_menu[55] := '  snmp-server             Set onboard SNMP server interface properties';
+      interface_menu[56] := '  source-guard            Assign IP Source Guard option to this interface';
+      interface_menu[57] := '  spanning-tree           Set STP port parameters';
+      interface_menu[58] := '  speed-duplex            Set to 100 or 10, half or full               --> done';
+      interface_menu[59] := '  stp-bpdu-guard          set the spanning tree bpdu guard on the port --> done';
+      interface_menu[60] := '  stp-protect             enable or disable stp-protect';
+      interface_menu[61] := '  trust                   Change the trust mode';
+      interface_menu[62] := '  unknown-unicast         Set maximum unknown unicast packets allowed per';
+      interface_menu[63] := '                          second';
+      interface_menu[64] := '  use-radius-server       Configure a radius server to be used on';
+      interface_menu[65] := '                          interface';
+      interface_menu[66] := '  voice-vlan              voice over IP vlan configuration';
+      interface_menu[67] := '  write                   Write running configuration to flash or terminal';
+      interface_menu[68] := '  <cr>';
+      interface_menu[69] := 'ENDofLINES';
+  end;
+
+  procedure init_vlan_menu;
+
+  begin
+      vlan_menu[1] := '  atalk-proto                   Set AppleTalk protocol VLAN';
+      vlan_menu[2] := '  clear                         Clear table/statistics/keys';
+      vlan_menu[3] := '  decnet-proto                  Set decnet protocol VLAN';
+      vlan_menu[4] := '  end                           End Configuration level and go to Privileged';
+      vlan_menu[5] := '                                level';
+      vlan_menu[6] := '  exit                          Exit current level';
+      vlan_menu[7] := '  ip-proto                      Set IP protocol VLAN';
+      vlan_menu[8] := '  ip-subnet                     Set IP subnet VLAN';
+      vlan_menu[9] := '  ipv6-proto                    Set IPv6 protocol VLAN';
+      vlan_menu[10] := '  ipx-network                   Set IPX network VLAN';
+      vlan_menu[11] := '  ipx-proto                     Set IPX protocol VLAN';
+      vlan_menu[12] := '  metro-ring                    metro ring configuration mode';
+      vlan_menu[13] := '  netbios-proto                 Set netbios protocol VLAN';
+      vlan_menu[14] := '  no                            Undo/disable commands';
+      vlan_menu[15] := '  other-proto                   Set other protocol VLAN';
+      vlan_menu[16] := '  pvlan                         Define private vlan type and mapping';
+      vlan_menu[17] := '  quit                          Exit to User level';
+      vlan_menu[18] := '  router-interface              Attach router interface for Layer 2 VLAN';
+      vlan_menu[19] := '  show                          Show system information';
+      vlan_menu[20] := '  spanning-tree                 Set spanning tree for this VLAN';
+      vlan_menu[21] := '  static-mac-address            Configure static MAC for this VLAN';
+      vlan_menu[22] := '  tagged                        802.1Q tagged port';
+      vlan_menu[23] := '  untagged                      Port with only untagged frame in/out';
+      vlan_menu[24] := '  uplink-switch                 Define uplink port(s) and enable uplink';
+      vlan_menu[25] := '                                switching';
+      vlan_menu[26] := '  vsrp                          Configure VSRP';
+      vlan_menu[27] := '  vsrp-aware                    Configure VSRP Aware parameters';
+      vlan_menu[28] := '  write                         Write running configuration to flash or terminal';
+      vlan_menu[29] := '  <cr>';
+      vlan_menu[30] := 'ENDofLINES';
   end;
 
   procedure display_help_match(findword : string);
@@ -1624,153 +1845,7 @@ writeln('ipx disabled               appletalk disabled');
         end;
   end;
 
-  procedure init_config_term_menu;
-
-  begin
-    config_term_menu[1] :=   '  aaa                           Define authentication method list';
-    config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)';
-    config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
-    config_term_menu[4] :=   '                                bytes';
-    config_term_menu[5] :=   '  alias                         Configure alias or display configured alias';
-    config_term_menu[6] :=   '  all-client                    Restrict all remote management to a host';
-    config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
-    config_term_menu[8] :=   '  banner                        Define a login banner';
-    config_term_menu[9] :=   '  batch                         Define a group of commands';
-    config_term_menu[10] :=  '  boot                          Set system boot options';
-    config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
-    config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
-    config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
-    config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options';
-    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys';
-    config_term_menu[16] :=  '  clock                         Set system time and date';
-    config_term_menu[17] :=  '  console                       Configure console port';
-    config_term_menu[18] :=  '  crypto                        Crypto configuration';
-    config_term_menu[19] :=  '  crypto-ssl                    Crypto ssl configuration';
-    config_term_menu[20] :=  '  default-vlan-id               Change Id of default VLAN, default is 1';
-    config_term_menu[21] :=  '  dot1x-enable                  Enable dot1x system authentication control';
-    config_term_menu[22] :=  '  enable                        Password, page-mode and other options';
-    config_term_menu[23] :=  '  end                           End Configuration level and go to Privileged';
-    config_term_menu[24] :=  '                                level';
-    config_term_menu[25] :=  '  errdisable                    Set Error Disable Attributions';
-    config_term_menu[26] :=  '  exit                          Exit current level';
-    config_term_menu[27] :=  '  extern-config-file            extern configuration file';
-    config_term_menu[28] :=  '  fan-speed                     set fan speed';
-    config_term_menu[29] :=  '  fan-threshold                 set temperature threshold for fan speed';
-    config_term_menu[30] :=  '  fast                          Fast spanning tree options';
-    config_term_menu[31] :=  '  fdp                           Global FDP configuration subcommands';
-    config_term_menu[32] :=  '  flow-control                  Enable 802.3x flow control on full duplex port';
-    config_term_menu[33] :=  '  gig-default                   Set Gig port default options';
-    config_term_menu[34] :=  '  hostname                      Rename this switching router       --> done';
-    config_term_menu[35] :=  '  interface                     Port commands                      --> done';
-    config_term_menu[36] :=  '  ip                            IP settings';
-    config_term_menu[37] :=  '  ipv6                          IPv6 settings';
-    config_term_menu[38] :=  '  jumbo                         gig port jumbo frame support (10240 bytes)';
-    config_term_menu[39] :=  '  legacy-inline-power           set legacy (capacitance-based) PD detection -';
-    config_term_menu[40] :=  '                                default';
-    config_term_menu[41] :=  '  link-config                   Link Configuration';
-    config_term_menu[42] :=  '  link-keepalive                Link Layer Keepalive';
-    config_term_menu[43] :=  '  lldp                          Configure Link Layer Discovery Protocol';
-    config_term_menu[44] :=  '  lock-address                  Limit number of addresses for a port';
-    config_term_menu[45] :=  '  logging                       Event logging settings';
-    config_term_menu[46] :=  '  mac                           Set up MAC filtering';
-    config_term_menu[47] :=  '  mac-age-time                  Set aging period for all MAC interfaces';
-    config_term_menu[48] :=  '  mac-authentication            Configure MAC authentication';
-    config_term_menu[49] :=  '  max-acl-log-num               maximum number of ACL log per minute (0 to';
-    config_term_menu[50] :=  '                                4096, default 256)';
-    config_term_menu[51] :=  '  mirror-port                   Enable a port to act as mirror-port';
-    config_term_menu[52] :=  '  module                        Specify module type';
-    config_term_menu[53] :=  '  mstp                          Configure MSTP (IEEE 802.1s)';
-    config_term_menu[54] :=  '  no                            Undo/disable commands';
-    config_term_menu[55] :=  '  optical-monitor               Enable optical monitoring with default';
-    config_term_menu[56] :=  '                                alarm/warn interval(3 minutes)';
-    config_term_menu[57] :=  '  password-change               Restrict access methods with right to change';
-    config_term_menu[58] :=  '                                password';
-    config_term_menu[59] :=  '  port                          UDP and Port Security Configuration';
-    config_term_menu[60] :=  '  privilege                     Augment default privilege profile';
-    config_term_menu[61] :=  '  protected-link-group          Define a Group of ports as Protected Links';
-    config_term_menu[62] :=  '  pvlan-preference              Unknown unicast/broadcast traffic handling';
-    config_term_menu[63] :=  '  qos                           Quality of service commands';
-    config_term_menu[64] :=  '  qos-tos                       IPv4 ToS based QoS settings';
-    config_term_menu[65] :=  '  quit                          Exit to User level';
-    config_term_menu[66] :=  '  radius-server                 Configure RADIUS server';
-    config_term_menu[67] :=  '  rarp                          Enter a static IP RARP entry';
-    config_term_menu[68] :=  '  rate-limit-arp                Set limit on received ARP per second';
-    config_term_menu[69] :=  '  relative-utilization          Display port utilization relative to selected';
-    config_term_menu[70] :=  '                                uplinks';
-    config_term_menu[71] :=  '  reserved-vlan-map             Map Reserved vlan Id to some other value not';
-    config_term_menu[72] :=  '                                used';
-    config_term_menu[73] :=  '  rmon                          Configure RMON settings';
-    config_term_menu[74] :=  '  router                        Enable routing protocols';
-    config_term_menu[75] :=  '  scale-timer                   Scale timer by factor for documented features';
-    config_term_menu[76] :=  '  service                       Set services such as password encryption';
-    config_term_menu[77] :=  '  set-active-mgmt               Configure the active mgmt slot';
-    config_term_menu[78] :=  '  set-pwr-fan-speed             Power Fan Speed configuratio';
-    config_term_menu[79] :=  '  sflow                         Set sflow params';
-    config_term_menu[80] :=  '  show                          Show system information';
-    config_term_menu[81] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
-    config_term_menu[82] :=  '  snmp-server                   Set onboard SNMP server properties';
-    config_term_menu[83] :=  '  sntp                          Set SNTP server and poll interval';
-    config_term_menu[84] :=  '  spanning-tree                 Set spanning tree parameters';
-    config_term_menu[85] :=  '  ssh                           Restrict ssh access by ACL';
-    config_term_menu[86] :=  '  stp-group                     Spanning Tree Group settings';
-    config_term_menu[87] :=  '  system-max                    Configure system-wide maximum values';
-    config_term_menu[88] :=  '  tacacs-server                 Configure TACACS server';
-    config_term_menu[89] :=  '  tag-type                      Customize value used to identify 802.1Q Tagged';
-    config_term_menu[90] :=  '                                Packets';
-    config_term_menu[91] :=  '  telnet                        Set telnet access and timeout';
-    config_term_menu[92] :=  '  tftp                          Restrict tftp access';
-    config_term_menu[93] :=  '  topology-group                configure topology vlan group for L2 protocols';
-    config_term_menu[94] :=  '  traffic-policy                Define Traffic Policy (TP)';
-    config_term_menu[95] :=  '  transmit-counter              Define Transmit Queue Counter';
-    config_term_menu[96] :=  '  trunk                         Trunk group settings';
-    config_term_menu[97] :=  '  unalias                       Remove an alias';
-    config_term_menu[98] :=  '  username                      Create or update user account';
-    config_term_menu[99] :=  '  vlan                          VLAN settings                      --> done';
-    config_term_menu[100] := '  vlan-group                    VLAN group settings';
-    config_term_menu[101] := '  web                           Restrict web management access to a certain IP';
-    config_term_menu[102] := '                                node';
-    config_term_menu[103] := '  web-management                Web management options';
-    config_term_menu[104] := '  write                         Write running configuration to flash or terminal';
-    config_term_menu[105] := '  <cr>';
-    config_term_menu[106] := 'ENDofLINES';
-//    page_display(lines);
-  end;
-
   procedure vlan_loop(vlanid :string);
-
-    procedure vlan_help;
-
-    begin
-      writeln('  atalk-proto                   Set AppleTalk protocol VLAN');
-      writeln('  clear                         Clear table/statistics/keys');
-      writeln('  decnet-proto                  Set decnet protocol VLAN');
-      writeln('  end                           End Configuration level and go to Privileged');
-      writeln('                                level');
-      writeln('  exit                          Exit current level');
-      writeln('  ip-proto                      Set IP protocol VLAN');
-      writeln('  ip-subnet                     Set IP subnet VLAN');
-      writeln('  ipv6-proto                    Set IPv6 protocol VLAN');
-      writeln('  ipx-network                   Set IPX network VLAN');
-      writeln('  ipx-proto                     Set IPX protocol VLAN');
-      writeln('  metro-ring                    metro ring configuration mode');
-      writeln('  netbios-proto                 Set netbios protocol VLAN');
-      writeln('  no                            Undo/disable commands');
-      writeln('  other-proto                   Set other protocol VLAN');
-      writeln('  pvlan                         Define private vlan type and mapping');
-      writeln('  quit                          Exit to User level');
-      writeln('  router-interface              Attach router interface for Layer 2 VLAN');
-      writeln('  show                          Show system information');
-      writeln('  spanning-tree                 Set spanning tree for this VLAN');
-      writeln('  static-mac-address            Configure static MAC for this VLAN');
-      writeln('  tagged                        802.1Q tagged port');
-      writeln('  untagged                      Port with only untagged frame in/out');
-      writeln('  uplink-switch                 Define uplink port(s) and enable uplink');
-      writeln('                                switching');
-      writeln('  vsrp                          Configure VSRP');
-      writeln('  vsrp-aware                    Configure VSRP Aware parameters');
-      writeln('  write                         Write running configuration to flash or terminal');
-      writeln('  <cr>');
-    end;
 
   var
      strLength, word_count, a : integer;
@@ -1780,141 +1855,53 @@ writeln('ipx disabled               appletalk disabled');
 
   begin
         a := 1; word_count := 1; end_vlan_loop := false;
-        show_input := input;
-        //strlength := length(show_input);
+        input := input;
+        //strlength := length(input);
         Inc(what_level);
         level := level5 + vlanid + ')#';
         repeat
-        show_input := #0;
+        input := #0;
         repeat
             write(hostname, level);
-            readln(show_input);
-        until show_input <> '';
-        strlength := length(show_input);
-        while (show_input[a] <> '') and (a <= strlength)do
-          begin
-               while (show_input[a] <> ' ') and (a <= strlength)do
-                 Begin
-                     word_list[word_count] := word_list[word_count] + show_input[a];
-                     if show_input[a] <> '' then
-                        begin
-                            inc(a);
-                        end
-                     else
-                        break;
-                 End;
-               inc(a);
-               inc(word_count);
-          end;
-        case show_input[1] of
-           '?' : vlan_help;
-           's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
+            readln(input);
+        until input <> '';
+        strlength := length(input);
+        word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := ''; word_list[5] := '';
+        get_words;
+        if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
+             Begin
+                help_match(word_list[1], vlan_menu)
+             End
+        else
+        case input[1] of
+           '?' : page_display(vlan_menu);
+           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                writeln('Incomplete command.')
                  else
                     begin
-                        input := show_input;
+                        input := input;
                         display_show;
                     end;
-           'q' : if (show_input = 'qu') or (show_input = 'qui') or (show_input = 'quit')then
+           'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
                      Begin
                         level := level3;
                         dec(what_level);
                         end_vlan_loop := true;
-                     End
-                  else
-                     if (show_input = 'q?') or (show_input = 'qu?') or (input = 'qui?') or (show_input = 'quit?') then
-                       writeln('  quit                      Exit to User level');
-          'e' : if (show_input = 'ex') or (show_input = 'exi') or (show_input = 'exit')then
+                     End;
+          'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
                      Begin
                         level := level3;
                         dec(what_level);
                         end_vlan_loop := true;
-                     End
-                  else
-                     if (show_input = 'e?') or (show_input = 'ex?') or (input = 'exi?') or (show_input = 'exit?') then
-                       writeln('  exit                      Exit current level');
+                     End;
           #0 :;
            else
                     begin
-                      bad_command(show_input);
+                      bad_command(input);
                     end;
         end;
         until end_vlan_loop = true;
-  end;
-
-    procedure init_interface_menu;
-
-    begin
-      interface_menu[1] := '  100-fx                  100 FX Mode';
-      interface_menu[2] := '  100-tx                  100 TX Mode';
-      interface_menu[3] := '  acl-logging             enable logging of deny acl';
-      interface_menu[4] := '  acl-mirror-port         Set acl based inbound mirroring';
-      interface_menu[5] := '  arp                     Assign IP ARP option to this interface';
-      interface_menu[6] := '  broadcast               Set maximum Layer 2 broadcast packets allowed';
-      interface_menu[7] := '                          per second';
-      interface_menu[8] := '  cdp                     Configure CDP on interface';
-      interface_menu[9] := '  clear                   Clear table/statistics/keys';
-      interface_menu[10] := '  dhcp                    Assign IP DHCP Snoop option to this interface';
-      interface_menu[11] := '  disable                 Disable the interface                        --> done';
-      interface_menu[12] := '  dot1x                   802.1X';
-      interface_menu[13] := '  dual-mode               Accept both Tag and Untag traffic';
-      interface_menu[14] := '  enable                  Enable the interface                         --> done';
-      interface_menu[15] := '  end                     End Configuration level and go to Privileged';
-      interface_menu[16] := '                          level';
-      interface_menu[17] := '  exit                    Exit current level';
-      interface_menu[18] := '  fdp                     Configure FDP on interface';
-      interface_menu[19] := '  flow-control            Enable 802.3x flow control on full duplex port';
-      interface_menu[20] := '  gig-default             Global Gig port default options';
-      interface_menu[21] := '  inline                  inline power configuration';
-      interface_menu[22] := '  ip-multicast-disable    Disable PIM, DVMRP and vlan IGMP snooping on';
-      interface_menu[23] := '                          this port';
-      interface_menu[24] := '  ipg-gmii                1G IPG setting';
-      interface_menu[25] := '  ipg-mii                 10/100M IPG setting';
-      interface_menu[26] := '  ipg-xgmii               10G IPG setting';
-      interface_menu[27] := '  ipv6-multicast-disable  Disable IPv6 PIM and vlan MLD snooping on this';
-      interface_menu[28] := '                          port';
-      interface_menu[29] := '  link-aggregate          802.3ad Link Aggregation';
-      interface_menu[30] := '  link-error-disable      Link Debouncing Control';
-      interface_menu[31] := '  load-interval           Configure Load Interval';
-      interface_menu[32] := '  loop-detection          shut down this port if receiving packets';
-      interface_menu[33] := '                          originated from this port';
-      interface_menu[34] := '  mac                     Apply MAC filter';
-      interface_menu[35] := '  mac-authentication      Configure MAC Address authentication on';
-      interface_menu[36] := '                          interface';
-      interface_menu[37] := '  mac-learn-disable       Disable MAC learning on interface';
-      interface_menu[38] := '  mdi-mdix                Set to MDI, MDIX or Auto';
-      interface_menu[39] := '  monitor                 Set as monitored port';
-      interface_menu[40] := '  multicast               Set maximum multicast packets allowed per second';
-      interface_menu[41] := '  no                      Undo/disable commands';
-      interface_menu[42] := '  optical-monitor         Enable optical monitoring with default';
-      interface_menu[43] := '                          alarm/warn interval(3 minutes';
-      interface_menu[44] := '  port                    Configure Port Security';
-      interface_menu[45] := '  port-name               Assign alphanumeric port name                --> done';
-      interface_menu[46] := '  priority                Set QOS priority';
-      interface_menu[47] := '  pvst-mode               Interoperate with Cisco PVST+ for';
-      interface_menu[48] := '                          multi-spanning tree';
-      interface_menu[49] := '  quit                    Exit to User level';
-      interface_menu[50] := '  rate-limit              Configure rate limiting to interface';
-      interface_menu[51] := '  restart-vsrp-port       Set option to restart the VSRP port when Master';
-      interface_menu[52] := '                          becomes Backup';
-      interface_menu[53] := '  sflow                   Set sflow interface parameters';
-      interface_menu[54] := '  show                    Show system information';
-      interface_menu[55] := '  snmp-server             Set onboard SNMP server interface properties';
-      interface_menu[56] := '  source-guard            Assign IP Source Guard option to this interface';
-      interface_menu[57] := '  spanning-tree           Set STP port parameters';
-      interface_menu[58] := '  speed-duplex            Set to 100 or 10, half or full               --> done';
-      interface_menu[59] := '  stp-bpdu-guard          set the spanning tree bpdu guard on the port --> done';
-      interface_menu[60] := '  stp-protect             enable or disable stp-protect';
-      interface_menu[61] := '  trust                   Change the trust mode';
-      interface_menu[62] := '  unknown-unicast         Set maximum unknown unicast packets allowed per';
-      interface_menu[63] := '                          second';
-      interface_menu[64] := '  use-radius-server       Configure a radius server to be used on';
-      interface_menu[65] := '                          interface';
-      interface_menu[66] := '  voice-vlan              voice over IP vlan configuration';
-      interface_menu[67] := '  write                   Write running configuration to flash or terminal';
-      interface_menu[68] := '  <cr>';
-      interface_menu[69] := 'ENDofLINES';
-  end;
+  end; // of vlan_loop
 
   procedure int_loop(intid : string);
 
@@ -2340,6 +2327,7 @@ begin
     init_config_term_menu;
     init_enable_menu;
     init_interface_menu;
+    init_vlan_menu;
     Splash_screen;
     Read_config;
     read_startup_config;
