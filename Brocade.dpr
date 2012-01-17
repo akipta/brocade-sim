@@ -2333,16 +2333,20 @@ begin
   try
     // Set gobal var
     skip_page_display := false;
+    // init all the menus
     init_top_menu;
     init_show_menu;
     init_config_term_menu;
     init_enable_menu;
     init_interface_menu;
     init_vlan_menu;
+    // Display the splash screen
     Splash_screen;
+    // read from config ffiles
     Read_config;
-    read_startup_config;
-    history_pos := 1;
+    read_startup_config; //read in the default Brocade config
+    history_pos := 1; // starting possition for CLI history.
+    // main loop
     my_loop;
   except
     on E:Exception do
