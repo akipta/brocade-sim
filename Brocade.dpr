@@ -482,7 +482,7 @@ procedure init_enable_menu;
     enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image';
     enable_menu[3] := '  clear                     Clear table/statistics/keys';
     enable_menu[4] := '  clock                     Set clock';
-    enable_menu[5] := '  configure                 Enter configuration mode';
+    enable_menu[5] := '  configure                 Enter configuration mode                 --> done';
     enable_menu[6] := '  copy                      Copy between flash, tftp, config/code';
     enable_menu[7] := '  debug                     Enable debugging functions (see also ''undebug'')';
     enable_menu[8] := '  disable                   Disable a module before removing it';
@@ -493,18 +493,18 @@ procedure init_enable_menu;
     enable_menu[13] := '  exit                      Exit Privileged mode';
     enable_menu[14] := '  kill                      Kill active CLI session';
     enable_menu[15] := '  ncopy                     Copy a file';
-    enable_menu[16] := '  page-display              Display data one page at a time         --> Done';
+    enable_menu[16] := '  page-display              Display data one page at a time         --> done';
     enable_menu[17] := '  phy                       PHY related commands';
     enable_menu[18] := '  ping                      Ping IP node';
     enable_menu[19] := '  port                      Port security command';
-    enable_menu[20] := '  quit                      Exit to User level';
+    enable_menu[20] := '  quit                      Exit to User level                      --> done';
     enable_menu[21] := '  reload                    Halt and perform a warm restart';
-    enable_menu[22] := '  show                      Display system information';
-    enable_menu[23] := '  skip-page-display         Enable continuous display               --> Done';
+    enable_menu[22] := '  show                      Display system information              --> done';
+    enable_menu[23] := '  skip-page-display         Enable continuous display               --> done';
     enable_menu[24] := '  sntp                      Simple Network Time Protocol commands';
     enable_menu[25] := '  stop-traceroute           Stop TraceRoute operation';
     enable_menu[26] := '  switch-over-active-role   Switch over the active role to standby mgmt blade';
-    enable_menu[27] := '  telnet                    Telnet by name or IP address';
+    enable_menu[27] := '  telnet                    Telnet by name or IP address            --> done';
     enable_menu[28] := '  terminal                  display syslog';
     enable_menu[29] := '  trace-l2                  TraceRoute L2';
     enable_menu[30] := '  traceroute                TraceRoute to IP node';
@@ -678,13 +678,13 @@ procedure init_enable_menu;
     config_term_menu[71] :=  '  reserved-vlan-map             Map Reserved vlan Id to some other value not';
     config_term_menu[72] :=  '                                used';
     config_term_menu[73] :=  '  rmon                          Configure RMON settings';
-    config_term_menu[74] :=  '  router                        Enable routing protocols';
+    config_term_menu[74] :=  '  router                        Enable routing protocols           --> done';
     config_term_menu[75] :=  '  scale-timer                   Scale timer by factor for documented features';
     config_term_menu[76] :=  '  service                       Set services such as password encryption';
     config_term_menu[77] :=  '  set-active-mgmt               Configure the active mgmt slot';
     config_term_menu[78] :=  '  set-pwr-fan-speed             Power Fan Speed configuratio';
     config_term_menu[79] :=  '  sflow                         Set sflow params';
-    config_term_menu[80] :=  '  show                          Show system information';
+    config_term_menu[80] :=  '  show                          Show system information            --> done';
     config_term_menu[81] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
     config_term_menu[82] :=  '  snmp-server                   Set onboard SNMP server properties';
     config_term_menu[83] :=  '  sntp                          Set SNTP server and poll interval';
@@ -769,7 +769,7 @@ procedure init_enable_menu;
       interface_menu[51] := '  restart-vsrp-port       Set option to restart the VSRP port when Master';
       interface_menu[52] := '                          becomes Backup';
       interface_menu[53] := '  sflow                   Set sflow interface parameters';
-      interface_menu[54] := '  show                    Show system information';
+      interface_menu[54] := '  show                    Show system information                      --> done';
       interface_menu[55] := '  snmp-server             Set onboard SNMP server interface properties';
       interface_menu[56] := '  source-guard            Assign IP Source Guard option to this interface';
       interface_menu[57] := '  spanning-tree           Set STP port parameters';
@@ -2130,29 +2130,53 @@ writeln('ipx disabled               appletalk disabled');
                         end
                      else
                         writeln('Incomplete command.');
-           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
-                               writeln('Incomplete command.')
-                 else
-                     begin
-                         input := input;
-                         display_show;
-                     end;
            'q' : if is_word(word_list[1],'quit') = true then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
                      End;
+           'r' : Begin
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
+                       begin
+                           writeln('  rip    Enable rip');
+                           writeln('  vrrp   Enable vrrp');
+                       End;
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (is_word(word_list[3],'?') = true) then
+                       writeln('rip    Enable rip')
+                    else
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (is_word(word_list[3],'?') = true) then
+                       writeln('vrrp    Enable vrrp')
+                    else
+                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
+                         begin
+
+                         End
+                    else
+                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
+                         begin
+
+                         End
+                    else
+                       bad_command(word_list[3]);
+                 End;
+           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
+                               writeln('Incomplete command.')
+                 else
+                     begin
+                         input := input;
+                         display_show;
+                     End;
           'e' : if is_word(word_list[1], 'exit') = true then
                      Begin
                         level := level2;
                         dec(what_level);
-                        end_con_term := true;
+                        End_con_term := true;
                      End;
           'v' : if (is_help(input) = TRUE) then
                     begin
                         looking_for_help
-                    end
+                    End
                 else
                   if (is_word(word_list[1],'vlan') = TRUE) then
                     if (is_number(word_list[2]) = TRUE) then
@@ -2160,25 +2184,25 @@ writeln('ipx disabled               appletalk disabled');
                         vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
                         vlans[strtoint(word_list[2])].name := word_list[4];
                         vlan_loop(word_list[2]);
-                      end
+                      End
                     else
                       bad_command(word_list[2]);
           #0 :;
            else
                     begin
                       bad_command(input);
-                    end;
-        end;
-        until end_con_term = true;
-  end; // of config_term
+                    End;
+        End;
+        until End_con_term = true;
+  End; // of config_term
 
   Procedure enable_loop;
 
   var
-     end_enabled : boolean;
+     End_enabled : boolean;
 
   Begin // enable loop
-     end_enabled := false;
+     End_enabled := false;
      repeat
          repeat
             write(hostname, level);
@@ -2191,7 +2215,7 @@ writeln('ipx disabled               appletalk disabled');
          if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
                     begin
                       help_match(word_list[1],enable_menu);
-                    end
+                    End
          else
          case input[1] of
             'a' : ;
@@ -2206,7 +2230,7 @@ writeln('ipx disabled               appletalk disabled');
                      Begin
                         level := level1;
                         dec(what_level);
-                        end_enabled := true;
+                        End_enabled := true;
                      End;
             'k' : if (is_word(word_list[1],'kill') = true) then
                         writeln('*  Kill not implemented in Brocade-Sim')
@@ -2216,7 +2240,7 @@ writeln('ipx disabled               appletalk disabled');
                           writeln('  console   Console session');
                           writeln('  ssh       SSH session');
                           writeln('  telnet    Telnet session');
-                        end;
+                        End;
             'n' : if (is_word(word_list[1],'ncopy') = true) then
                         writeln('*  ncopy not implemented in Brocade-Sim');
             'p' : if (input = 'pi') or (input = 'pin') or (input = 'ping') then
@@ -2228,7 +2252,17 @@ writeln('ipx disabled               appletalk disabled');
                      writeln('*  Reload not implemented in Brocade-Sim as yet');
             's' : if (is_word(word_list[1],'skip-page-display') = TRUE) then
                      skip_page_display := true;
-            't' : ;
+            't' : if (is_word(word_list[1],'telnet') = TRUE) and (word_list[2] = '') then
+                     writeln('Incomplete command.')
+                  else
+                      if (is_word(word_list[2],'?') = TRUE) then
+                         begin
+                             writeln('  ASCII string      Host name');
+                             writeln('  A.B.C.D           Host IP address');
+                             writeln('  X:X::X:X          Host IP6 address');
+                         End
+                      else
+                         writeln('Telnet not implemented in Brocade simulate');
             'u' : if (input = 'un') or (input = 'und') or (input = 'unde') or (input = 'undeb') or (input = 'undebug') then
                         writeln('*  Undebug not implemented in Brocade-Sim');
             'v' : if (input = 've') or (input = 'ver') or (input = 'veri') or (input = 'verif') or (input = 'verify') then
@@ -2242,21 +2276,21 @@ writeln('ipx disabled               appletalk disabled');
                      Begin
                         level := level1;
                         dec(what_level);
-                        end_enabled := true;
+                        End_enabled := true;
                      End;
             '?' : page_Display(enable_menu);
             chr(0) : write;
-         end;
-       until (end_enabled = True);
+         End;
+       until (End_enabled = True);
   End; // of enable_loop
 
   Procedure my_loop;
 
   var
-     end_program : boolean;
+     End_program : boolean;
 
   Begin //my_loop
-       end_program := false; what_level := 1;
+       End_program := false; what_level := 1;
        Hostname := 'Fastiron'; level := level1;
        repeat
 //             input := '';
@@ -2270,7 +2304,7 @@ writeln('ipx disabled               appletalk disabled');
              if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
                     begin
                       help_match(word_list[1],top_menu);
-                    end
+                    End
              else
              case input[1] of
                 'e' : if is_word(word_list[1],'enable') = true then
@@ -2280,7 +2314,7 @@ writeln('ipx disabled               appletalk disabled');
                          End
                       else
                          if is_word(word_list[1],'exit')then
-                            end_program := true;
+                            End_program := true;
                 'p' : if is_word(word_list[1],'ping') then
                         writeln('  Ping not implemented in Brocade-Sim');
                 's' : if is_word(word_list[1],'stop-traceroute') then
@@ -2290,8 +2324,8 @@ writeln('ipx disabled               appletalk disabled');
                 '?' : page_Display(top_menu);
                 else
                    bad_command(input);
-             end;
-       until (end_program = True);
+             End;
+       until (End_program = True);
   End; // of my_loop
 
 begin
@@ -2313,5 +2347,5 @@ begin
   except
     on E:Exception do
       Writeln(E.Classname, ': ', E.Message);
-  end;
-end.
+  End;
+End.
