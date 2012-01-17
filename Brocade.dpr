@@ -3,7 +3,10 @@
 {$APPTYPE CONSOLE}
 
 uses
-  SysUtils, StrUtils, console, Line_editor;
+  SysUtils,
+  StrUtils,
+  console,
+  Line_editor;
 
 const
   level1 = '>';
