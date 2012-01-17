@@ -91,6 +91,7 @@ Var
     loop : integer;
 
   Begin
+     check_int := false;
      for loop := 1 to port_count do
          begin
               if validport = interfaces[loop].port_no then
@@ -114,7 +115,7 @@ Var
       a : integer;
 
   begin
-       a := 0;
+       a := 0; is_number := false;
 //       writeln('check is, ',check);
        try
           a := strtoint(check);
@@ -1848,106 +1849,82 @@ writeln('ipx disabled               appletalk disabled');
   procedure vlan_loop(vlanid :string);
 
   var
-     strLength, word_count, a : integer;
-     word_list : array[1..10] of string;
-     show_input : string;
      end_vlan_loop : boolean;
 
   begin
-        a := 1; word_count := 1; end_vlan_loop := false;
+        end_vlan_loop := false;
         input := input;
-        //strlength := length(input);
         Inc(what_level);
         level := level5 + vlanid + ')#';
         repeat
-        input := #0;
-        repeat
-            write(hostname, level);
-            readln(input);
-        until input <> '';
-        strlength := length(input);
-        word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := ''; word_list[5] := '';
-        get_words;
-        if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
-             Begin
-                help_match(word_list[1], vlan_menu)
-             End
-        else
-        case input[1] of
-           '?' : page_display(vlan_menu);
-           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
-                               writeln('Incomplete command.')
+            repeat
+                write(hostname, level);
+                input := get_command;
+                writeln;
+            until input <> '';
+            word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := ''; word_list[5] := '';
+            get_words;
+            if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
+                Begin
+                   help_match(word_list[1], vlan_menu)
+                End
+            else
+                case input[1] of
+                 '?' : page_display(vlan_menu);
+                 's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
+                          writeln('Incomplete command.')
+                       else
+                          begin
+                            input := input;
+                            display_show;
+                          end;
+                 'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
+                       Begin
+                          level := level3;
+                          dec(what_level);
+                          end_vlan_loop := true;
+                       End;
+                 'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
+                       Begin
+                          level := level3;
+                          dec(what_level);
+                          end_vlan_loop := true;
+                       End;
                  else
-                    begin
-                        input := input;
-                        display_show;
-                    end;
-           'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
-                     Begin
-                        level := level3;
-                        dec(what_level);
-                        end_vlan_loop := true;
-                     End;
-          'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
-                     Begin
-                        level := level3;
-                        dec(what_level);
-                        end_vlan_loop := true;
-                     End;
-          #0 :;
-           else
-                    begin
-                      bad_command(input);
-                    end;
-        end;
+                       begin
+                          bad_command(input);
+                       end;
+          end;
         until end_vlan_loop = true;
   end; // of vlan_loop
 
   procedure int_loop(intid : string);
 
   var
-     strLength, word_count, a, find_int : integer;
-     word_list : array[1..10] of string;
-     show_input : string;
+     find_int     : integer;
      end_int_loop : boolean;
 
   begin
         end_int_loop := false;
-        show_input := input;
+        input := input;
         Inc(what_level);
         repeat
           level := level4 + intid + ')#';
-          show_input := #0;
+          input := #0;
           repeat
             write(hostname, level);
-                show_input := get_command;
+                input := get_command;
                 writeln;
-//            readln(show_input);
-          until show_input <> '';
-          strlength := length(show_input);
-          word_count := 1; a := 1;  word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
+          until input <> '';
+          word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
           word_list[4] := ''; word_list[5] := '';
-          while (show_input[a] <> '') and (a <= strlength)do
-            begin
-               while (show_input[a] <> ' ') and (a <= strlength)do
-                 Begin
-                     word_list[word_count] := word_list[word_count] + show_input[a];
-                     if show_input[a] <> '' then
-                        begin
-                            inc(a);
-                        end
-                     else
-                        break;
-                 End;
-               inc(a);
-               inc(word_count);
-            end;
+          get_words;
           if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
              Begin
                 help_match(word_list[1], interface_menu)
              End
           else
-          case show_input[1] of
+          case input[1] of
            '?' : page_display(interface_menu);
            'd' : if (is_word(word_list[1],'disable')) = true then
                     begin
@@ -1968,7 +1945,7 @@ writeln('ipx disabled               appletalk disabled');
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].descript := word_list[2];
                     end;
-           's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
+           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                writeln('Incomplete command.')
                  else
                   if (is_word(word_list[1],'stp-bpdu-guard')) = true then
@@ -2032,7 +2009,7 @@ writeln('ipx disabled               appletalk disabled');
                       end
                    else
                       begin
-                        input := show_input;
+                        input := input;
                         display_show;
                       end;
            'n' : if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'stp-bpdu-guard') = true) then
@@ -2048,13 +2025,13 @@ writeln('ipx disabled               appletalk disabled');
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].root_guard := false;
                     end;
-           'q' : if (show_input = 'qu') or (show_input = 'qui') or (show_input = 'quit')then
+           'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
                      Begin
                         level := level3;
                         dec(what_level);
                         end_int_loop := true;
                      End;
-          'e' : if (show_input = 'ex') or (show_input = 'exi') or (show_input = 'exit')then
+          'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
                      Begin
                         level := level3;
                         dec(what_level);
@@ -2070,7 +2047,7 @@ writeln('ipx disabled               appletalk disabled');
           #0 :;
           else
                     begin
-                      bad_command(show_input);
+                      bad_command(input);
                     end;
           end;
         until end_int_loop = true;
