@@ -6,7 +6,7 @@ uses
   SysUtils,
   StrUtils,
   console,
-  Line_editor;
+  LineEditor in 'LineEditor.pas';
 
 const
   level1 = '>';
