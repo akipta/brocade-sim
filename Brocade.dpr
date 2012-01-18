@@ -275,6 +275,24 @@ Var
               writeln(list[loop]);
           end;
   End;
+
+  procedure tab_match(findword : string; var list : array of string);
+
+  var
+    loop, len: integer;
+    astring : string;
+
+  Begin
+       len := Length(findword);
+//       writeln('wordlist, ',findword);
+       for loop := 0 to high(list) do
+          begin
+            astring := Copy(list[loop], 3, len);
+            if astring = findword then
+              writeln(list[loop]);
+          end;
+  End;
+
   procedure Read_startup_config;
 
   var
@@ -2291,6 +2309,7 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      End_program : boolean;
+     out_key :char;
 
   Begin //my_loop
        End_program := false; what_level := 1;
@@ -2300,14 +2319,19 @@ writeln('ipx disabled               appletalk disabled');
              word_list[1] := ''; word_list[1] := '';
              repeat
                 write(hostname, level);
-                input := get_command;
+//                input := get_command;
+                get_input(input,out_key);
                 writeln;
              until input <> '';
+//             writeln('out_key, ',ord(out_key));
              get_words;
              if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
                     begin
                       help_match(word_list[1],top_menu);
                     End
+             else
+             if out_key = #9 then //tab key
+                 tab_match(word_list[1],top_menu)
              else
              case input[1] of
                 'e' : if is_word(word_list[1],'enable') = true then
