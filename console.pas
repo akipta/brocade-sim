@@ -11,7 +11,7 @@
 {             If you use this code, please credit me.                       }
 {                                                                           }
 
-unit Console;
+unit console;
 
 {$IFDEF CONDITIONALEXPRESSIONS}
   {$IF CompilerVersion >= 17.0}
