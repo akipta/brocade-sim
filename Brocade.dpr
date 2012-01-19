@@ -2275,7 +2275,10 @@ writeln('ipx disabled               appletalk disabled');
                      skip_page_display := true
                   else
                      if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
-                        page_Display(enable_menu);
+                        page_Display(show_menu)
+                     else
+                        if (is_word(word_list[1],'show') = true) then
+                             display_show;
             't' : if (is_word(word_list[1],'telnet') = TRUE) and (word_list[2] = '') then
                      writeln('Incomplete command.')
                   else
@@ -2351,7 +2354,10 @@ writeln('ipx disabled               appletalk disabled');
                                   writeln('  There is no Trace Route Operation in progress!')
                       else
                          if (is_word(word_list[1],'show') = true) and (is_word(word_list[2],'?') = true) then
-                             page_Display(top_menu);
+                             page_Display(top_menu)
+                         else
+                           if (is_word(word_list[1],'show') = true) then
+                             display_show;
                 't' : if is_word(word_list[1],'traceroute') = true then
                           writeln('  TreaceRoute not implemented in Brocade-Sim');
                 '?' : page_Display(top_menu);
