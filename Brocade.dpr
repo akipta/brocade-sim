@@ -516,7 +516,7 @@ procedure init_enable_menu;
     enable_menu[15] := '  ncopy                     Copy a file';
     enable_menu[16] := '  page-display              Display data one page at a time         --> done';
     enable_menu[17] := '  phy                       PHY related commands';
-    enable_menu[18] := '  ping                      Ping IP node';
+    enable_menu[18] := '  ping                      Ping IP node                            --> done';
     enable_menu[19] := '  port                      Port security command';
     enable_menu[20] := '  quit                      Exit to User level                      --> done';
     enable_menu[21] := '  reload                    Halt and perform a warm restart';
@@ -2264,7 +2264,7 @@ writeln('ipx disabled               appletalk disabled');
                         End;
             'n' : if (is_word(word_list[1],'ncopy') = true) then
                         writeln('*  ncopy not implemented in Brocade-Sim');
-            'p' : if (input = 'pi') or (input = 'pin') or (input = 'ping') then
+            'p' : if (is_word(word_list[1],'ping') = true) then
                         writeln('*  Ping not implemented in Brocade-Sim')
                         else
                         if (is_word(input,'page-display') = TRUE) then
