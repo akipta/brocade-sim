@@ -77,8 +77,11 @@ Var
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
       writeln(' ║      Ctrl E - move to the end of the line                                  ║');
-      writeln(' ║      Left and Right arrow keys                                             ║');
-      writeln(' ║      ? for help                                                            ║');
+      writeln(' ║      TAB    - Auto complete                                                ║');
+      writeln(' ║      ?      - for help                                                     ║');
+      writeln(' ║                                                                            ║');
+      writeln(' ║      Left and Right arrow keys to edit                                     ║');
+      writeln(' ║      up and down arrow keys for history                                    ║');
       writeln(' ║                                                                            ║');
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
