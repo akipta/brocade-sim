@@ -39,9 +39,9 @@ const
      history_pos, x_Pos,Y_Pos, cursor_loc, location : integer;
      cleanstr, tempstr : string;
 
-function get_command:string;
+//function get_command:string;
 
-procedure get_input(out input: string; out last_key : char);
+procedure get_input(var input: string; var last_key : char);
 
 implementation
 
@@ -60,7 +60,7 @@ begin
 end;
 
 
- function get_command:string;
+{ function get_command:string;
 
   var
     ch :char;
@@ -141,7 +141,7 @@ end;
                                    gotoxy(x_pos + location-1,y_pos);
 //                                   writeln;writeln('His pos ',history_pos, ' history is, ',history[history_pos]);}
                                  //end;
-                        Up_Key : begin //up key
+{                        Up_Key : begin //up key
                                    if history_pos > 1 then
                                       begin
                                         dec(history_pos);
@@ -189,7 +189,7 @@ end;
                               end
                     {    else
                         write(' .',ord(ch));}
-                    End
+ {                   End
                 end
              else
                 case ch of
@@ -210,9 +210,9 @@ end;
                         BkSpace_Key : begin   // backspace
                                   backspace;
                               end;
-                        Tab_Key  : begin
+{                        Tab_Key  : begin
 //                                      writeln('tab');
-                                    end;
+{                                    end;
                         '?' : begin
                                    if location = cursor_loc then // we are at the end of the line
                                   begin
@@ -220,8 +220,8 @@ end;
                                     inc(location);
                                     inc(cursor_loc)
                                   end
-                                else // insert the char
-                                  Begin
+  {                              else // insert the char
+ {                                 Begin
                                      for loop := 59 downto location do
                                         tempstr[loop+1] := tempstr[loop];
                                      tempstr[location] := ch;
@@ -232,7 +232,7 @@ end;
                                 gotoxy(x_pos,y_pos); write(tempstr); gotoxy(x_pos+location-1,y_pos);
                               end
                         else begin
-                                if ch <> chr(Escape) then
+{                                if ch <> chr(Escape) then
                                 if location = cursor_loc then // we are at the end of the line
                                   begin
                                     tempstr[location] := ch;
@@ -240,7 +240,7 @@ end;
                                     inc(cursor_loc)
                                   end
                                  else // insert the char
-                                  Begin
+ {                                 Begin
                                      for loop := 59 downto location do
                                         tempstr[loop+1] := tempstr[loop];
                                      tempstr[location] := ch;
@@ -248,7 +248,7 @@ end;
                                      inc(cursor_loc)
                                   End;
                                 //tempstr := tempstr;
-                                gotoxy(x_pos,y_pos); write(tempstr); gotoxy(x_pos+location-1,y_pos);
+                               gotoxy(x_pos,y_pos); write(tempstr); gotoxy(x_pos+location-1,y_pos);
                              End
                     End
        until (ch = '?') or (ch = tab_key) or (ch = Ctrl_C) or (ch = enter_key);
@@ -259,9 +259,9 @@ end;
        if history_pos < 20 then
          inc(history_pos);
        get_command := tempstr;
-  end;
+  end;}
 
-  procedure get_input(out input: string; out last_key : char);
+  procedure get_input(var input: string; var last_key : char);
 
   var
     ch :char;
@@ -305,19 +305,35 @@ end;
        for loop := 1 to 60 do
          the_command[loop] := #0;
        gotoxy(x_pos,y_pos);
-       tempstr := The_command;
+       if last_key = #9 then
+//         writeln('input is, ',input, ' and out_key is, ',ord(last_key));
+          begin
+              for loop := 1 to length(input) do
+                  The_command[loop] := input[loop];
+              cleanstr := the_command;
+              RemoveNullChars (cleanstr);
+              write(cleanstr);
+              location := length(input)+1;
+              cursor_loc := location;
+              gotoxy(x_pos+location-1,y_pos);
+              tempstr := The_command;
+          end
+       else
+           tempstr := The_command;
        repeat
              ch := readkey;
              if ch = #0 then // Extended key code
                 Begin
                     ch := readkey; // get second byte of key code
                     case ch of
-{                        Down_Key : begin
-                                    if history_pos < 20  then
+                       Down_Key : begin
+                                   if (history_pos <20) and (history[history_pos+1] <> '')then
                                       begin
                                         inc(history_pos);
                                         tempstr := history[history_pos];
                                         for loop := 1 to 60 do
+                                            The_command[loop] := #0;
+                                        for loop := 1 to length(tempstr) do
                                             The_command[loop] := tempstr[loop];
                                         tempstr := the_command;
                                         gotoxy(x_pos,y_pos);
@@ -330,23 +346,15 @@ end;
                                         location := length(history[history_pos])+1;
                                         cursor_loc := location;
                                         gotoxy(x_pos+location-1,y_pos);
-                                      end;}
-                                     {   inc(history_pos);
-                                        tempstr := history[history_pos];
-                                        gotoxy(x_pos,y_pos);
-                                     for loop := x_pos to 79 do
-                                      write(' ');
-                                   gotoxy(x_pos,y_pos); write(tempstr);
-                                   location := length(tempstr)+1;
-                                   cursor_loc := length(tempstr)+1;
-                                   gotoxy(x_pos + location-1,y_pos);
-//                                   writeln;writeln('His pos ',history_pos, ' history is, ',history[history_pos]);}
-                                 //end;
+                                      end;
+                                 end;
                         Up_Key : begin //up key
                                    if history_pos > 1 then
                                       begin
                                         dec(history_pos);
                                         tempstr := history[history_pos];
+                                        for loop := 1 to 60 do
+                                            The_command[loop] := #0;
                                         for loop := 1 to length(tempstr) do
                                             The_command[loop] := tempstr[loop];
                                         tempstr := the_command;
