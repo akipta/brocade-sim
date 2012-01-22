@@ -67,7 +67,7 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version 0.1g                                               ║');
+      writeln(' ║   Brocade-Sim : Version r24                                               ║');
       writeln(' ║                 Dated 16/01/2012                                           ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp                                             ║');
