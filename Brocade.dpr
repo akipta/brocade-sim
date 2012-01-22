@@ -92,7 +92,7 @@ Var
   Hostname, level : string;
   input : string;
   what_level : integer;
-  Code_version : string;
+  Code_version : array[1..120] of string;
   Modules : array[1..20] of string;
   chassis : array[1..60] of string;
   flash : array[1..11] of string;
@@ -122,12 +122,12 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r24                                               ║');
-      writeln(' ║                 Dated 16/01/2012                                           ║');
+      writeln(' ║   Brocade-Sim : Version r24                                                ║');
+      writeln(' ║                 Dated 22/01/2012                                           ║');
       writeln(' ║                                                                            ║');
-      Writeln(' ║   Coded by    : Michael Schipp                                             ║');
+      Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
-      writeln(' ║                 FastIron and syntax                                        ║');
+      writeln(' ║                 FastIron devices and syntax                                ║');
       writeln(' ╠════════════════════════════════════════════════════════════════════════════╣');
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
@@ -389,7 +389,7 @@ Var
        readln(sc, aline);
        running_config[1] := 'Current configuration:';
        running_config[2] := '!';
-       running_config[3] := code_version;
+       running_config[3] := '07.2.02dT3e2';
        running_config[4] := '!';
        running_config[5] := 'module 1 fi-sx4-24-port-gig-copper-module';
        running_config[6] := 'module 2 fi-sx4-24-port-gig-copper-module';
@@ -484,10 +484,23 @@ Var
           end;
 
        modules[loop] := 'ENDofMODULES';
-       readln(sc);
-       readln(sc,code_version);
+//       readln(sc);
+       readln(sc,aline); // version
+       loop := 1; isend := false;
+       repeat
+             begin
+                  readln(sc,aline);
+                  if aline = 'END' then
+                     isend := true
+                  else
+                     begin
+                       code_version[loop] := aline;
+                       inc(loop);
+                     end;
+             end;
+       until (isend = true);
+       code_version[loop] := 'ENDofLINES';
 //       writeln(code_version);
-       readln(sc);
        readln(sc, aline);
        isend := false;    loop := 1;
        if aline = 'FLASH' then
@@ -1782,7 +1795,7 @@ writeln('ipx disabled               appletalk disabled');
   procedure display_show_version;
 
   Begin
-     writeln(code_version);
+    page_display(code_version);
   End;
 
   procedure display_show_web;
