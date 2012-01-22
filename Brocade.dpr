@@ -85,6 +85,7 @@ Type interface_records = record
         no_config : boolean;
         bpdu, root_guard : boolean;
         speed, speed_actual : string;
+
 end;
 
 Var
@@ -105,6 +106,7 @@ Var
   word_list : array [1..10] of string;
   skip_page_display : boolean;
   port_count : integer;
+  out_key :char;
 
   // menus
   top_menu : array[1..7] of string;
@@ -130,8 +132,11 @@ Var
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
       writeln(' ║      Ctrl E - move to the end of the line                                  ║');
-      writeln(' ║      Left and Right arrow keys                                             ║');
-      writeln(' ║      ? for help                                                            ║');
+      writeln(' ║      TAB    - Auto complete                                                ║');
+      writeln(' ║      ?      - for help                                                     ║');
+      writeln(' ║                                                                            ║');
+      writeln(' ║      Left and Right arrow keys to edit                                     ║');
+      writeln(' ║      up and down arrow keys for history                                    ║');
       writeln(' ║                                                                            ║');
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
@@ -333,17 +338,40 @@ Var
   procedure tab_match(findword : string; var list : array of string);
 
   var
-    loop, len: integer;
+    a, strlength, loop, len: integer;
     astring : string;
+    tmp_str : string;
+    only_one : integer;
 
   Begin
-       len := Length(findword);
+       len := Length(findword); only_one := 0;
 //       writeln('wordlist, ',findword);
        for loop := 0 to high(list) do
           begin
             astring := Copy(list[loop], 3, len);
             if astring = findword then
-              writeln(list[loop]);
+              begin
+                  inc(only_one);
+                  writeln(list[loop]);
+                  tmp_str := list[loop];
+              end;
+          end;
+       if only_one = 1 then
+          begin
+                a := 3; input := '';
+                strlength := length(tmp_str);
+                while (tmp_str[a] <> ' ') do
+                   Begin
+                       input := input + tmp_str[a];
+                       if tmp_str[a] <> '' then
+                          begin
+                              inc(a);
+  //                            write(input[a]);
+                          end
+                       else
+                          break;
+                   End;
+               input := input + ' ';
           end;
   End;
 
@@ -1934,7 +1962,8 @@ writeln('ipx disabled               appletalk disabled');
         repeat
             repeat
                 write(hostname, level);
-                input := get_command;
+//                input := get_command;
+                get_input(input,out_key);
                 writeln;
             until input <> '';
             word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := ''; word_list[5] := '';
@@ -1988,7 +2017,8 @@ writeln('ipx disabled               appletalk disabled');
           input := #0;
           repeat
             write(hostname, level);
-                input := get_command;
+//                input := get_command;
+                get_input(input,out_key);
                 writeln;
           until input <> '';
           word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
@@ -1998,6 +2028,9 @@ writeln('ipx disabled               appletalk disabled');
              Begin
                 help_match(word_list[1], interface_menu)
              End
+          else
+             if out_key = #9 then //tab key
+                tab_match(word_list[1],interface_menu)
           else
           case input[1] of
            '?' : page_display(interface_menu);
@@ -2175,7 +2208,8 @@ writeln('ipx disabled               appletalk disabled');
         word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
         repeat
             write(hostname, level);
-            input := get_command;
+//            input := get_command;
+            get_input(input,out_key);
             writeln;
         until input <> '';
         get_words;
@@ -2183,6 +2217,9 @@ writeln('ipx disabled               appletalk disabled');
            Begin
                 help_match(word_list[1], config_term_menu)
            End
+        else
+           if out_key = #9 then //tab key
+              tab_match(word_list[1],config_term_menu)
         else
         case input[1] of
            '?' : page_display(config_term_menu);
@@ -2281,7 +2318,8 @@ writeln('ipx disabled               appletalk disabled');
      repeat
          repeat
             write(hostname, level);
-            input := get_command;
+//            input := get_command;
+            get_input(input,out_key);
             writeln;
          until input <> '';
          word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
@@ -2291,6 +2329,9 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                       help_match(word_list[1],enable_menu);
                     End
+         else
+           if out_key = #9 then //tab key
+              tab_match(word_list[1],enable_menu)
          else
          case input[1] of
             'a' : ;
@@ -2369,7 +2410,6 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      End_program : boolean;
-     out_key :char;
 
   Begin //my_loop
        End_program := false; what_level := 1;
@@ -2383,7 +2423,6 @@ writeln('ipx disabled               appletalk disabled');
                 get_input(input,out_key);
                 writeln;
              until input <> '';
-//             writeln('out_key, ',ord(out_key));
              get_words;
              if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
                     begin
@@ -2470,3 +2509,4 @@ begin
 //      Writeln(E.Classname, ': ', E.Message);
 //  End;
 End.
+
