@@ -2149,7 +2149,7 @@ writeln('ipx disabled               appletalk disabled');
         Inc(what_level);
         level := level3;
         repeat
-        input := #0;
+//        input := #0;
         word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
         repeat
             write(hostname, level);
