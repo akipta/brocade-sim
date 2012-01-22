@@ -60,7 +60,7 @@ begin
 end;
 
 
-{ function get_command:string;
+{function get_command:string;
 
   var
     ch :char;

@@ -3,10 +3,12 @@
 {$APPTYPE CONSOLE}
 
 uses
+  Windows,
   SysUtils,
   StrUtils,
-  console,
-  LineEditor in 'LineEditor.pas';
+  IniFiles,
+  LineEditor in 'LineEditor.pas',
+  Console in 'Console.pas';
 
 const
   level1 = '>';
@@ -14,6 +16,59 @@ const
   level3 = '(config)#';
   level4 = '(config-if-e1000-';
   level5 = '(config-vlan-';
+
+  StartupConfigFile = 'startup-config.txt';
+  ModulesFile = 'modules.txt';
+
+  function check_int(validport : shortstring) : boolean; forward;
+  function is_word(check, target : string) : boolean; forward;
+  function is_number(check : string) : boolean; forward;
+  function is_help(check : string) : boolean; forward;
+  procedure splash_screen; forward;
+  procedure Get_words; forward;
+  procedure Page_display(lines : array of string); forward;
+  procedure bad_command(command:string); forward;
+  procedure help_match(findword : string; var list : array of string); forward;
+  procedure tab_match(findword : string; var list : array of string); forward;
+  procedure Read_startup_config; forward;
+  procedure read_config; forward;
+  Procedure init_top_menu; forward;
+  procedure init_enable_menu; forward;
+  procedure init_show_menu; forward;
+  procedure init_config_term_menu; forward;
+  procedure init_interface_menu; forward;
+  procedure init_vlan_menu; forward;
+  procedure display_help_match(findword : string); forward;
+  procedure display_show_arp; forward;
+  procedure display_show_boot_pref; forward;
+  Procedure display_show_clock; forward;
+  procedure display_show_cpu; forward;
+  procedure display_show_defaults; forward;
+  Procedure display_show_dot1x; forward;
+  Procedure display_show_errdisabled_recovery; forward;
+  procedure display_show_fdp; forward;
+  Procedure display_show_int; forward;
+  Procedure display_show_int_eth(port : shortstring); forward;
+  procedure display_show_int_bri; forward;
+  procedure display_show_modules; forward;
+  procedure display_show_flash; forward;
+  procedure display_show_memory; forward;
+  Procedure display_show_port_security; forward;
+  Procedure display_show_reload; forward;
+  Procedure display_show_reserved_vlan; forward;
+  procedure display_running_config; forward;
+  procedure display_stp_protect; forward;
+  procedure display_startup_config; forward;
+  Procedure display_show_telnet; forward;
+  procedure display_show_version; forward;
+  procedure display_show_web; forward;
+  procedure display_show_who; forward;
+  procedure display_show; forward;
+  procedure vlan_loop(vlanid :string); forward;
+  procedure int_loop(intid : string); forward;
+  procedure configure_term_loop; forward;
+  Procedure enable_loop; forward;
+  Procedure my_loop; forward;
 
 type
     vlan_records = record
@@ -30,7 +85,6 @@ Type interface_records = record
         no_config : boolean;
         bpdu, root_guard : boolean;
         speed, speed_actual : string;
-
 end;
 
 Var
@@ -51,7 +105,6 @@ Var
   word_list : array [1..10] of string;
   skip_page_display : boolean;
   port_count : integer;
-  out_key :char;
 
   // menus
   top_menu : array[1..7] of string;
@@ -77,11 +130,8 @@ Var
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
       writeln(' ║      Ctrl E - move to the end of the line                                  ║');
-      writeln(' ║      TAB    - Auto complete                                                ║');
-      writeln(' ║      ?      - for help                                                     ║');
-      writeln(' ║                                                                            ║');
-      writeln(' ║      Left and Right arrow keys to edit                                     ║');
-      writeln(' ║      up and down arrow keys for history                                    ║');
+      writeln(' ║      Left and Right arrow keys                                             ║');
+      writeln(' ║      ? for help                                                            ║');
       writeln(' ║                                                                            ║');
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
@@ -283,40 +333,17 @@ Var
   procedure tab_match(findword : string; var list : array of string);
 
   var
-    a, strlength, loop, len: integer;
+    loop, len: integer;
     astring : string;
-    tmp_str : string;
-    only_one : integer;
 
   Begin
-       len := Length(findword); only_one := 0;
+       len := Length(findword);
 //       writeln('wordlist, ',findword);
        for loop := 0 to high(list) do
           begin
             astring := Copy(list[loop], 3, len);
             if astring = findword then
-              begin
-                  inc(only_one);
-                  writeln(list[loop]);
-                  tmp_str := list[loop];
-              end;
-          end;
-       if only_one = 1 then
-          begin
-                a := 3; input := '';
-                strlength := length(tmp_str);
-                while (tmp_str[a] <> ' ') do
-                   Begin
-                       input := input + tmp_str[a];
-                       if tmp_str[a] <> '' then
-                          begin
-                              inc(a);
-  //                            write(input[a]);
-                          end
-                       else
-                          break;
-                   End;
-               input := input + ' ';
+              writeln(list[loop]);
           end;
   End;
 
@@ -329,7 +356,7 @@ Var
 
   Begin
        loop := 1;
-       assignfile(sc,'startup-config.txt');
+       assignfile(sc,StartupConfigFile);
        reset(sc);
        readln(sc, aline);
        running_config[1] := 'Current configuration:';
@@ -382,7 +409,7 @@ Var
 
   begin
        isend := false; loop := 1; slot := 1; port_count := 1;
-       assignfile(sc,'modules.txt');
+       assignfile(sc,ModulesFile);
 //       fileh := FileOpen('c:\modules.txt',1);
        reset(sc);
        readln(sc, aline);
@@ -1907,8 +1934,7 @@ writeln('ipx disabled               appletalk disabled');
         repeat
             repeat
                 write(hostname, level);
-//                input := get_command;
-                get_input(input,out_key);
+                input := get_command;
                 writeln;
             until input <> '';
             word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := ''; word_list[5] := '';
@@ -1962,8 +1988,7 @@ writeln('ipx disabled               appletalk disabled');
           input := #0;
           repeat
             write(hostname, level);
-//                input := get_command;
-                get_input(input,out_key);
+                input := get_command;
                 writeln;
           until input <> '';
           word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
@@ -1973,9 +1998,6 @@ writeln('ipx disabled               appletalk disabled');
              Begin
                 help_match(word_list[1], interface_menu)
              End
-          else
-             if out_key = #9 then //tab key
-                tab_match(word_list[1],interface_menu)
           else
           case input[1] of
            '?' : page_display(interface_menu);
@@ -2153,8 +2175,7 @@ writeln('ipx disabled               appletalk disabled');
         word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
         repeat
             write(hostname, level);
-//            input := get_command;
-            get_input(input,out_key);
+            input := get_command;
             writeln;
         until input <> '';
         get_words;
@@ -2162,9 +2183,6 @@ writeln('ipx disabled               appletalk disabled');
            Begin
                 help_match(word_list[1], config_term_menu)
            End
-        else
-           if out_key = #9 then //tab key
-              tab_match(word_list[1],config_term_menu)
         else
         case input[1] of
            '?' : page_display(config_term_menu);
@@ -2263,8 +2281,7 @@ writeln('ipx disabled               appletalk disabled');
      repeat
          repeat
             write(hostname, level);
-//            input := get_command;
-            get_input(input,out_key);
+            input := get_command;
             writeln;
          until input <> '';
          word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
@@ -2274,9 +2291,6 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                       help_match(word_list[1],enable_menu);
                     End
-         else
-           if out_key = #9 then //tab key
-              tab_match(word_list[1],enable_menu)
          else
          case input[1] of
             'a' : ;
@@ -2355,6 +2369,7 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      End_program : boolean;
+     out_key :char;
 
   Begin //my_loop
        End_program := false; what_level := 1;
@@ -2368,6 +2383,7 @@ writeln('ipx disabled               appletalk disabled');
                 get_input(input,out_key);
                 writeln;
              until input <> '';
+//             writeln('out_key, ',ord(out_key));
              get_words;
              if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
                     begin
@@ -2405,9 +2421,33 @@ writeln('ipx disabled               appletalk disabled');
        until (End_program = True);
   End; // of my_loop
 
+  procedure BrocadeExceptionHandler(ExceptObject: TObject; ExceptAddr: Pointer);
+  const
+    ErrorMessages : array[0..0] of string = ( 'EInOutError' ) ;
+  begin
+    case AnsiIndexText(Exception(ExceptObject).Classname,ErrorMessages) of
+      0:WriteLn('Brocade-Sim Missing files detected, please check configuration files in the program directory.');
+      else
+        WriteLn('Brocade-Sim Exception Occured [' + Exception(ExceptObject).Classname + '] : ' + Exception(ExceptObject).Message);
+    end;
+    Flush(Output);
+    Halt(1);
+  end;
+
+  procedure BrocadeErrorProcedure(ErrorCode: Integer; ErrorAddr: Pointer);
+  begin
+    WriteLn('Brocade-Sim Error Procedure Initiated [' + IntToStr(ErrorCode) + ']');
+    Flush(Output);
+    Halt(2);
+  end;
+
 begin
+  ExceptProc := @BrocadeExceptionHandler;
+//  ErrorProc := @BrocadeErrorProcedure;
+  SetErrorMode(SEM_NOGPFAULTERRORBOX);
+
   clrscr;
-  try
+//  try
     // Set gobal var
     skip_page_display := false;
     // init all the menus
@@ -2425,8 +2465,8 @@ begin
     history_pos := 1; // starting possition for CLI history.
     // main loop
     my_loop;
-  except
-    on E:Exception do
-      Writeln(E.Classname, ': ', E.Message);
-  End;
+//  except
+//    on E:Exception do
+//      Writeln(E.Classname, ': ', E.Message);
+//  End;
 End.
