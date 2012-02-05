@@ -34,6 +34,7 @@ const
   procedure read_config; forward;
   Procedure init_top_menu; forward;
   procedure init_enable_menu; forward;
+  procedure init_ip_menu; forward;
   procedure init_show_menu; forward;
   procedure init_config_term_menu; forward;
   procedure init_interface_menu; forward;
@@ -113,8 +114,10 @@ Var
   Show_menu : array[1..80] of string;
   config_term_menu : array[1..120] of string;
   enable_menu : array[1..50] of string;
+  ip_menu : array[1..50] of string;
   Interface_menu : array[1..69] of string;
   vlan_menu : array[1..30] of string;
+  lldp_menu : array[1..17] of string;
 
   procedure splash_screen;
 
@@ -122,12 +125,12 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r26                                                ║');
-      writeln(' ║                 Dated 22/01/2012                                           ║');
+      writeln(' ║   Brocade-Sim : Version r31                                                ║');
+      writeln(' ║                 Dated 5th of Feb 2012                                           ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
-      writeln(' ║                 FastIron devices and syntax                                ║');
+      writeln(' ║                 FastIron devices and syntax - simulating FSX 1600 7.2.02d  ║');
       writeln(' ╠════════════════════════════════════════════════════════════════════════════╣');
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
@@ -338,7 +341,7 @@ Var
   procedure tab_match(findword : string; var list : array of string);
 
   var
-    a, strlength, loop, len: integer;
+    a, loop, len: integer;
     astring : string;
     tmp_str : string;
     only_one : integer;
@@ -359,7 +362,6 @@ Var
        if only_one = 1 then
           begin
                 a := 3; input := '';
-                strlength := length(tmp_str);
                 while (tmp_str[a] <> ' ') do
                    Begin
                        input := input + tmp_str[a];
@@ -646,6 +648,81 @@ procedure init_enable_menu;
     enable_menu[38] := 'ENDofLINES';
   End;
 
+  Procedure init_ip_menu;
+
+  Begin
+    ip_menu[1] :='  access-list                   Configure named access list';
+    ip_menu[2] :='  arp                           Set ARP option';
+    ip_menu[3] :='  arp-age                       Set ARP aging period';
+    ip_menu[4] :='  bootp-use-intf-ip             Use incoming interface IP as source IP';
+    ip_menu[5] :='  broadcast-zero                Enable directed broadcast forwarding';
+    ip_menu[6] :='  default-network               Configure default network route';
+    ip_menu[7] :='  dhcp                          Set DHCP option';
+    ip_menu[8] :='  dhcp-client                   DHCP client options';
+    ip_menu[9] :='  dhcp-server                   DHCP Server';
+    ip_menu[10] :='  dhcp-valid-check              Check DHCP offer packet for NULL client addr';
+    ip_menu[11] :='  directed-broadcast            Enable directed broadcast forwarding';
+    ip_menu[12] :='  dns                           Set DNS properties';
+    ip_menu[13] :='  forward-protocol              Select protocols to be included in broadcast';
+    ip_menu[14] :='                                forwarding';
+    ip_menu[15] :='  helper-use-responder-ip       Retain Responders Source IP In Reply';;
+    ip_menu[16] :='  icmp                          Control ICMP attacks';
+    ip_menu[17] :='  igmp-report-control           Rate limit forwarding IGMP reports to upstream';
+    ip_menu[18] :='                                Router';
+    ip_menu[19] :='  irdp                          Enable IRDP for dynamic route learning';
+    ip_menu[20] :='  load-sharing                  Enable IP load sharing';
+    ip_menu[21] :='  mroute                        Configure static multicast route';
+    ip_menu[22] :='  multicast                     Set IGMP snooping globally';
+    ip_menu[23] :='  pimsm-snooping                Set PIMSM snooping globally';
+    ip_menu[24] :='  preserve-acl-user-input-format';
+    ip_menu[25] :='  proxy-arp                     Enable router to act as ARP proxy for its';
+    ip_menu[26] :='                                subnets';
+    ip_menu[27] :='  radius                        Configure RADIUS authentication';
+    ip_menu[28] :='  rarp                          Enable RARP protocol on this router';
+    ip_menu[29] :='  route                         Define static route';
+    ip_menu[30] :='  router-id                     Change the router ID already in use';
+    ip_menu[31] :='  show-acl-service-number       Use TCP/UDP service number to display ACL clause';
+    ip_menu[32] :='  show-portname                 Display port name for the interface on log';
+    ip_menu[33] :='                                messages';
+    ip_menu[34] :='  show-service-number-in-log    Use App service number in log display';
+    ip_menu[35] :='  show-subnet-length            Change subnet mask display to prefix format';
+    ip_menu[36] :='  sntp                          Specify sntp options';
+    ip_menu[37] :='  source                        Set source guard option';
+    ip_menu[38] :='  source-route                  Process packets with source routing option';
+    ip_menu[39] :='  ssh                           Configure Secure Shell';
+    ip_menu[40] :='  ssl                           Configure Secure Socket';
+    ip_menu[41] :='  syslog                        Specify syslog options';
+    ip_menu[42] :='  tacacs                        Configure TACACS authentication';
+    ip_menu[43] :='  tcp                           Control TCP SYN attacks';
+    ip_menu[44] :='  telnet                        Specify telnet options';
+    ip_menu[45] :='  tftp                          Specify tftp options';
+    ip_menu[46] :='  ttl                           Set time-to-live for packets on the network';
+    ip_menu[48] :='  <cr>';
+    ip_menu[49] := 'ENDofLINES';
+  End;
+
+  procedure init_lldp_menu;
+
+  begin
+    lldp_menu[1] := '  advertise                    Control advertising of information';
+    lldp_menu[2] := '  enable                       Enable LLDP on interfaces, SNMP notifications';
+    lldp_menu[3] := '  max-neighbors-per-port       Specify the maximum number of neighbors per port';
+    lldp_menu[4] := '  max-total-neighbors          Specify the maximum number of total neighbors';
+    lldp_menu[5] := '  med                          LLDP-MED settings';
+    lldp_menu[6] := '  reinit-delay                 Specify the minimum time between port';
+    lldp_menu[7] := '                               reinitializations';
+    lldp_menu[8] := '  run                          Enable LLDP globally';
+    lldp_menu[9] := '  snmp-notification-interval   Specify the minimum time between';
+    lldp_menu[10] := '                               lldpRemTablesChange traps';
+    lldp_menu[11] := '  tagged-packets               Specify handling for tagged LLDP packets';
+    lldp_menu[12] := '  transmit-delay               Specify the minimum time between LLDP';
+    lldp_menu[13] := '                               transmissions';
+    lldp_menu[14] := '  transmit-hold                Specify the hold time multiplier for transmit TTL';
+    lldp_menu[15] := '  transmit-interval            Specify the interval between regular LLDP';
+    lldp_menu[16] := '                               transmissions';
+    lldp_menu[17] := 'ENDofLINES';
+  end;
+
   procedure init_show_menu;
 
 //  var
@@ -778,7 +855,7 @@ procedure init_enable_menu;
     config_term_menu[40] :=  '  hostname                      Rename this switching router       --> done';
     config_term_menu[41] :=  '  inline                        Inline power (PoE) configuration';
     config_term_menu[42] :=  '  interface                     Port commands                      --> done';
-    config_term_menu[43] :=  '  ip                            IP settings';
+    config_term_menu[43] :=  '  ip                            IP settings                        --> 4 ?';
     config_term_menu[44] :=  '  ipv4-subnet-response          Allow ipv4 subnet broadcast';
     config_term_menu[45] :=  '  ipv6                          IPv6 settings';
     config_term_menu[46] :=  '  jumbo                         gig port jumbo frame support (10240 bytes)';
@@ -787,7 +864,7 @@ procedure init_enable_menu;
     config_term_menu[49] :=  '                                default';
     config_term_menu[50] :=  '  link-config                   Link Configuration';
     config_term_menu[51] :=  '  link-keepalive                Link Layer Keepalive';
-    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol';
+    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol --> 4 ?';
     config_term_menu[53] :=  '  local-userdb                  Configure local user database';
     config_term_menu[54] :=  '  lock-address                  Limit number of addresses for a port';
     config_term_menu[55] :=  '  logging                       Event logging settings';
@@ -2259,6 +2336,12 @@ writeln('ipx disabled               appletalk disabled');
                 help_match(word_list[1], config_term_menu)
            End
         else
+           if (word_list[1] = 'ip' = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],ip_menu)
+           else
+           if (word_list[1] = 'lldp' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],lldp_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
         else
@@ -2272,6 +2355,9 @@ writeln('ipx disabled               appletalk disabled');
                              writeln('port not valid');
                      end
                  else
+                 if (is_word(word_list[1],'ip') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(ip_menu)
+                 else
                      writeln('Incomplete command.');
            'h' :  if (is_word(word_list[1],'hostname') = TRUE) then
                      if word_list[2] <> '' then
@@ -2283,6 +2369,10 @@ writeln('ipx disabled               appletalk disabled');
                         end
                      else
                         writeln('Incomplete command.');
+           'l' : if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(lldp_menu)
+                 else
+                    writeln('Incomplete command.');
            'q' : if is_word(word_list[1],'quit') = true then
                      Begin
                         level := level2;
@@ -2535,8 +2625,10 @@ begin
     init_show_menu;
     init_config_term_menu;
     init_enable_menu;
+    init_ip_menu;
     init_interface_menu;
     init_vlan_menu;
+    init_lldp_menu;
     // Display the splash screen
     Splash_screen;
     // read from config ffiles
