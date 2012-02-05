@@ -111,6 +111,7 @@ Var
 
   // menus
   top_menu : array[1..7] of string;
+  qos_menu : array[1..7] of string;
   Show_menu : array[1..80] of string;
   config_term_menu : array[1..120] of string;
   enable_menu : array[1..50] of string;
@@ -118,6 +119,10 @@ Var
   Interface_menu : array[1..69] of string;
   vlan_menu : array[1..30] of string;
   lldp_menu : array[1..17] of string;
+  mstp_menu : array[1..17] of string;
+  snmp_server_menu : array[1..14] of string;
+  chassis_menu : array[1..5] of string;
+  banner_menu : array[1..6] of string;
 
   procedure splash_screen;
 
@@ -125,8 +130,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r31                                                ║');
-      writeln(' ║                 Dated 5th of Feb 2012                                           ║');
+      writeln(' ║   Brocade-Sim : Version r32                                                ║');
+      writeln(' ║                 Dated 5th of Feb 2012                                      ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -355,7 +360,8 @@ Var
             if astring = findword then
               begin
                   inc(only_one);
-                  writeln(list[loop]);
+                  if list[loop] <> 'ENDofLINES' then
+                     writeln(list[loop]);
                   tmp_str := list[loop];
               end;
           end;
@@ -648,6 +654,25 @@ procedure init_enable_menu;
     enable_menu[38] := 'ENDofLINES';
   End;
 
+  procedure init_qos_menu;
+
+  begin
+      qos_menu[1] := '  mechanism         Change mechanism';
+      qos_menu[2] := '  name              Change name';
+      qos_menu[3] := '  profile           Change bandwidth allocation';
+      qos_menu[4] := '  tagged-priority   Change tagged frame priority to profile mapping';
+      qos_menu[5] := 'ENDofLINES';
+  end;
+
+  procedure init_chassis_menu;
+
+  begin
+      chassis_menu[1] := '  name        Chassis name';
+      chassis_menu[2] := '  poll-time   Change hardware sensors polling interval seconds';
+      chassis_menu[3] := '  trap-log';
+      chassis_menu[4] := 'ENDofLINES';
+  end;
+
   Procedure init_ip_menu;
 
   Begin
@@ -700,6 +725,16 @@ procedure init_enable_menu;
     ip_menu[48] :='  <cr>';
     ip_menu[49] := 'ENDofLINES';
   End;
+
+  procedure init_banner_menu;
+
+  begin
+    banner_menu[1] := '  ASCII string   c banner text c, where ''c'' is a delimiting character';
+    banner_menu[2] := '  exec           Set EXEC process creation banner';
+    banner_menu[3] := '  incoming       Set incoming terminal line banner';
+    banner_menu[4] := '  motd           Set Message-of-the-day banner';
+    banner_menu[5] := 'ENDofLINES';
+  end;
 
   procedure init_lldp_menu;
 
@@ -820,13 +855,13 @@ procedure init_enable_menu;
     config_term_menu[5] :=   '  alias                         Configure alias or display configured alias';
     config_term_menu[6] :=   '  all-client                    Restrict all remote management to a host';
     config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
-    config_term_menu[8] :=   '  banner                        Define a login banner';
+    config_term_menu[8] :=   '  banner                        Define a login banner              --> done';
     config_term_menu[9] :=   '  batch                         Define a group of commands';
     config_term_menu[10] :=  '  boot                          Set system boot options';
     config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
     config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
     config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
-    config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options';
+    config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options-->4?';
     config_term_menu[15] :=  '  clear                         Clear table/statistics/keys';
     config_term_menu[16] :=  '  clock                         Set system time and date';
     config_term_menu[17] :=  '  console                       Configure console port';
@@ -877,7 +912,7 @@ procedure init_enable_menu;
     config_term_menu[62] :=  '                                4096, default 256)';
     config_term_menu[63] :=  '  mirror-port                   Enable a port to act as mirror-port';
     config_term_menu[64] :=  '  module                        Specify module type';
-    config_term_menu[65] :=  '  mstp                          Configure MSTP (IEEE 802.1s)';
+    config_term_menu[65] :=  '  mstp                          Configure MSTP (IEEE 802.1s)            --> 4 ?';
     config_term_menu[66] :=  '  no                            Undo/disable commands';
     config_term_menu[67] :=  '  optical-monitor               Enable optical monitoring with default';
     config_term_menu[68] :=  '                                alarm/warn interval(3 minutes)';
@@ -888,7 +923,7 @@ procedure init_enable_menu;
     config_term_menu[73] :=  '  protected-link-group          Define a Group of ports as Protected Links';
     config_term_menu[74] :=  '  pvlan-preference              Unknown unicast/broadcast traffic handling';
     config_term_menu[75] :=  '  qd-descriptor                 Queue depth for traffic class(# of descriptors)';
-    config_term_menu[76] :=  '  qos                           Quality of service commands';
+    config_term_menu[76] :=  '  qos                           Quality of service commands             --> 4 ?';
     config_term_menu[77] :=  '  qos-tos                       IPv4 ToS based QoS settings';
     config_term_menu[78] :=  '  quit                          Exit to User level';
     config_term_menu[79] :=  '  radius-server                 Configure RADIUS server';
@@ -907,7 +942,7 @@ procedure init_enable_menu;
     config_term_menu[92] :=  '  sflow                         Set sflow params';
     config_term_menu[93] :=  '  show                          Show system information            --> done';
     config_term_menu[94] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
-    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties';
+    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties --> 4 ?';
     config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval';
     config_term_menu[97] :=  '  spanning-tree                 Set spanning tree parameters';
     config_term_menu[98] :=  '  ssh                           Restrict ssh access by ACL';
@@ -932,6 +967,48 @@ procedure init_enable_menu;
     config_term_menu[117] := '  write                         Write running configuration to flash or terminal';
     config_term_menu[118] := '  <cr>';
     config_term_menu[119] := 'ENDofLINES';
+  end;
+
+  procedure init_mstp_menu;
+
+  begin
+    mstp_menu[1] := '  admin-edge-port         Define this port to be an edge port';
+    mstp_menu[2] := '  admin-pt2pt-mac         Define this port to be a point-to-point link';
+    mstp_menu[3] := '  disable                 Disable MSTP on this interface';
+    mstp_menu[4] := '  edge-port-auto-detect   Enable/Disable auto-detect edge port';
+    mstp_menu[5] := '  force-migration-check   Trigger port''s migration state machine check';
+    mstp_menu[6] := '  force-version           Configure MSTP force version';
+    mstp_menu[7] := '  forward-delay           Configure bridge parameter forward-delay';
+    mstp_menu[8] := '  hello-time              Configure bridge parameter hello-time';
+    mstp_menu[9] := '  instance                Configure MSTP instance VLAN membership';
+    mstp_menu[10] := '  max-age                 Configure bridge parameter max-age';
+    mstp_menu[11] := '  max-hops                Configure MSTP max-hops';
+    mstp_menu[12] := '  name                    Configure MSTP configuration name';
+    mstp_menu[13] := '  revision                Configure MSTP revision level';
+    mstp_menu[14] := '  scope                   Configure MSTP scope';
+    mstp_menu[15] := '  start                   Start/stop MSTP operation';
+    mstp_menu[16] := 'ENDofLINES';
+  end;
+
+  procedure init_snmp_server_menu;
+
+  begin
+    snmp_server_menu [1] := '  community     Enable SNMP; set community string and access privs';
+    snmp_server_menu [2] := '  contact       Text for mib object sysContact';
+    snmp_server_menu [3] := '  enable        Enable SNMP Traps or Informs';
+    snmp_server_menu [4] := '  engineid      Configure a local or remote SNMPv3 engine ID';
+    snmp_server_menu [5] := '  group         Define a User Security Model group';
+    snmp_server_menu [6] := '  host          Specify hosts to receive SNMP notifications';
+    snmp_server_menu [7] := '  location      Text for mib object sysLocation';
+    snmp_server_menu [8] := '  pw-check      Control password check on file operation mib objects';
+    snmp_server_menu [9] := '  trap-source   Assign an interface for the source address of all traps';
+    snmp_server_menu [10] := '  user          Define a user who can access the SNMP engine';
+    snmp_server_menu [11] := '  view          Define an SNMPv2 MIB view';
+    snmp_server_menu [12] := '  <cr>';
+    snmp_server_menu [13] := 'ENDofLINES';
+
+
+
   end;
 
   procedure init_interface_menu;
@@ -2336,17 +2413,46 @@ writeln('ipx disabled               appletalk disabled');
                 help_match(word_list[1], config_term_menu)
            End
         else
-           if (word_list[1] = 'ip' = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
+           if (word_list[1] = 'ip' = TRUE) and (length(input) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],ip_menu)
            else
            if (word_list[1] = 'lldp' = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],lldp_menu)
+           else
+           if (word_list[1] = 'mstp' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],mstp_menu)
+           else
+           if (word_list[1] = 'qos' = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],qos_menu)
+           else
+           if (word_list[1] = 'snmp-server' = TRUE) and (length(input) > 6) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],snmp_server_menu)
+           else
+           if (word_list[1] = 'chassis' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],chassis_menu)
+           else
+           if (word_list[1] = 'banner' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],banner_menu)
            else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
         else
         case input[1] of
            '?' : page_display(config_term_menu);
+           'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(banner_menu)
+                 else
+                    writeln('Incomplete command.');
+           'c' : if (is_word(word_list[1],'chassis') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(chassis_menu)
+                 else
+                    writeln('Incomplete command.');
+           'e' : if is_word(word_list[1], 'exit') = true then
+                     Begin
+                        level := level2;
+                        dec(what_level);
+                        End_con_term := true;
+                     End;
            'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
                      begin
                           if check_int(shortstring(word_list[3])) = true then
@@ -2373,12 +2479,21 @@ writeln('ipx disabled               appletalk disabled');
                     page_display(lldp_menu)
                  else
                     writeln('Incomplete command.');
+           'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(mstp_menu)
+                 else
+                    writeln('Incomplete command.');
            'q' : if is_word(word_list[1],'quit') = true then
                      Begin
                         level := level2;
                         dec(what_level);
                         end_con_term := true;
-                     End;
+                     End
+                 else
+                 if (is_word(word_list[1],'qos') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(qos_menu)
+                 else
+                    writeln('Incomplete command.');
            'r' : Begin
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
                        begin
@@ -2403,18 +2518,15 @@ writeln('ipx disabled               appletalk disabled');
                     else
                        bad_command(word_list[3]);
                  End;
-           's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
-                               writeln('Incomplete command.')
+           's' :  if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(snmp_server_menu)
+                 else
+                 if (input = 'sh') or (input = 'sho') or (input = 'show') then
+                    writeln('Incomplete command.')
                  else
                      begin
                          input := input;
                          display_show;
-                     End;
-          'e' : if is_word(word_list[1], 'exit') = true then
-                     Begin
-                        level := level2;
-                        dec(what_level);
-                        End_con_term := true;
                      End;
           'v' : if (is_help(input) = TRUE) then
                     begin
@@ -2629,6 +2741,11 @@ begin
     init_interface_menu;
     init_vlan_menu;
     init_lldp_menu;
+    init_mstp_menu;
+    init_qos_menu;
+    init_snmp_server_menu;
+    init_chassis_menu;
+    init_banner_menu;
     // Display the splash screen
     Splash_screen;
     // read from config ffiles
