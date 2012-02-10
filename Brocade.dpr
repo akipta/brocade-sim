@@ -123,14 +123,17 @@ Var
   snmp_server_menu : array[1..14] of string;
   chassis_menu : array[1..5] of string;
   banner_menu : array[1..6] of string;
+  aaa_menu : array[1..4] of string;
+  clear_menu : array[1..28] of string;
 
   procedure splash_screen;
 
   Begin
+      textcolor(lightgray);
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r32                                                ║');
+      writeln(' ║   Brocade-Sim : Version r33                                                ║');
       writeln(' ║                 Dated 5th of Feb 2012                                      ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
@@ -148,6 +151,11 @@ Var
       writeln(' ║                                                                            ║');
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
+      write(' ║ ');
+      textcolor(lightblue);
+      write('e-mail comments to brocade-sim@gmail.com');
+      textcolor(lightgray);
+      writeln('                                   ║');
       writeln(' ╚════════════════════════════════════════════════════════════════════════════╝');
       gotoxy(79,24);
       readkey;
@@ -736,6 +744,48 @@ procedure init_enable_menu;
     banner_menu[5] := 'ENDofLINES';
   end;
 
+  procedure init_clear_menu;
+
+  Begin
+      clear_menu[1] := '  access-list              Clear ACL counters';
+      clear_menu[2] := '  acl-on-arp';
+      clear_menu[3] := '  arp                      Arp table';
+      clear_menu[4] := '  auth-mac-table           Flush the MAC authentication table';
+      clear_menu[5] := '  cable-diagnostics        Clear cable Diagonostics';
+      clear_menu[6] := '  dhcp                     dhcp snooped ip-bindings';
+      clear_menu[7] := '  dot1x                    802.1X data';
+      clear_menu[8] := '  fdp                      Reset CDP/FDP information';
+      clear_menu[9] := '  ip                       Clear IP Data';
+      clear_menu[10] := '  ipv6';
+      clear_menu[11] := '  link-aggregate           802.3ad Link Aggregation tables';
+      clear_menu[12] := '  link-keepalive           Link Layer keepalive';
+      clear_menu[13] := '  lldp                     Clear LLDP information';
+      clear_menu[14] := '  logging                  System log';
+      clear_menu[15] := '  loop-detection           Clear statistics, and enabled err-disabled ports';
+      clear_menu[16] := '  mac-address              Mac address table';
+      clear_menu[17] := '  port                     Clear Port Data';
+      clear_menu[18] := '  public-key               remove authorized client public key';
+      clear_menu[19] := '  radius                   Clear radius stat/queue';
+      clear_menu[20] := '  rate-limit-state         Clear rate-limit';
+      clear_menu[21] := '  rmon                     Clear RMON Data';
+      clear_menu[22] := '  snmp-server              Clear SNMP Data';
+      clear_menu[23] := '  statistics               Clear Statistics';
+      clear_menu[24] := '  stp-protect-statistics   Clear stp-protect BPDU drop counter';
+      clear_menu[25] := '  vsrp-aware               Clear learnt vsrp aware entries';
+      clear_menu[26] := '  web-connection           All web connections';
+      clear_menu[27] := '  webauth                  Web Authentication';
+      clear_menu[28] := 'ENDofLINES';
+  end;
+
+  procedure init_aaa_menu;
+
+  begin
+    aaa_menu[1] := '  accounting       Accounting configurations parameters';
+    aaa_menu[2] := '  authentication   Authentication configurations parameters';
+    aaa_menu[3] := '  authorization    Authorization configurations parameters;';
+    aaa_menu[4] := 'ENDofLINES';
+  end;
+
   procedure init_lldp_menu;
 
   begin
@@ -848,7 +898,7 @@ procedure init_enable_menu;
   procedure init_config_term_menu;
 
   begin
-    config_term_menu[1] :=   '  aaa                           Define authentication method list';
+    config_term_menu[1] :=   '  aaa                           Define authentication method list  --> Done';
     config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)';
     config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
     config_term_menu[4] :=   '                                bytes';
@@ -862,7 +912,7 @@ procedure init_enable_menu;
     config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
     config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
     config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options-->4?';
-    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys';
+    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys        --> done';
     config_term_menu[16] :=  '  clock                         Set system time and date';
     config_term_menu[17] :=  '  console                       Configure console port';
     config_term_menu[18] :=  '  cpu-limit                     Set limits from each packet processor to CPU';
@@ -2434,17 +2484,30 @@ writeln('ipx disabled               appletalk disabled');
            if (word_list[1] = 'banner' = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],banner_menu)
            else
+           if (word_list[1] = 'aaa' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],aaa_menu)
+           else
+           if (word_list[1] = 'clear' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],clear_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
         else
         case input[1] of
            '?' : page_display(config_term_menu);
+           'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(aaa_menu)
+                 else
+                    writeln('Incomplete command.');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(banner_menu)
                  else
                     writeln('Incomplete command.');
            'c' : if (is_word(word_list[1],'chassis') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(chassis_menu)
+                 else
+                 if (is_word(word_list[1],'clear') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(clear_menu)
                  else
                     writeln('Incomplete command.');
            'e' : if is_word(word_list[1], 'exit') = true then
@@ -2746,6 +2809,8 @@ begin
     init_snmp_server_menu;
     init_chassis_menu;
     init_banner_menu;
+    init_aaa_menu;
+    init_clear_menu;
     // Display the splash screen
     Splash_screen;
     // read from config ffiles
