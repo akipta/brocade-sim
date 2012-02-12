@@ -113,6 +113,7 @@ Var
   top_menu : array[1..7] of string;
   qos_menu : array[1..7] of string;
   Show_menu : array[1..80] of string;
+  configterm_menu : array[1..2] of string;
   config_term_menu : array[1..120] of string;
   enable_menu : array[1..50] of string;
   ip_menu : array[1..50] of string;
@@ -143,7 +144,7 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r34                                                ║');
+      writeln(' ║   Brocade-Sim : Version r35                                                ║');
       writeln(' ║                 Dated 12th of Feb 2012                                      ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
@@ -385,7 +386,11 @@ Var
           end;
        if only_one = 1 then
           begin
-                a := 3; input := '';
+                a := 3;
+                if word_list[2] = '' then
+                   input := ''
+                else
+                   input := word_list[1] + ' ';
                 while (tmp_str[a] <> ' ') do
                    Begin
                        input := input + tmp_str[a];
@@ -689,6 +694,13 @@ procedure init_enable_menu;
       chassis_menu[2] := '  poll-time   Change hardware sensors polling interval seconds';
       chassis_menu[3] := '  trap-log';
       chassis_menu[4] := 'ENDofLINES';
+  end;
+
+  procedure init_configterm_menu;
+
+  begin
+    configterm_menu[1] := '  terminal';
+    configterm_menu[2] := 'ENDofLINES';
   end;
 
   Procedure init_ip_menu;
@@ -2567,19 +2579,18 @@ writeln('ipx disabled               appletalk disabled');
         level := level3;
         repeat
 //        input := #0;
-        word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
-        repeat
+          word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
+          repeat
             write(hostname, level);
-//            input := get_command;
             get_input(input,out_key);
             writeln;
-        until input <> '';
-        get_words;
-        if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
+          until input <> '';
+         get_words;
+         if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
            Begin
-                help_match(word_list[1], config_term_menu)
-           End
-        else
+                help_match(word_list[1], config_term_menu);
+           End;
+
            if (word_list[1] = 'ip' = TRUE) and (length(input) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],ip_menu)
            else
@@ -2639,8 +2650,8 @@ writeln('ipx disabled               appletalk disabled');
            else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
-        else
-        case input[1] of
+         else
+          case input[1] of
            '?' : page_display(config_term_menu);
            'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(aaa_menu)
@@ -2788,7 +2799,7 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                       bad_command(input);
                     End;
-        End;
+         End;
         until End_con_term = true;
   End; // of config_term
 
@@ -2814,6 +2825,9 @@ writeln('ipx disabled               appletalk disabled');
                       help_match(word_list[1],enable_menu);
                     End
          else
+           if (word_list[1] = 'configure' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],configterm_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],enable_menu)
          else
@@ -2976,7 +2990,8 @@ begin
     // init all the menus
     init_top_menu;
     init_show_menu;
-    init_config_term_menu;
+    init_config_term_menu; // whole menu
+    init_configterm_menu; // just the terminal second word of the config term command
     init_enable_menu;
     init_ip_menu;
     init_interface_menu;

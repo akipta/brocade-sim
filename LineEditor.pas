@@ -305,7 +305,7 @@ end;
        for loop := 1 to 60 do
          the_command[loop] := #0;
        gotoxy(x_pos,y_pos);
-       if last_key = #9 then
+       if (last_key = #9) then
 //         writeln('input is, ',input, ' and out_key is, ',ord(last_key));
           begin
               for loop := 1 to length(input) do
@@ -314,6 +314,19 @@ end;
               RemoveNullChars (cleanstr);
               write(cleanstr);
               location := length(input)+1;
+              cursor_loc := location;
+              gotoxy(x_pos+location-1,y_pos);
+              tempstr := The_command;
+          end
+       else
+        if last_key = '?' then
+          begin
+             for loop := 1 to length(input)-1 do
+                  The_command[loop] := input[loop];
+              cleanstr := the_command;
+              RemoveNullChars (cleanstr);
+              write(cleanstr);
+              location := length(input);
               cursor_loc := location;
               gotoxy(x_pos+location-1,y_pos);
               tempstr := The_command;
