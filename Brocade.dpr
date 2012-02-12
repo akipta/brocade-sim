@@ -125,6 +125,16 @@ Var
   banner_menu : array[1..6] of string;
   aaa_menu : array[1..4] of string;
   clear_menu : array[1..28] of string;
+  fast_menu : array[1..3] of string;
+  fdp_menu : array[1..4] of string;
+  link_config_menu : array[1..3] of string;
+  link_keepalive_menu : array[1..5] of string;
+  logging_menu : array[1..8] of string;
+  mac_authentication_menu : array[1..15] of string;
+  rmon_menu : array[1..4] of string;
+  sflow_menu : array[1..9] of string;
+  snmp_client_menu : array[1..4] of string;
+  web_management_Menu : array[1..16] of string;
 
   procedure splash_screen;
 
@@ -133,8 +143,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r33                                                ║');
-      writeln(' ║                 Dated 5th of Feb 2012                                      ║');
+      writeln(' ║   Brocade-Sim : Version r34                                                ║');
+      writeln(' ║                 Dated 12th of Feb 2012                                      ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -898,21 +908,21 @@ procedure init_enable_menu;
   procedure init_config_term_menu;
 
   begin
-    config_term_menu[1] :=   '  aaa                           Define authentication method list  --> Done';
+    config_term_menu[1] :=   '  aaa                           Define authentication method list      --> Done';
     config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)';
     config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
     config_term_menu[4] :=   '                                bytes';
     config_term_menu[5] :=   '  alias                         Configure alias or display configured alias';
     config_term_menu[6] :=   '  all-client                    Restrict all remote management to a host';
     config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
-    config_term_menu[8] :=   '  banner                        Define a login banner              --> done';
+    config_term_menu[8] :=   '  banner                        Define a login banner                  --> done';
     config_term_menu[9] :=   '  batch                         Define a group of commands';
     config_term_menu[10] :=  '  boot                          Set system boot options';
     config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
     config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
     config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
     config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options-->4?';
-    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys        --> done';
+    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys            --> done';
     config_term_menu[16] :=  '  clock                         Set system time and date';
     config_term_menu[17] :=  '  console                       Configure console port';
     config_term_menu[18] :=  '  cpu-limit                     Set limits from each packet processor to CPU';
@@ -929,27 +939,27 @@ procedure init_enable_menu;
     config_term_menu[29] :=  '  extern-config-file            extern configuration file';
     config_term_menu[30] :=  '  fan-speed                     set fan speed';
     config_term_menu[31] :=  '  fan-threshold                 set temperature threshold for fan speed';
-    config_term_menu[32] :=  '  fast                          Fast spanning tree options';
-    config_term_menu[33] :=  '  fdp                           Global FDP configuration subcommands';
+    config_term_menu[32] :=  '  fast                          Fast spanning tree options             --> 4 ?';
+    config_term_menu[33] :=  '  fdp                           Global FDP configuration subcommands   --> 4 ?';
     config_term_menu[34] :=  '  flash-copy-block-size         Configure block size of code flash copy';
     config_term_menu[35] :=  '  flow-control                  Enable 802.3x flow control on full duplex port';
     config_term_menu[36] :=  '  gig-default                   Set Gig port default options';
     config_term_menu[37] :=  '  hash-chain-length             HW hash, 4-16, dflt: 16. High value improves';
     config_term_menu[38] :=  '                                hashing but might affect line rate';
     config_term_menu[39] :=  '  hitless-failover              Enable hitless failover';
-    config_term_menu[40] :=  '  hostname                      Rename this switching router       --> done';
+    config_term_menu[40] :=  '  hostname                      Rename this switching router           --> done';
     config_term_menu[41] :=  '  inline                        Inline power (PoE) configuration';
-    config_term_menu[42] :=  '  interface                     Port commands                      --> done';
-    config_term_menu[43] :=  '  ip                            IP settings                        --> 4 ?';
+    config_term_menu[42] :=  '  interface                     Port commands                          --> done';
+    config_term_menu[43] :=  '  ip                            IP settings                            --> 4 ?';
     config_term_menu[44] :=  '  ipv4-subnet-response          Allow ipv4 subnet broadcast';
     config_term_menu[45] :=  '  ipv6                          IPv6 settings';
     config_term_menu[46] :=  '  jumbo                         gig port jumbo frame support (10240 bytes)';
     config_term_menu[47] :=  '  lacp-cfg-det-dis              Disable remote end LACP config remove detection';
     config_term_menu[48] :=  '  legacy-inline-power           set legacy (capacitance-based) PD detection -';
     config_term_menu[49] :=  '                                default';
-    config_term_menu[50] :=  '  link-config                   Link Configuration';
-    config_term_menu[51] :=  '  link-keepalive                Link Layer Keepalive';
-    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol --> 4 ?';
+    config_term_menu[50] :=  '  link-config                   Link Configuration                     --> 4 ?';
+    config_term_menu[51] :=  '  link-keepalive                Link Layer Keepalive                   --> 4 ?';
+    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol--> 4 ?';
     config_term_menu[53] :=  '  local-userdb                  Configure local user database';
     config_term_menu[54] :=  '  lock-address                  Limit number of addresses for a port';
     config_term_menu[55] :=  '  logging                       Event logging settings';
@@ -957,12 +967,12 @@ procedure init_enable_menu;
     config_term_menu[57] :=  '                                unit: 0.1 sec';
     config_term_menu[58] :=  '  mac                           Set up MAC filtering';
     config_term_menu[59] :=  '  mac-age-time                  Set aging period for all MAC interfaces';
-    config_term_menu[60] :=  '  mac-authentication            Configure MAC authentication';
+    config_term_menu[60] :=  '  mac-authentication            Configure MAC authentication           --> 4 ?';
     config_term_menu[61] :=  '  max-acl-log-num               maximum number of ACL log per minute (0 to';
     config_term_menu[62] :=  '                                4096, default 256)';
     config_term_menu[63] :=  '  mirror-port                   Enable a port to act as mirror-port';
     config_term_menu[64] :=  '  module                        Specify module type';
-    config_term_menu[65] :=  '  mstp                          Configure MSTP (IEEE 802.1s)            --> 4 ?';
+    config_term_menu[65] :=  '  mstp                          Configure MSTP (IEEE 802.1s)           --> 4 ?';
     config_term_menu[66] :=  '  no                            Undo/disable commands';
     config_term_menu[67] :=  '  optical-monitor               Enable optical monitoring with default';
     config_term_menu[68] :=  '                                alarm/warn interval(3 minutes)';
@@ -973,7 +983,7 @@ procedure init_enable_menu;
     config_term_menu[73] :=  '  protected-link-group          Define a Group of ports as Protected Links';
     config_term_menu[74] :=  '  pvlan-preference              Unknown unicast/broadcast traffic handling';
     config_term_menu[75] :=  '  qd-descriptor                 Queue depth for traffic class(# of descriptors)';
-    config_term_menu[76] :=  '  qos                           Quality of service commands             --> 4 ?';
+    config_term_menu[76] :=  '  qos                           Quality of service commands            --> 4 ?';
     config_term_menu[77] :=  '  qos-tos                       IPv4 ToS based QoS settings';
     config_term_menu[78] :=  '  quit                          Exit to User level';
     config_term_menu[79] :=  '  radius-server                 Configure RADIUS server';
@@ -983,16 +993,16 @@ procedure init_enable_menu;
     config_term_menu[83] :=  '                                uplinks';
     config_term_menu[84] :=  '  reserved-vlan-map             Map Reserved vlan Id to some other value not';
     config_term_menu[85] :=  '                                used';
-    config_term_menu[86] :=  '  rmon                          Configure RMON settings';
-    config_term_menu[87] :=  '  router                        Enable routing protocols           --> done';
+    config_term_menu[86] :=  '  rmon                          Configure RMON settings                --> 4 ?';
+    config_term_menu[87] :=  '  router                        Enable routing protocols               --> done';
     config_term_menu[88] :=  '  scale-timer                   Scale timer by factor for documented features';
     config_term_menu[89] :=  '  service                       Set services such as password encryption';
     config_term_menu[90] :=  '  set-active-mgmt               Configure the active mgmt slot';
     config_term_menu[91] :=  '  set-pwr-fan-speed             Power Fan Speed configuratio';
-    config_term_menu[92] :=  '  sflow                         Set sflow params';
-    config_term_menu[93] :=  '  show                          Show system information            --> done';
+    config_term_menu[92] :=  '  sflow                         Set sflow params                       --> 4 ?';
+    config_term_menu[93] :=  '  show                          Show system information                --> 4 ?';
     config_term_menu[94] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
-    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties --> 4 ?';
+    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties     --> 4 ?';
     config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval';
     config_term_menu[97] :=  '  spanning-tree                 Set spanning tree parameters';
     config_term_menu[98] :=  '  ssh                           Restrict ssh access by ACL';
@@ -1009,15 +1019,143 @@ procedure init_enable_menu;
     config_term_menu[109] :=  '  trunk                         Trunk group settings';
     config_term_menu[110] :=  '  unalias                       Remove an alias';
     config_term_menu[111] :=  '  username                      Create or update user account';
-    config_term_menu[112] :=  '  vlan                          VLAN settings                      --> done';
+    config_term_menu[112] :=  '  vlan                          VLAN settings                         --> done';
     config_term_menu[113] := '  vlan-group                    VLAN group settings';
     config_term_menu[114] := '  web                           Restrict web management access to a certain IP';
     config_term_menu[115] := '                                node';
-    config_term_menu[116] := '  web-management                Web management options';
+    config_term_menu[116] := '  web-management                Web management options                 --> 4 ?';
     config_term_menu[117] := '  write                         Write running configuration to flash or terminal';
     config_term_menu[118] := '  <cr>';
     config_term_menu[119] := 'ENDofLINES';
   end;
+
+  procedure init_fast_menu;
+  Begin
+      fast_menu[1] := '  port-span     Fast spanning tree for end station ports';
+      fast_menu[2] := '  uplink-span   Fast spanning tree for uplink ports';
+      fast_menu[3] := 'ENDofLINES';
+  End;
+
+  Procedure init_fdp_menu;
+  Begin
+      fdp_menu[1] := '  holdtime   Specify the holdtime (in sec) to be sent in packets';
+      fdp_menu[2] := '  run        Enable FDP globally';
+      fdp_menu[3] := '  timer      Specify the rate at which FDP packets are sent (in sec)';
+      fdp_menu[4] := 'ENDofLINES';
+  End;
+
+  procedure init_link_config_menu;
+  Begin
+      Link_config_menu[1] := '  gig    GiG Link';
+      Link_config_menu[2] := '  x10g   10G Link';
+      Link_config_menu[3] := 'ENDofLINES';
+  End;
+
+  Procedure init_link_keepalive_menu;
+  Begin
+      link_keepalive_menu[1] := '  ethernet        Ethernet';
+      link_keepalive_menu[2] := '  interval        Keepalive inter-packet interval in 100 milliseconds';
+      link_keepalive_menu[3] := '  old-sx-config   Back to old link-keepalive configuration format';
+      link_keepalive_menu[4] := '  retries         Keepalive retries allowed';
+      link_keepalive_menu[5] := 'ENDofLINES';
+  End;
+
+  procedure init_logging_menu;
+  Begin
+      logging_menu[1] :='  buffered';
+      logging_menu[2] :='  console';
+      logging_menu[3] :='  enable';
+      logging_menu[4] :='  facility';
+      logging_menu[5] :='  host';
+      logging_menu[6] :='  on';
+      logging_menu[7] :='  persistence';
+      logging_menu[8] :='ENDofLINES';
+  End;
+
+  procedure init_mac_authentication_menu;
+  Begin
+      mac_authentication_menu[1] := '  auth-fail-dot1x-override     Specify to use dot1x VLAN when MAC';
+      mac_authentication_menu[2] := '                               authentication fails as restricted';
+      mac_authentication_menu[3] := '  auth-fail-vlan-id            Specify Vlan to move the ports, when MAC';
+      mac_authentication_menu[4] := '                               authentication fails';
+      mac_authentication_menu[5] := '  auth-passwd-format           Set the format to be used for authentication';
+      mac_authentication_menu[6] := '                               password and username';
+      mac_authentication_menu[7] := '  disable-aging                Disable aging of mac sessions on all interface';
+      mac_authentication_menu[8] := '  enable                       Enable MAC authentication feature';
+      mac_authentication_menu[9] := '  hw-deny-age                  Set timeout for hardware aging';
+      mac_authentication_menu[10] := '  mac-filter                   Specify filters for allowed MAC addresses';
+      mac_authentication_menu[11] := '  max-age                      Set timeout for software aging';
+      mac_authentication_menu[12] := '  password-override            Specify a password for all mac authentication';
+      mac_authentication_menu[13] := '  save-dynamicvlan-to-config   Enable saving mac-authenticated dynamic vlan';
+      mac_authentication_menu[14] := '                               memberships into config';
+      mac_authentication_menu[15] := 'ENDofLINES';
+  End;
+
+  procedure init_rmon_menu;
+  begin
+      rmon_menu[1] := '  alarm     Configure an RMON alarm';
+      rmon_menu[2] := '  event     Configure an RMON event';
+      rmon_menu[3] := '  history   Configure an RMON history control';
+      rmon_menu[4] := 'ENDofLINES';
+  end;
+
+  procedure init_sflow_menu;
+  Begin
+      sflow_menu[1] := '  agent-ip           specify an sflow agent IP address';
+      sflow_menu[2] := '  destination        Set sflow datagrams export destination';
+      sflow_menu[3] := '  enable             Enable sflow services';
+      sflow_menu[4] := '  export             exporting Foundry specific items';
+      sflow_menu[5] := '  max-packet-size    Specify the max packet size (Default is 128, Max is 1300)';
+      sflow_menu[6] := '  polling-interval   Set interface counters polling-interval';
+      sflow_menu[7] := '  sample             Set sample rate';
+      sflow_menu[8] := '  version            select sFlow agent version (default is v5)';
+      sflow_menu[9] := 'ENDofLINES';
+  End;
+
+  procedure init_snmp_server_menu;
+  Begin
+      snmp_server_menu[1] := '  community     Enable SNMP; set community string and access privs';
+      snmp_server_menu[2] := '  contact       Text for mib object sysContact';
+      snmp_server_menu[3] := '  enable        Enable SNMP Traps or Informs';
+      snmp_server_menu[4] := '  engineid      Configure a local or remote SNMPv3 engine ID';
+      snmp_server_menu[5] := '  group         Define a User Security Model group';
+      snmp_server_menu[6] := '  host          Specify hosts to receive SNMP notifications';
+      snmp_server_menu[7] := '  location      Text for mib object sysLocation';
+      snmp_server_menu[8] := '  pw-check      Control password check on file operation mib objects';
+      snmp_server_menu[9] := '  trap-source   Assign an interface for the source address of all traps';
+      snmp_server_menu[10] := '  user          Define a user who can access the SNMP engine';
+      snmp_server_menu[11] := '  view          Define an SNMPv2 MIB view';
+      snmp_server_menu[12] := '  <cr>';
+      snmp_server_menu[13] := 'ENDofLINES';
+  End;
+
+  procedure init_snmp_client_menu;
+  Begin
+      snmp_client_menu[1] := '  A.B.C.D   IP address';
+      snmp_client_menu[2] := '  any';
+      snmp_client_menu[3] := '  ipv6      IPv6 address';
+      snmp_client_menu[4] := 'ENDofLINES';
+  End;
+
+  procedure init_web_management_menu;
+  Begin
+      web_management_Menu[1] := '  allow-no-password            Allow web server to have no password';
+      web_management_Menu[2] := '  connection-receive-timeout   Web connection receive timeout';
+      web_management_Menu[3] := '  enable                       Enable web management';
+      web_management_Menu[4] := '  frame                        Allow to disable or enable a frame';
+      web_management_Menu[5] := '  front-panel                  Enable front panel';
+      web_management_Menu[6] := '  hp-top-tools                 Enable the support of HP TOP Tools';
+      web_management_Menu[7] := '  http                         Enable the support of http server';
+      web_management_Menu[8] := '  https                        Enable the support of https server provides';
+      web_management_Menu[9] := '                               SSL/TLS Security';
+      web_management_Menu[10] := '  list-menu                    Show web menu as a list';
+      web_management_Menu[11] := '  page-menu                    Enable page menu';
+      web_management_Menu[12] := '  page-size                    Maximum number of entries in a page';
+      web_management_Menu[13] := '  refresh                      Page refresh (polling time) in seconds';
+      web_management_Menu[14] := '  session-timeout              Web session timeout in second(s)';
+      web_management_Menu[15] := '  tcp-port                     Configure TCP port number';
+      web_management_Menu[16] := 'ENDofLINES';
+  End;
 
   procedure init_mstp_menu;
 
@@ -1038,27 +1176,6 @@ procedure init_enable_menu;
     mstp_menu[14] := '  scope                   Configure MSTP scope';
     mstp_menu[15] := '  start                   Start/stop MSTP operation';
     mstp_menu[16] := 'ENDofLINES';
-  end;
-
-  procedure init_snmp_server_menu;
-
-  begin
-    snmp_server_menu [1] := '  community     Enable SNMP; set community string and access privs';
-    snmp_server_menu [2] := '  contact       Text for mib object sysContact';
-    snmp_server_menu [3] := '  enable        Enable SNMP Traps or Informs';
-    snmp_server_menu [4] := '  engineid      Configure a local or remote SNMPv3 engine ID';
-    snmp_server_menu [5] := '  group         Define a User Security Model group';
-    snmp_server_menu [6] := '  host          Specify hosts to receive SNMP notifications';
-    snmp_server_menu [7] := '  location      Text for mib object sysLocation';
-    snmp_server_menu [8] := '  pw-check      Control password check on file operation mib objects';
-    snmp_server_menu [9] := '  trap-source   Assign an interface for the source address of all traps';
-    snmp_server_menu [10] := '  user          Define a user who can access the SNMP engine';
-    snmp_server_menu [11] := '  view          Define an SNMPv2 MIB view';
-    snmp_server_menu [12] := '  <cr>';
-    snmp_server_menu [13] := 'ENDofLINES';
-
-
-
   end;
 
   procedure init_interface_menu;
@@ -2490,6 +2607,36 @@ writeln('ipx disabled               appletalk disabled');
            if (word_list[1] = 'clear' = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],clear_menu)
            else
+           if (word_list[1] = 'fast' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],fast_menu)
+           else
+           if (word_list[1] = 'fdp' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],fdp_menu)
+           else
+           if (word_list[1] = 'link-config' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],link_config_menu)
+           else
+           if (word_list[1] = 'link-keepalive' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],link_keepalive_menu)
+           else
+           if (word_list[1] = 'logging' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],logging_menu)
+           else
+           if (word_list[1] = 'mac-authentication' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],mac_authentication_menu)
+           else
+           if (word_list[1] = 'rmon' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],rmon_menu)
+           else
+           if (word_list[1] = 'sflow' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],sflow_menu)
+           else
+           if (word_list[1] = 'snmp-client' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],snmp_client_menu)
+           else
+           if (word_list[1] = 'web-management' = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],web_management_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
         else
@@ -2516,6 +2663,23 @@ writeln('ipx disabled               appletalk disabled');
                         dec(what_level);
                         End_con_term := true;
                      End;
+           'f' : if (is_word(word_list[1],'fast') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(fast_menu)
+                 else
+                 if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(fdp_menu)
+                 else
+                    writeln('Incomplete command.');
+           'h' :  if (is_word(word_list[1],'hostname') = TRUE) then
+                     if word_list[2] <> '' then
+                        begin
+                          hostname := word_list[2];
+                          running_config[last_line_of_running-1] := concat('hostname ',word_list[2]);
+                          running_config[last_line_of_running] := 'end';
+                          inc(last_line_of_running);
+                        end
+                     else
+                        writeln('Incomplete command.');
            'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
                      begin
                           if check_int(shortstring(word_list[3])) = true then
@@ -2528,22 +2692,24 @@ writeln('ipx disabled               appletalk disabled');
                     page_display(ip_menu)
                  else
                      writeln('Incomplete command.');
-           'h' :  if (is_word(word_list[1],'hostname') = TRUE) then
-                     if word_list[2] <> '' then
-                        begin
-                          hostname := word_list[2];
-                          running_config[last_line_of_running-1] := concat('hostname ',word_list[2]);
-                          running_config[last_line_of_running] := 'end';
-                          inc(last_line_of_running);
-                        end
-                     else
-                        writeln('Incomplete command.');
            'l' : if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(lldp_menu)
+                 else
+                 if (is_word(word_list[1],'link-keepalive') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(link_keepalive_menu)
+                 else
+                 if (is_word(word_list[1],'link-config') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(link_config_menu)
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(logging_menu)
                  else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(mstp_menu)
+                 else
+                 if (is_word(word_list[1],'mac-authentication') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(mac_authentication_menu)
                  else
                     writeln('Incomplete command.');
            'q' : if is_word(word_list[1],'quit') = true then
@@ -2558,6 +2724,8 @@ writeln('ipx disabled               appletalk disabled');
                  else
                     writeln('Incomplete command.');
            'r' : Begin
+                    if (is_word(word_list[1],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                        page_display(rmon_menu);
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
                        begin
                            writeln('  rip    Enable rip');
@@ -2578,11 +2746,17 @@ writeln('ipx disabled               appletalk disabled');
                          begin
 
                          End
-                    else
-                       bad_command(word_list[3]);
+                    //else
+                    //   bad_command(word_list[3]);
                  End;
-           's' :  if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+           's' : if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_server_menu)
+                 else
+                 if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(snmp_client_menu)
+                 else
+                 if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(sflow_menu)
                  else
                  if (input = 'sh') or (input = 'sho') or (input = 'show') then
                     writeln('Incomplete command.')
@@ -2605,6 +2779,10 @@ writeln('ipx disabled               appletalk disabled');
                       End
                     else
                       bad_command(word_list[2]);
+          'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(web_management_menu)
+                 else
+                         bad_command(word_list[2]);
           #0 :;
            else
                     begin
@@ -2811,6 +2989,17 @@ begin
     init_banner_menu;
     init_aaa_menu;
     init_clear_menu;
+    init_fast_menu;
+    init_fdp_menu;
+    init_link_config_menu;
+    init_link_keepalive_menu;
+    init_logging_menu;
+    init_mac_authentication_menu;
+    init_rmon_menu;
+    init_sflow_menu;
+    init_snmp_client_menu;
+    init_web_management_menu;
+
     // Display the splash screen
     Splash_screen;
     // read from config ffiles
