@@ -144,8 +144,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r35                                                ║');
-      writeln(' ║                 Dated 12th of Feb 2012                                      ║');
+      writeln(' ║   Brocade-Sim : Version r36                                                ║');
+      writeln(' ║                 Dated 13th of Feb 2012                                     ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -2594,58 +2594,58 @@ writeln('ipx disabled               appletalk disabled');
            if (word_list[1] = 'ip' = TRUE) and (length(input) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],ip_menu)
            else
-           if (word_list[1] = 'lldp' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'lldp') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],lldp_menu)
            else
-           if (word_list[1] = 'mstp' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'mstp') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],mstp_menu)
            else
-           if (word_list[1] = 'qos' = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'qos') = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],qos_menu)
            else
-           if (word_list[1] = 'snmp-server' = TRUE) and (length(input) > 6) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'snmp-server') = TRUE) and (length(input) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_server_menu)
            else
-           if (word_list[1] = 'chassis' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'chassis') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],chassis_menu)
            else
-           if (word_list[1] = 'banner' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'banner') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],banner_menu)
            else
-           if (word_list[1] = 'aaa' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'aaa') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],aaa_menu)
            else
-           if (word_list[1] = 'clear' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'clear') = true) and (out_key = #9) then //tab key
                     tab_match(word_list[2],clear_menu)
            else
-           if (word_list[1] = 'fast' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'fast') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fast_menu)
            else
-           if (word_list[1] = 'fdp' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'fdp') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fdp_menu)
            else
-           if (word_list[1] = 'link-config' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'link-config') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_config_menu)
            else
-           if (word_list[1] = 'link-keepalive' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'link-keepalive') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_keepalive_menu)
            else
-           if (word_list[1] = 'logging' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'logging') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],logging_menu)
            else
-           if (word_list[1] = 'mac-authentication' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'mac-authentication') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],mac_authentication_menu)
            else
-           if (word_list[1] = 'rmon' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'rmon') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],rmon_menu)
            else
-           if (word_list[1] = 'sflow' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'sflow') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],sflow_menu)
            else
-           if (word_list[1] = 'snmp-client' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'snmp-client') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_client_menu)
            else
-           if (word_list[1] = 'web-management' = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'web-management') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],web_management_menu)
            else
            if out_key = #9 then //tab key
@@ -2825,8 +2825,8 @@ writeln('ipx disabled               appletalk disabled');
                       help_match(word_list[1],enable_menu);
                     End
          else
-           if (word_list[1] = 'configure' = TRUE) and (out_key = #9) then //tab key
-                    tab_match(word_list[2],configterm_menu)
+           if (is_word(word_list[1],'configure') = TRUE) and (out_key = #9) then //tab key
+               tab_match(word_list[2],configterm_menu)
            else
            if out_key = #9 then //tab key
               tab_match(word_list[1],enable_menu)
