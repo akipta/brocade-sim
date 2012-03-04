@@ -86,6 +86,7 @@ Type interface_records = record
         no_config : boolean;
         bpdu, root_guard : boolean;
         speed, speed_actual : string;
+        priority : shortint;
 
 end;
 
@@ -148,8 +149,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r36                                                ║');
-      writeln(' ║                 Dated 13th of Feb 2012                                     ║');
+      writeln(' ║   Brocade-Sim : Version r38                                                ║');
+      writeln(' ║                 Dated 04th of Mar 2012                                     ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -167,7 +168,7 @@ Var
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
       write(' ║ ');
-      textcolor(lightblue);
+      textcolor(yellow);
       write('e-mail comments to brocade-sim@gmail.com');
       textcolor(lightgray);
       writeln('                                   ║');
@@ -511,6 +512,7 @@ Var
                                           interfaces[port_count].speed := 'auto';
                                           interfaces[port_count].speed_actual := '1Gbit';
                                           interfaces[port_count].root_guard := false;
+                                          interfaces[port_count].priority := 0;
 //                                          writeln(interfaces[port_count].port_no);
                                           inc(port_count);
                                     end;
@@ -2263,7 +2265,7 @@ writeln('ipx disabled               appletalk disabled');
     isend : boolean;
 
   Begin
-    isend := false; loop := 1;
+   { isend := false; loop := 1;
     repeat
           if running_config[loop] = 'end' then
              isend := true
@@ -2273,7 +2275,22 @@ writeln('ipx disabled               appletalk disabled');
                   inc(loop)
               end;
     until isend = true;
-    writeln(running_config[loop]);
+    writeln(running_config[loop]);}
+    for loop := 1 to port_count do
+         begin
+             if interfaces[loop].no_config = false then
+             begin
+                writeln('interface eithernet ', interfaces[loop].port_no);
+                if interfaces[loop].descript <> '' then
+                   writeln(' port-name ', string(interfaces[loop].descript));
+                if interfaces[loop].admin_disable = true then
+                   writeln(' disbaled');
+                if interfaces[loop].bpdu = true then
+                    writeln(' stp-bdpu-guard');
+                if interfaces[loop].root_guard = true then
+                   writeln(' spanning-tree root-protect');
+             end
+         end;
   End;
 
   procedure display_stp_protect;
@@ -2491,7 +2508,10 @@ writeln('ipx disabled               appletalk disabled');
                     display_show_reserved_vlan
                  else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'running-config') = TRUE) then
-                    page_display(running_config)
+                    Begin
+                        page_display(running_config);
+                        display_running_config;
+                    End
                  else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'startup-config') = TRUE) then
                     display_startup_config
@@ -2597,17 +2617,16 @@ writeln('ipx disabled               appletalk disabled');
         end_int_loop := false;
         input := input;
         Inc(what_level);
+        input := #0;
         repeat
           level := level4 + intid + ')#';
-          input := #0;
-          repeat
-            write(hostname, level);
-//                input := get_command;
-                get_input(input,out_key);
-                writeln;
-          until input <> '';
           word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
           word_list[4] := ''; word_list[5] := '';
+          repeat
+            write(hostname, level);
+            get_input(input,out_key);
+            writeln;
+          until input <> '';
           get_words;
           if (is_help(word_list[1]) = true) and (length(word_list[1]) > 1) then
              Begin
@@ -2623,7 +2642,10 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                interfaces[find_int].admin_disable := true
+                                begin
+                                  interfaces[find_int].admin_disable := true;
+                                  interfaces[find_int].no_config := false;
+                                end;
                     end;
            'i' : if (is_word(word_list[1],'interface') = true) and (is_word(word_list[2],'ethernet') = true) then
                     begin
@@ -2636,7 +2658,10 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                interfaces[find_int].descript := word_list[2];
+                                Begin
+                                    interfaces[find_int].descript := word_list[2];
+                                    interfaces[find_int].no_config := false;
+                                End;
                     end;
            's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                writeln('Incomplete command.')
@@ -2645,14 +2670,20 @@ writeln('ipx disabled               appletalk disabled');
                     begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                interfaces[find_int].bpdu := true;
+                                begin
+                                  interfaces[find_int].bpdu := true;
+                                  interfaces[find_int].no_config := false;
+                                end;
                     end
                   else
                   if (is_word(word_list[1],'spanning-tree') = true) and (is_word(word_list[2],'root-protect') = true)then
                     begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                interfaces[find_int].root_guard := true;
+                                Begin
+                                  interfaces[find_int].root_guard := true;
+                                  interfaces[find_int].no_config := false;
+                                End;
                     end
                   else
                    if (is_word(word_list[1],'speed-duplex')) = true then
