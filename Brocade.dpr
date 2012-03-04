@@ -110,32 +110,36 @@ Var
   out_key :char;
 
   // menus
-  top_menu : array[1..7] of string;
-  qos_menu : array[1..7] of string;
-  Show_menu : array[1..80] of string;
-  configterm_menu : array[1..2] of string;
-  config_term_menu : array[1..120] of string;
-  enable_menu : array[1..50] of string;
-  ip_menu : array[1..50] of string;
-  Interface_menu : array[1..69] of string;
-  vlan_menu : array[1..30] of string;
-  lldp_menu : array[1..17] of string;
-  mstp_menu : array[1..17] of string;
-  snmp_server_menu : array[1..14] of string;
-  chassis_menu : array[1..5] of string;
-  banner_menu : array[1..6] of string;
-  aaa_menu : array[1..4] of string;
-  clear_menu : array[1..28] of string;
-  fast_menu : array[1..3] of string;
-  fdp_menu : array[1..4] of string;
-  link_config_menu : array[1..3] of string;
+  top_menu            : array[1..7] of string;
+  qos_menu            : array[1..7] of string;
+  Show_menu           : array[1..80] of string;
+  configterm_menu     : array[1..2] of string;
+  config_term_menu    : array[1..120] of string;
+  enable_menu         : array[1..50] of string;
+  ip_menu             : array[1..50] of string;
+  Interface_menu      : array[1..69] of string;
+  vlan_menu           : array[1..30] of string;
+  lldp_menu           : array[1..17] of string;
+  mstp_menu           : array[1..17] of string;
+  snmp_server_menu    : array[1..14] of string;
+  chassis_menu        : array[1..5] of string;
+  banner_menu         : array[1..6] of string;
+  aaa_menu            : array[1..4] of string;
+  access_list_menu    : array[1..3] of string;
+  clear_menu          : array[1..28] of string;
+  fast_menu           : array[1..3] of string;
+  fdp_menu            : array[1..4] of string;
+  link_config_menu    : array[1..3] of string;
   link_keepalive_menu : array[1..5] of string;
-  logging_menu : array[1..8] of string;
+  logging_menu        : array[1..8] of string;
   mac_authentication_menu : array[1..15] of string;
-  rmon_menu : array[1..4] of string;
-  sflow_menu : array[1..9] of string;
-  snmp_client_menu : array[1..4] of string;
+  rmon_menu           : array[1..4] of string;
+  sflow_menu          : array[1..9] of string;
+  snmp_client_menu    : array[1..4] of string;
   web_management_Menu : array[1..16] of string;
+  debug_Menu          : array[1..25] of string;
+  debug_ip_menu       : array[1..16] of string;
+  dm_menu             : array[1..129] of string;
 
   procedure splash_screen;
 
@@ -634,6 +638,189 @@ Var
     top_menu[7] := 'ENDofLINES';
   End;
 
+  procedure init_dm_menu;
+
+  begin
+    dm_menu[1] := '  HEX                           Number';
+    dm_menu[2] := '  48gc                          48GC related commands';
+    dm_menu[3] := '  802-1w                        show 802-1w internal information';
+    dm_menu[4] := '  aging-loop                    Turn off/on system aging loop';
+    dm_menu[5] := '  alt-diag                      Test only, off/on';
+    dm_menu[6] := '  app_vlan_debug                App VLAN table (shadow)';
+    dm_menu[7] := '  auq-resync                    Sync Auq for a device';
+    dm_menu[8] := '  auq-status                    show auq status';
+    dm_menu[9] := '  auto-dfcdl                    Test Auto DFCDL function';
+    dm_menu[10] := '  badaddr                       Test only, will reboot';
+    dm_menu[11] := '  blink                         Show gig link changes due to PHY blink';
+    dm_menu[12] := '  clear_boot_count              Clear crash dump';
+    dm_menu[13] := '  cpu                           Similiar to show cpu, more info';
+    dm_menu[14] := '  cpu-pkt-diag                  Perform CPU Pkt diagnosis';
+    dm_menu[15] := '  debug                         Set run-time debug options';
+    dm_menu[16] := '  diag                          Test only, off/on';
+    dm_menu[17] := '  dis-cpu-process-dev           Disable the CPU processing rx pkts from device';
+    dm_menu[18] := '  dis-cpu-process-queue         Disable the CPU processing rx pkts from device';
+    dm_menu[19] := '  fa-device                     Prestera device';
+    dm_menu[20] := '  fid                           show fid resouce or one fid';
+    dm_menu[21] := '  func                          (func_addr, param1, param2, param3, param4)';
+    dm_menu[22] := '  gi-buffer-debug               Enable Buffer Debugging';
+    dm_menu[23] := '  gi-find-mac                   Find MAC Entry in H/W';
+    dm_menu[24] := '  gi-mac-stat                   Device MAC Statistics';
+    dm_menu[25] := '  hbeat-mode                    Set the heartbeat mode for SXR';
+    dm_menu[26] := '  hitless-debug                 Force Enable Active CLI';
+    dm_menu[27] := '  hotswap-cli-allowed           Toggle -Enable/disable - CLI configurations';
+    dm_menu[28] := '                                when HotSwap is in progress';
+    dm_menu[29] := '  igmp_debug                    IGMP table (shadow)';
+    dm_menu[30] := '  l2-debug                      set Debug for L2';
+    dm_menu[31] := '  l3-debug                      L3 Sync Debug Options';
+    dm_menu[32] := '  l3mcast-hitless               PIM/DVMRP hitless debug';
+    dm_menu[33] := '  link-aggregation              display 8023.ad Info';
+    dm_menu[34] := '  loop                          Test only, will reboot';
+    dm_menu[35] := '  lpd                           Loop Detection (shadow)';
+    dm_menu[36] := '  mac-debug                     mac table (shadow)';
+    dm_menu[37] := '  mac-flow-add-err              Flow Mac causing Continious Unknown Unicast';
+    dm_menu[38] := '  mac-hash-table                Dump Mac hash table';
+    dm_menu[39] := '  mac-level                     set mac debug level';
+    dm_menu[40] := '  mac-range-filter              mac range filter table (shadow)';
+    dm_menu[41] := '  mem-leak                      debug memory leak';
+    dm_menu[42] := '  metro-hw-toggle               toggles mrp hardware switching on/off';
+    dm_menu[43] := '  metro-hwd                     Enable harware switching of tunneled RHP';
+    dm_menu[44] := '  metro-interface               Show metro interface instances';
+    dm_menu[45] := '  metro-rhp                     Show rhp session table';
+    dm_menu[46] := '  metro-ring                    Show Metro ring debug info';
+    dm_menu[47] := '  metro-trace-rhp               Trace the RHP route';
+    dm_menu[48] := '  metro-trunk-table             shows mrp trunk table';
+    dm_menu[49] := '  mld_debug                     MLD table (shadow)';
+    dm_menu[50] := '  monitor-cmd                   Executes Monitor Command';
+    dm_menu[51] := '  mstp                          display mstp structure information';
+    dm_menu[52] := '  mstp-debug                    mstp table (shadow)';
+    dm_menu[53] := '  null-pointer-off              Turn off null pointer check';
+    dm_menu[54] := '  null-pointer-on               Turn on null pointer check';
+    dm_menu[55] := '  optic                         Dump GBIC/XFP info';
+    dm_menu[56] := '  optical-monitor               Change optical monitor timer';
+    dm_menu[57] := '  packet                        Packet generator';
+    dm_menu[58] := '  parser                        CLI parser';
+    dm_menu[59] := '  pci-config-read               Read the configuation space of given PCI device';
+    dm_menu[60] := '                                and offset';
+    dm_menu[61] := '  pci-config-write              Write into the configuation space of given PCI';
+    dm_menu[62] := '                                device and offset';
+    dm_menu[63] := '  pci-dump                      Set Debug PCI error dump';
+    dm_menu[64] := '  pci-recovery-for-0-port-mgmt';
+    dm_menu[65] := '  pci-task                      PCI Recovery task Control';
+    dm_menu[66] := '  perf-arm                      Arm Performance Monitor';
+    dm_menu[67] := '  perf-print                    Print Performance Log';
+    dm_menu[68] := '  perf-trig                     Trigger Performance Monitor';
+    dm_menu[69] := '  phy-diag                      Perform PHY diagnosis';
+    dm_menu[70] := '  pim_debug                     PIM table (shadow)';
+    dm_menu[71] := '  pkt-trace-dev                 set the device to trace packet processing';
+    dm_menu[72] := '  pkt-trace-qeueue              set the queue to trace packet processing';
+    dm_menu[73] := '  pktsend                       Send Packets from CPU';
+    dm_menu[74] := '  poe-device                    PoE Device/Controller/Module';
+    dm_menu[75] := '  pool                          Display PSS memory pool statistics';
+    dm_menu[76] := '  port_debug                    port table (shadow)';
+    dm_menu[77] := '  posix_test                    POSIX compliance test';
+    dm_menu[78] := '  pp-app-vlan                   Display Application/Dynamic VLAN Info';
+    dm_menu[79] := '  pp-device                     Prestera device';
+    dm_menu[80] := '  pp-dump-stuck-bufs            Dump stuck buffers';
+    dm_menu[81] := '  pp-find-leak-cpu-buffer       find cpu buffers that are still mark';
+    dm_menu[82] := '  pp-hw-ip-cache                Show hardware of ip cache';
+    dm_menu[83] := '  pp-hw-mac-index               Display Hw Mac Index Table Info';
+    dm_menu[84] := '  pp-hw-route                   Show hardware routes';
+    dm_menu[85] := '  pp-interrupts                 Display PP Interrupt cause registers';
+    dm_menu[86] := '  pp-ip-debug                   Enable pp L3 UC debug';
+    dm_menu[87] := '  pp-lpm-cleanup                Cleanup lpm table';
+    dm_menu[88] := '  pp-mark-cpu-buffer            mark cpu buffers to find leak';
+    dm_menu[89] := '  pp-port-map                   Get Mappings for Port';
+    dm_menu[90] := '  pp-pss-ip-debug               Enable pp L3 UC debug';
+    dm_menu[91] := '  pp-settings                   Settings for Prestera devices';
+    dm_menu[92] := '  pp-shadow-hw-mac-index        Display Shadow Hw Mac Index Table';
+    dm_menu[93] := '  pp-show-lost-cpu-buffer       find cpu buffers that are still mark';
+    dm_menu[94] := '  pp-trunk-hash                 Get the exact port for flow across a trunk group';
+    dm_menu[95] := '  pp-utility                    hash, DSA decode, ...';
+    dm_menu[96] := '  prbs                          Setup PRBS test on all channels';
+    dm_menu[97] := '  ps-device                     Power Supply Device/Module';
+    dm_menu[98] := '  raw-packet-debugging          Enable/disable raw packet debugging';
+    dm_menu[99] := '  redundancy                    Hitless - Redundancy debug commands';
+    dm_menu[100] := '  rel-sync                      Debug rel-sync';
+    dm_menu[101] := '  reset-module                  Reset the Module at Given Slot';
+    dm_menu[102] := '  resource                      Test only';
+    dm_menu[103] := '  save_area                     Show crash dump';
+    dm_menu[104] := '  show                          Display information on member units';
+    dm_menu[105] := '  show-ripc                     show reliable ipc state';
+    dm_menu[106] := '  size                          display data struct size';
+    dm_menu[107] := '  softcheck                     Test only, will reboot';
+    dm_menu[108] := '  spanning-tree                 show stp internal information';
+    dm_menu[109] := '  stack                         Show crash dump stack';
+    dm_menu[110] := '  statistics                    Test only';
+    dm_menu[111] := '  stg                           Spanning Tree Group (shadow)';
+    dm_menu[112] := '  stp                           Spanning Tree (shadow)';
+    dm_menu[113] := '  sxr-red-state                 Print sxr-red- debug details';
+    dm_menu[114] := '  sync-link-state               stby link state from active (shadow)';
+    dm_menu[115] := '  sync-mac-range-filter         mac range filter table from active (shadow)';
+    dm_menu[116] := '  sync-metro-rhp                Metro Ring Session (shadow)';
+    dm_menu[117] := '  sync-port-stp                 port stp state table from active (shadow)';
+    dm_menu[118] := '  sync-trunk-table              Trunk table from active (shadow)';
+    dm_menu[119] := '  test                          Test Prestera devices';
+    dm_menu[120] := '  test-ripc                     testing reliable ipc thru cmds';
+    dm_menu[121] := '  toggle-fa-local-switching     Toggle FA Local Switching on SuperX';
+    dm_menu[122] := '  trunk_debug                   Trunk table (shadow)';
+    dm_menu[123] := '  tu                            Be a test unit, ie, no aging, no port reset,';
+    dm_menu[124] := '                                test only';
+    dm_menu[125] := '  vlan                          Show vlan masks';
+    dm_menu[126] := '  vlan_debug                    VLAN table (shadow)';
+    dm_menu[127] := '  xbar-device                   external crossbar device';
+    dm_menu[128] := '  <cr>';
+    dm_menu[129] := 'ENDofLINES';
+  end;
+  procedure init_debug_ip_menu;
+
+  Begin
+    debug_ip_menu[1] := '  arp             ARP messages';
+    debug_ip_menu[2] := '  dhcp_snooping   DHCP snooping';
+    debug_ip_menu[3] := '  hitless         Hitless information';
+    debug_ip_menu[4] := '  icmp            ICMP transactions';
+    debug_ip_menu[5] := '  igmp            IGMP protocol activity';
+    debug_ip_menu[6] := '  msdp            MSDP protocol activity';
+    debug_ip_menu[7] := '  rip             RIP protocol transactions';
+    debug_ip_menu[8] := '  source_guard    Source Guard';
+    debug_ip_menu[9] := '  ssh             SSH information';
+    debug_ip_menu[10] := '  sync            Sync message information';
+    debug_ip_menu[11] := '  tcp             TCP information';
+    debug_ip_menu[12] := '  udp             UDP based transactionstp';
+    debug_ip_menu[13] := '  vrrp            VRRP information';
+    debug_ip_menu[14] := '  web             WEB HTTP/HTTPS information';
+    debug_ip_menu[15] := '  web-ssl         WEB Secured Socket Layer information';
+    debug_ip_menu[16] := 'ENDofLINES';
+  End;
+  procedure init_debug_menu;
+
+  begin
+    debug_menu[1] :='  48gc                 48GC related commands';
+    debug_menu[2] :='  802.1w               RSTP (802.1w) Debug information';
+    debug_menu[3] :='  acl                  access-list';
+    debug_menu[4] :='  all                  Enable all debugging';
+    debug_menu[5] :='  destination          Redirect debug message';
+    debug_menu[6] :='  dhcp-client          DHCP Client feature';
+    debug_menu[7] :='  dhcp-server          DHCP Server feature';
+    debug_menu[8] :='  dot1x                Enable 802.1X debugging';
+    debug_menu[9] :='  hw                   Hardware backplane debugging';
+    debug_menu[10] :='  ilp                  debug ILP(InLinePower) information';
+    debug_menu[11] :='  ip                   Debug trace IP';
+    debug_menu[12] :='  ipv6                 Debug trace IPv6';
+    debug_menu[13] :='  license              Debug license code';
+    debug_menu[14] :='  loop-detect          Debug loop detection';
+    debug_menu[15] :='  mac                  Enable MAC Action debugging';
+    debug_menu[16] :='  mac-authentication   MAC Authentication per port';
+    debug_menu[17] :='  metro-ring           debug metro ring protocol';
+    debug_menu[18] :='  mld-snooping         MLD Snooping Debug information';
+    debug_menu[19] :='  mstp                 MSTP (802.1s) Debug information';
+    debug_menu[20] :='  sflow                debug sflow';
+    debug_menu[21] :='  span                 Spanning tree (802.1D) Debug Information';
+    debug_menu[22] :='  system               System services and device drivers';
+    debug_menu[23] :='  web                  Enable Web related debugging';
+    debug_menu[24] :='  webauth              Enable Web Authentication debugging';
+    debug_menu[25] :='ENDofLINES';
+  end;
+
 procedure init_enable_menu;
 
   Begin
@@ -687,6 +874,13 @@ procedure init_enable_menu;
       qos_menu[5] := 'ENDofLINES';
   end;
 
+  Procedure init_access_list_menu;
+
+  Begin
+      access_list_menu[1] := '  <1-99>       Standard IP access list';
+      access_list_menu[2] := '  <100-199>    Extended IP access list';
+      access_list_menu[3] := 'ENDofLINES';
+  End;
   procedure init_chassis_menu;
 
   begin
@@ -920,21 +1114,21 @@ procedure init_enable_menu;
   procedure init_config_term_menu;
 
   begin
-    config_term_menu[1] :=   '  aaa                           Define authentication method list      --> Done';
-    config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)';
+    config_term_menu[1] :=   '  aaa                           Define authentication method list      --> 4 ?';
+    config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)       --> 4 ?';
     config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
     config_term_menu[4] :=   '                                bytes';
     config_term_menu[5] :=   '  alias                         Configure alias or display configured alias';
     config_term_menu[6] :=   '  all-client                    Restrict all remote management to a host';
     config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
-    config_term_menu[8] :=   '  banner                        Define a login banner                  --> done';
+    config_term_menu[8] :=   '  banner                        Define a login banner                  --> 4 ?';
     config_term_menu[9] :=   '  batch                         Define a group of commands';
     config_term_menu[10] :=  '  boot                          Set system boot options';
     config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
     config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
     config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
     config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options-->4?';
-    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys            --> done';
+    config_term_menu[15] :=  '  clear                         Clear table/statistics/keys            --> 4 ?';
     config_term_menu[16] :=  '  clock                         Set system time and date';
     config_term_menu[17] :=  '  console                       Configure console port';
     config_term_menu[18] :=  '  cpu-limit                     Set limits from each packet processor to CPU';
@@ -2346,9 +2540,18 @@ writeln('ipx disabled               appletalk disabled');
                 Begin
                    help_match(word_list[1], vlan_menu)
                 End
+             else
+             if out_key = #9 then //tab key
+                tab_match(word_list[1],vlan_menu)
             else
                 case input[1] of
                  '?' : page_display(vlan_menu);
+                 'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
+                       Begin
+                          level := level3;
+                          dec(what_level);
+                          end_vlan_loop := true;
+                       End;
                  's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                           writeln('Incomplete command.')
                        else
@@ -2356,17 +2559,25 @@ writeln('ipx disabled               appletalk disabled');
                             input := input;
                             display_show;
                           end;
+                 't' : if (is_word(word_list[1],'tagged')) = true then
+                       Begin
+                          if (is_word(word_list[2],'ethernet')) = true then
+                            write('TAG ethernet')
+                          else
+                            bad_command(input);
+                       End;
                  'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
                        Begin
                           level := level3;
                           dec(what_level);
                           end_vlan_loop := true;
                        End;
-                 'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
+                 'u' : if (is_word(word_list[1],'untag')) = true then
                        Begin
-                          level := level3;
-                          dec(what_level);
-                          end_vlan_loop := true;
+                          if (is_word(word_list[2],'ethernet')) = true then
+                            write('UNTAG ethernet')
+                          else
+                            bad_command(input);
                        End;
                  else
                        begin
@@ -2648,6 +2859,9 @@ writeln('ipx disabled               appletalk disabled');
            if (is_word(word_list[1],'web-management') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],web_management_menu)
            else
+           if (is_word(word_list[1],'access-list') = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],access_list_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
          else
@@ -2655,6 +2869,9 @@ writeln('ipx disabled               appletalk disabled');
            '?' : page_display(config_term_menu);
            'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(aaa_menu)
+                 else
+                 if (is_word(word_list[1],'access-list') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(access_list_menu)
                  else
                     writeln('Incomplete command.');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
@@ -2667,6 +2884,14 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[1],'clear') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(clear_menu)
                  else
+                  if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
+                    begin
+                      running_config[last_line_of_running-1] := 'cdp run';
+                      running_config[last_line_of_running] := 'end';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                  else
                     writeln('Incomplete command.');
            'e' : if is_word(word_list[1], 'exit') = true then
                      Begin
@@ -2680,6 +2905,14 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(fdp_menu)
                  else
+                 if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
+                    begin
+                      running_config[last_line_of_running-1] := 'fdp run';
+                      running_config[last_line_of_running] := 'end';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                 else
                     writeln('Incomplete command.');
            'h' :  if (is_word(word_list[1],'hostname') = TRUE) then
                      if word_list[2] <> '' then
@@ -2688,6 +2921,7 @@ writeln('ipx disabled               appletalk disabled');
                           running_config[last_line_of_running-1] := concat('hostname ',word_list[2]);
                           running_config[last_line_of_running] := 'end';
                           inc(last_line_of_running);
+                          running_config[last_line_of_running] := 'ENDofLINES';
                         end
                      else
                         writeln('Incomplete command.');
@@ -2714,6 +2948,15 @@ writeln('ipx disabled               appletalk disabled');
                  else
                  if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(logging_menu)
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
+                    if word_list[3] <> '' then
+                        begin
+                          running_config[last_line_of_running-1] := concat('logging host ',word_list[3]);
+                          running_config[last_line_of_running] := 'end';
+                          inc(last_line_of_running);
+                          running_config[last_line_of_running] := 'ENDofLINES';
+                        end
                  else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
@@ -2763,6 +3006,17 @@ writeln('ipx disabled               appletalk disabled');
            's' : if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_server_menu)
                  else
+                 if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
+                    if word_list[2] <> '' then
+                        begin
+                          running_config[last_line_of_running-1] := concat('SNMP-Server Host ',word_list[3]);
+                          running_config[last_line_of_running] := 'end';
+                          inc(last_line_of_running);
+                          running_config[last_line_of_running] := 'ENDofLINES';
+                        end
+                     else
+                        writeln('Incomplete command.')
+                 Else
                  if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_client_menu)
                  else
@@ -2825,8 +3079,20 @@ writeln('ipx disabled               appletalk disabled');
                       help_match(word_list[1],enable_menu);
                     End
          else
+           if (is_word(word_list[1],'debug') = TRUE) and (word_list[2] = 'ip') and (out_key = #9) then //tab key
+               tab_match(word_list[3],debug_ip_menu)
+           else
+           if (is_word(word_list[1],'debug') = TRUE) and (length(word_list[1]) > 4) and (out_key = #9) then //tab key
+               tab_match(word_list[2],debug_menu)
+           else
            if (is_word(word_list[1],'configure') = TRUE) and (out_key = #9) then //tab key
                tab_match(word_list[2],configterm_menu)
+           else
+           if (word_list[1] ='dm') and (length(word_list[2]) >= 1) and (out_key = #9) then //tab key
+               tab_match(word_list[2],dm_menu)
+           else
+           if (word_list[1] ='dm') and (out_key = #9) then //tab key
+               tab_match(word_list[2],dm_menu)
            else
            if out_key = #9 then //tab key
               tab_match(word_list[1],enable_menu)
@@ -2838,8 +3104,11 @@ writeln('ipx disabled               appletalk disabled');
                      Configure_term_loop
                   else
                      bad_command(input);
-            'd' : if (is_word(word_list[1],'debug') = true) then
-                        writeln('*  Debug not implemented in Brocade-Sim');
+            'd' : if (is_word(word_list[1],'dm') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                        page_Display(dm_menu)
+                     else
+                  if (is_word(word_list[1],'debug') = true) then
+                     page_display(debug_menu);
             'e' : if (is_word(word_list[1],'exit') = true) then
                      Begin
                         level := level1;
@@ -2990,6 +3259,9 @@ begin
     // init all the menus
     init_top_menu;
     init_show_menu;
+    init_dm_menu;
+    init_debug_menu;
+    init_debug_ip_menu;
     init_config_term_menu; // whole menu
     init_configterm_menu; // just the terminal second word of the config term command
     init_enable_menu;
@@ -3000,6 +3272,7 @@ begin
     init_mstp_menu;
     init_qos_menu;
     init_snmp_server_menu;
+    init_access_list_menu;
     init_chassis_menu;
     init_banner_menu;
     init_aaa_menu;
@@ -3017,7 +3290,7 @@ begin
 
     // Display the splash screen
     Splash_screen;
-    // read from config ffiles
+    // read from config files
     Read_config;
     read_startup_config; //read in the default Brocade config
     history_pos := 1; // starting possition for CLI history.
