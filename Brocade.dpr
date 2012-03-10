@@ -149,8 +149,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r38                                                ║');
-      writeln(' ║                 Dated 04th of Mar 2012                                     ║');
+      writeln(' ║   Brocade-Sim : Version r39                                                ║');
+      writeln(' ║                 Dated 10th of Mar 2012                                     ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -169,14 +169,14 @@ Var
       writeln(' ║                                                                            ║');
       write(' ║ ');
       textcolor(yellow);
-      write('e-mail comments to brocade-sim@gmail.com');
+      write('e-mail comments to brocade.sim@gmail.com');
       textcolor(lightgray);
       writeln('                                   ║');
       writeln(' ╚════════════════════════════════════════════════════════════════════════════╝');
       gotoxy(79,24);
       readkey;
       clrscr;
-      gotoxy(1,24);
+      gotoxy(1,25);
   End;
 
   function check_int(validport : shortstring) : boolean;
@@ -242,6 +242,29 @@ Var
          end
   end;
 
+  Procedure search_run(thisstr : string; var foundat : integer);
+
+  var
+    found : boolean;
+    loop  : integer;
+
+  Begin
+       loop := 0; found := false;
+       while found = false do
+         begin
+              inc(loop);
+              if is_word(thisstr,running_config[loop]) = true then
+                 begin
+                     foundat := loop;
+                     break;
+                 end;
+              if running_config[loop] = 'ENDofLINES' then
+                 begin
+                    foundat := 0;
+                    break;
+                 end;
+         end;
+  End;
   procedure Get_words;
 
   var
@@ -284,7 +307,8 @@ Var
           begin
                if (count mod 22 = 0) and (count > 21) then
                   begin
-                      writeln(lines[count]);
+                      if lines[count] <> 'DELETED' then
+                         writeln(lines[count]);
                       writeln('--More--, next page: Space, next line: Return key, quit: Control-c');
                       repeat
                         begin
@@ -307,7 +331,8 @@ Var
                                         write('                                                                               ');
                                         gotoxy(1,whereY);
                                         //inc(count);
-                                        writeln(lines[count+1]);
+                                        if lines[count] <> 'DELETED' then
+                                           writeln(lines[count+1]);
                                         writeln('--More--, next page: Space, next line: Return key, quit: Control-c');
                                         inc(count);
                                       end;
@@ -327,7 +352,8 @@ Var
                   end
                else
                  begin
-                     writeln(lines[count]);
+                     if lines[count] <> 'DELETED' then
+                        writeln(lines[count]);
                      inc(count);
                  end;
           end;
@@ -454,11 +480,11 @@ Var
 //              writeln('-------',aline);   readln;
               readln(sc,aline);
               startup_config[loop] := aline;
-              running_config[loop+25] := aline;
+              running_config[loop+23] := aline;
               inc(loop);
             end;
-       running_config[loop+26] := 'ENDofLINES';
-       last_line_of_running := loop +25;
+       running_config[loop+23] := 'ENDofLINES';
+       last_line_of_running := loop +23;
        closefile(sc);
   End;
 
@@ -479,7 +505,6 @@ Var
        readln(sc, aline);
        if aline = 'Insatalled-modules' then
           begin
-              //writeln(aline);
               readln(sc,aline);
               modules[1] := aline;
               readln(sc,aline);
@@ -2291,6 +2316,9 @@ writeln('ipx disabled               appletalk disabled');
                    writeln(' spanning-tree root-protect');
              end
          end;
+    writeln('!');
+    writeln('!');
+    writeln('end');
   End;
 
   procedure display_stp_protect;
@@ -2782,6 +2810,7 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      end_con_term : boolean;
+     foundat : integer;
 
      procedure looking_for_help;
 
@@ -2814,6 +2843,207 @@ writeln('ipx disabled               appletalk disabled');
                   if (word_list[4]) = '?' then
                      writeln('  ASCII string   VLAN name');
      end; // looking for help
+
+     procedure remove_config;
+
+     begin
+        case input[4] of
+           '?' : page_display(config_term_menu);
+           'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(aaa_menu)
+                 else
+                 if (is_word(word_list[1],'access-list') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(access_list_menu)
+                 else
+                    writeln('Incomplete command.');
+           'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(banner_menu)
+                 else
+                    writeln('Incomplete command.');
+           'c' : if (is_word(word_list[1],'chassis') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(chassis_menu)
+                 else
+                 if (is_word(word_list[1],'clear') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(clear_menu)
+                 else
+                  if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
+                    begin
+                      running_config[last_line_of_running-1] := 'cdp run';
+                      running_config[last_line_of_running] := 'end';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                  else
+                    writeln('Incomplete command.');
+           'e' : if is_word(word_list[1], 'exit') = true then
+                     Begin
+                        level := level2;
+                        dec(what_level);
+                        End_con_term := true;
+                     End;
+           'f' : if (is_word(word_list[1],'fast') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(fast_menu)
+                 else
+                 if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(fdp_menu)
+                 else
+                 if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
+                    begin
+                      running_config[last_line_of_running-1] := 'fdp run';
+                      running_config[last_line_of_running] := 'end';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                 else
+                    writeln('Incomplete command.');
+           'h' :  if (is_word(word_list[2],'hostname') = TRUE) then
+                     if word_list[2] <> '' then
+                        begin
+//                          hostname := word_list[2];
+                          search_run('hostname',foundat);
+                           if foundat <> 0 then
+                              begin
+                                   running_config[foundat] := 'DELETED';
+                                   hostname := 'Fastiron';
+                              end;
+                        end
+                     else
+                        writeln('Incomplete command.');
+           'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
+                     begin
+                          if check_int(shortstring(word_list[3])) = true then
+                             int_loop(word_list[3])
+                          else
+                             writeln('port not valid');
+                     end
+                 else
+                 if (is_word(word_list[1],'ip') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(ip_menu)
+                 else
+                     writeln('Incomplete command.');
+           'l' : if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(lldp_menu)
+                 else
+                 if (is_word(word_list[1],'link-keepalive') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(link_keepalive_menu)
+                 else
+                 if (is_word(word_list[1],'link-config') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(link_config_menu)
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(logging_menu)
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
+                    if word_list[3] <> '' then
+                        begin
+                          running_config[last_line_of_running-1] := concat('logging host ',word_list[3]);
+                          running_config[last_line_of_running] := 'end';
+                          inc(last_line_of_running);
+                          running_config[last_line_of_running] := 'ENDofLINES';
+                        end
+                 else
+                    writeln('Incomplete command.');
+           'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(mstp_menu)
+                 else
+                 if (is_word(word_list[1],'mac-authentication') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(mac_authentication_menu)
+                 else
+                    writeln('Incomplete command.');
+           'q' : if is_word(word_list[1],'quit') = true then
+                     Begin
+                        level := level2;
+                        dec(what_level);
+                        end_con_term := true;
+                     End
+                 else
+                 if (is_word(word_list[1],'qos') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(qos_menu)
+                 else
+                    writeln('Incomplete command.');
+           'r' : Begin
+                    if (is_word(word_list[1],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                        page_display(rmon_menu);
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
+                       begin
+                           writeln('  rip    Enable rip');
+                           writeln('  vrrp   Enable vrrp');
+                       End;
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (is_word(word_list[3],'?') = true) then
+                       writeln('rip    Enable rip')
+                    else
+                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (is_word(word_list[3],'?') = true) then
+                       writeln('vrrp    Enable vrrp')
+                    else
+                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
+                         begin
+
+                         End
+                    else
+                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
+                         begin
+
+                         End
+                    //else
+                    //   bad_command(word_list[3]);
+                 End;
+           's' : if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
+                    page_display(snmp_server_menu)
+                 else
+                 if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'host') = TRUE) then
+                    if word_list[3] <> '' then
+                        begin
+                           search_run(concat('SNMP-Server Host ',word_list[4]),foundat);
+                           if foundat <> 0 then
+                              begin
+                                   running_config[foundat] := 'DELETED';
+                                   hostname := 'Fastiron';
+                              end;
+//                          running_config[last_line_of_running-1] := concat('SNMP-Server Host ',word_list[3]);
+//                          inc(last_line_of_running);
+//                          running_config[last_line_of_running] := 'ENDofLINES';
+                        end
+                     else
+                        writeln('Incomplete command.')
+                 Else
+                 if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(snmp_client_menu)
+                 else
+                 if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(sflow_menu)
+                 else
+                 if (input = 'sh') or (input = 'sho') or (input = 'show') then
+                    writeln('Incomplete command.')
+                 else
+                     begin
+                         input := input;
+                         display_show;
+                     End;
+          'v' : if (is_help(input) = TRUE) then
+                    begin
+                        looking_for_help
+                    End
+                else
+                  if (is_word(word_list[1],'vlan') = TRUE) then
+                    if (is_number(word_list[2]) = TRUE) then
+                      begin
+                        vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
+                        vlans[strtoint(word_list[2])].name := word_list[4];
+                        vlan_loop(word_list[2]);
+                      End
+                    else
+                      bad_command(word_list[2]);
+          'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(web_management_menu)
+                 else
+                         bad_command(word_list[2]);
+          #0 :;
+           else
+                    begin
+                      bad_command(input);
+                    End;
+         End;
+     end;
 
   begin
         end_con_term := false;
@@ -2949,10 +3179,15 @@ writeln('ipx disabled               appletalk disabled');
                      if word_list[2] <> '' then
                         begin
                           hostname := word_list[2];
-                          running_config[last_line_of_running-1] := concat('hostname ',word_list[2]);
-                          running_config[last_line_of_running] := 'end';
-                          inc(last_line_of_running);
-                          running_config[last_line_of_running] := 'ENDofLINES';
+                          search_run('hostname',foundat);
+                           if foundat = 0 then
+                             begin
+                                running_config[last_line_of_running-1] := concat('hostname ',word_list[2]);
+                                inc(last_line_of_running);
+                                running_config[last_line_of_running] := 'ENDofLINES';
+                             end
+                          else
+                             running_config[foundat] := concat('hostname ',word_list[2]);
                         end
                      else
                         writeln('Incomplete command.');
@@ -2997,6 +3232,8 @@ writeln('ipx disabled               appletalk disabled');
                     page_display(mac_authentication_menu)
                  else
                     writeln('Incomplete command.');
+           'n' : if word_list[1] = 'no' then
+                    remove_config;
            'q' : if is_word(word_list[1],'quit') = true then
                      Begin
                         level := level2;
@@ -3041,7 +3278,7 @@ writeln('ipx disabled               appletalk disabled');
                     if word_list[2] <> '' then
                         begin
                           running_config[last_line_of_running-1] := concat('SNMP-Server Host ',word_list[3]);
-                          running_config[last_line_of_running] := 'end';
+                          //running_config[last_line_of_running] := 'end';
                           inc(last_line_of_running);
                           running_config[last_line_of_running] := 'ENDofLINES';
                         end
@@ -3213,11 +3450,9 @@ writeln('ipx disabled               appletalk disabled');
        End_program := false; what_level := 1;
        Hostname := 'Fastiron'; level := level1;
        repeat
-//             input := '';
              word_list[1] := ''; word_list[1] := '';
              repeat
                 write(hostname, level);
-//                input := get_command;
                 get_input(input,out_key);
                 writeln;
              until input <> '';
