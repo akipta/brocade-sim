@@ -149,8 +149,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r40                                                ║');
-      writeln(' ║                 Dated 12th of Mar 2012                                     ║');
+      writeln(' ║   Brocade-Sim : Version r41                                                ║');
+      writeln(' ║                 Dated 14th of April 2012                                   ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -2590,6 +2590,10 @@ writeln('ipx disabled               appletalk disabled');
                    help_match(word_list[1], vlan_menu)
                 End
              else
+             if ((is_word(word_list[1],'tagged')) = true) and (out_key = #9) then //tab key
+                //tab_match(word_list[1],vlan_menu)
+                writeln('ethernet')
+             else
              if out_key = #9 then //tab key
                 tab_match(word_list[1],vlan_menu)
             else
@@ -3017,6 +3021,9 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[2],'clear') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(clear_menu)
                  else
+                 if (is_word(word_list[2],'cdp') = TRUE) and (word_list[3] = '?') then
+                    writeln('Run')
+                 else
                  if (is_word(word_list[2],'cdp') = TRUE) and (is_word(word_list[3],'run') = TRUE) then
                     begin
                        search_run('cdp run',foundat);
@@ -3195,12 +3202,11 @@ writeln('ipx disabled               appletalk disabled');
          End;
      end;
 
-  begin
+  begin //configure_term_loop
         end_con_term := false;
         Inc(what_level);
         level := level3;
         repeat
-//        input := #0;
           word_list[1] := ''; word_list[2] := ''; word_list[3] := ''; word_list[4] := '';
           repeat
             write(hostname, level);
@@ -3228,50 +3234,64 @@ writeln('ipx disabled               appletalk disabled');
            if (is_word(word_list[1],'snmp-server') = TRUE) and (length(input) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_server_menu)
            else
-           if (is_word(word_list[1],'chassis') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'chassis') = TRUE) and (length(word_list[1]) > 3)and (out_key = #9) then //tab key
                     tab_match(word_list[2],chassis_menu)
            else
-           if (is_word(word_list[1],'banner') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'banner') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],banner_menu)
            else
-           if (is_word(word_list[1],'aaa') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'aaa') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],aaa_menu)
            else
-           if (is_word(word_list[1],'clear') = true) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'clear') = true) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],clear_menu)
            else
-           if (is_word(word_list[1],'fast') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'fast') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fast_menu)
            else
-           if (is_word(word_list[1],'fdp') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'fdp') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fdp_menu)
            else
-           if (is_word(word_list[1],'link-config') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'link-config') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_config_menu)
            else
-           if (is_word(word_list[1],'link-keepalive') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'link-keepalive') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_keepalive_menu)
            else
-           if (is_word(word_list[1],'logging') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'logging') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],logging_menu)
            else
-           if (is_word(word_list[1],'mac-authentication') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'mac-authentication') = TRUE) and (length(word_list[1]) > 5)and (out_key = #9) then //tab key
                     tab_match(word_list[2],mac_authentication_menu)
            else
-           if (is_word(word_list[1],'rmon') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'rmon') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],rmon_menu)
            else
-           if (is_word(word_list[1],'sflow') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'sflow') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],sflow_menu)
            else
-           if (is_word(word_list[1],'snmp-client') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'snmp-client') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_client_menu)
            else
-           if (is_word(word_list[1],'web-management') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'web-management') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],web_management_menu)
            else
-           if (is_word(word_list[1],'access-list') = TRUE) and (out_key = #9) then //tab key
+           if (is_word(word_list[1],'access-list') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],access_list_menu)
+           else
+           if (is_word(word_list[1],'cdp') = TRUE) and (length(word_list[1]) > 2) and (length(word_list[1]) < 3) and (out_key = #9) then //tab key
+              begin
+                  writeln('Run   Enable CDP in listen mode');
+                  input := input + ' ';
+                  word_list[1] := word_list[1] + ' ';
+              end
+           else
+           if (input = 'cdp ') and (out_key = #9) then //tab key
+              begin
+                  writeln('Run   Enable CDP in listen mode');
+                  input := input + 'run';
+                  word_list[1] := word_list[1] + 'run';
+              end
            else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
@@ -3295,6 +3315,9 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[1],'clear') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(clear_menu)
                  else
+                  if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                     writeln('Run')
+                  else
                   if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
                     begin
                       running_config[last_line_of_running] := 'cdp run';
@@ -3499,8 +3522,16 @@ writeln('ipx disabled               appletalk disabled');
            if (is_word(word_list[1],'debug') = TRUE) and (length(word_list[1]) > 4) and (out_key = #9) then //tab key
                tab_match(word_list[2],debug_menu)
            else
-           if (is_word(word_list[1],'configure') = TRUE) and (out_key = #9) then //tab key
-               tab_match(word_list[2],configterm_menu)
+           if (is_word(word_list[1],'configure') = TRUE) and (length(input) > 2) and (length(input) < 9) and (out_key = #9) then //tab key
+               begin
+                   tab_match(word_list[1],enable_menu);
+               end
+           else
+           if (input = 'configure ') and (out_key = #9) then //tab key
+               begin
+                   writeln('  terminal   Configure thru terminal');
+                   input := input + 'terminal';
+               end
            else
            if (word_list[1] ='dm') and (length(word_list[2]) >= 1) and (out_key = #9) then //tab key
                tab_match(word_list[2],dm_menu)
@@ -3619,7 +3650,9 @@ writeln('ipx disabled               appletalk disabled');
                          End
                       else
                          if is_word(word_list[1],'exit')then
-                            End_program := true;
+                            End_program := true
+                         else
+                            bad_command(input);
                 'p' : if is_word(word_list[1],'ping') then
                         writeln('  Ping not implemented in Brocade-Sim');
                 's' : if is_word(word_list[1],'stop-traceroute') then
