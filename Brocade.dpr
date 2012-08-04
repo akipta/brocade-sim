@@ -136,6 +136,7 @@ Var
   mac_authentication_menu : array[1..15] of string;
   rmon_menu           : array[1..4] of string;
   sflow_menu          : array[1..9] of string;
+  sntp_menu           : array[1..3] of string;
   snmp_client_menu    : array[1..4] of string;
   web_management_Menu : array[1..16] of string;
   debug_Menu          : array[1..25] of string;
@@ -1237,7 +1238,7 @@ procedure init_enable_menu;
     config_term_menu[93] :=  '  show                          Show system information                --> 4 ?';
     config_term_menu[94] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
     config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties     --> 4 ?';
-    config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval';
+    config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval      --> 4 ?';
     config_term_menu[97] :=  '  spanning-tree                 Set spanning tree parameters';
     config_term_menu[98] :=  '  ssh                           Restrict ssh access by ACL';
     config_term_menu[99] :=  '  stp-group                     Spanning Tree Group settings';
@@ -1344,6 +1345,13 @@ procedure init_enable_menu;
       sflow_menu[7] := '  sample             Set sample rate';
       sflow_menu[8] := '  version            select sFlow agent version (default is v5)';
       sflow_menu[9] := 'ENDofLINES';
+  End;
+
+  procedure init_sntp_menu;
+  Begin
+      sntp_menu[1] := '  server             **specify the SNTP peer IP address';
+      sntp_menu[2] := '  poll-interval      **Set SNTP poll-interval in seconds';
+      sntp_menu[3] := 'ENDofLINES';
   End;
 
   procedure init_snmp_server_menu;
@@ -3228,6 +3236,9 @@ writeln('ipx disabled               appletalk disabled');
            if (is_word(word_list[1],'mstp') = TRUE) and (out_key = #9) then //tab key
                     tab_match(word_list[2],mstp_menu)
            else
+           if (is_word(word_list[1],'sntp') = TRUE) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],sntp_menu)
+           else
            if (is_word(word_list[1],'qos') = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],qos_menu)
            else
@@ -3459,6 +3470,9 @@ writeln('ipx disabled               appletalk disabled');
                  else
                  if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(sflow_menu)
+                 else
+                 if (is_word(word_list[1],'sntp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(sntp_menu)
                  else
                  if (input = 'sh') or (input = 'sho') or (input = 'show') then
                     writeln('Incomplete command.')
@@ -3730,6 +3744,7 @@ begin
     init_mac_authentication_menu;
     init_rmon_menu;
     init_sflow_menu;
+    init_sntp_menu;
     init_snmp_client_menu;
     init_web_management_menu;
 
