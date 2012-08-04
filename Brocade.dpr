@@ -3,11 +3,7 @@
 {$APPTYPE CONSOLE}
 
 uses
-  Windows,
-  SysUtils,
-  StrUtils,
-  IniFiles,
-  LineEditor in 'LineEditor.pas',
+  Windows, SysUtils, StrUtils, IniFiles, LineEditor in 'LineEditor.pas',
   Console in 'Console.pas';
 
 const
@@ -20,56 +16,56 @@ const
   StartupConfigFile = 'startup-config.txt';
   ModulesFile = 'modules.txt';
 
-  function check_int(validport : shortstring) : boolean; forward;
-  function is_word(check, target : string) : boolean; forward;
-  function is_number(check : string) : boolean; forward;
-  function is_help(check : string) : boolean; forward;
-  procedure splash_screen; forward;
-  procedure Get_words; forward;
-  procedure Page_display(lines : array of string); forward;
-  procedure bad_command(command:string); forward;
-  procedure help_match(findword : string; var list : array of string); forward;
-  procedure tab_match(findword : string; var list : array of string); forward;
-  procedure Read_startup_config; forward;
-  procedure read_config; forward;
-  Procedure init_top_menu; forward;
-  procedure init_enable_menu; forward;
-  procedure init_ip_menu; forward;
-  procedure init_show_menu; forward;
-  procedure init_config_term_menu; forward;
-  procedure init_interface_menu; forward;
-  procedure init_vlan_menu; forward;
-  procedure display_help_match(findword : string); forward;
-  procedure display_show_arp; forward;
-  procedure display_show_boot_pref; forward;
-  Procedure display_show_clock; forward;
-  procedure display_show_cpu; forward;
-  procedure display_show_defaults; forward;
-  Procedure display_show_dot1x; forward;
-  Procedure display_show_errdisabled_recovery; forward;
-  procedure display_show_fdp; forward;
-  Procedure display_show_int; forward;
-  Procedure display_show_int_eth(port : shortstring); forward;
-  procedure display_show_int_bri; forward;
-  procedure display_show_modules; forward;
-  procedure display_show_flash; forward;
-  procedure display_show_memory; forward;
-  Procedure display_show_port_security; forward;
-  Procedure display_show_reload; forward;
-  Procedure display_show_reserved_vlan; forward;
-  procedure display_running_config; forward;
-  procedure display_stp_protect; forward;
-  procedure display_startup_config; forward;
-  Procedure display_show_telnet; forward;
-  procedure display_show_version; forward;
-  procedure display_show_web; forward;
-  procedure display_show_who; forward;
-  procedure display_show; forward;
-  procedure vlan_loop(vlanid :string); forward;
-  procedure int_loop(intid : string); forward;
-  procedure configure_term_loop; forward;
-  Procedure enable_loop; forward;
-  Procedure my_loop; forward;
+Function check_int(validport : shortstring) : boolean; forward;
+Function is_word(check, target : string) : boolean; forward;
+Function is_number(check : string) : boolean; forward;
+Function is_help(check : string) : boolean; forward;
+Procedure splash_screen; forward;
+Procedure Get_words; forward;
+Procedure Page_display(lines : array of string); forward;
+Procedure bad_command(command:string); forward;
+Procedure help_match(findword : string; var list : array of string); forward;
+Procedure tab_match(findword : string; var list : array of string); forward;
+Procedure Read_startup_config; forward;
+Procedure read_config; forward;
+Procedure init_top_menu; forward;
+Procedure init_enable_menu; forward;
+Procedure init_ip_menu; forward;
+Procedure init_show_menu; forward;
+Procedure init_config_term_menu; forward;
+Procedure init_interface_menu; forward;
+Procedure init_vlan_menu; forward;
+Procedure display_help_match(findword : string); forward;
+Procedure display_show_arp; forward;
+Procedure display_show_boot_pref; forward;
+Procedure display_show_clock; forward;
+Procedure display_show_cpu; forward;
+Procedure display_show_defaults; forward;
+Procedure display_show_dot1x; forward;
+Procedure display_show_errdisabled_recovery; forward;
+Procedure display_show_fdp; forward;
+Procedure display_show_int; forward;
+Procedure display_show_int_eth(port : shortstring); forward;
+Procedure display_show_int_bri; forward;
+Procedure display_show_modules; forward;
+Procedure display_show_flash; forward;
+Procedure display_show_memory; forward;
+Procedure display_show_port_security; forward;
+Procedure display_show_reload; forward;
+Procedure display_show_reserved_vlan; forward;
+Procedure display_running_config; forward;
+Procedure display_stp_protect; forward;
+Procedure display_startup_config; forward;
+Procedure display_show_telnet; forward;
+Procedure display_show_version; forward;
+Procedure display_show_web; forward;
+Procedure display_show_who; forward;
+Procedure display_show; forward;
+Procedure vlan_loop(vlanid :string); forward;
+Procedure int_loop(intid : string); forward;
+Procedure configure_term_loop; forward;
+Procedure enable_loop; forward;
+Procedure my_loop; forward;
 
 type
     vlan_records = record
@@ -110,7 +106,7 @@ Var
   port_count : integer;
   out_key :char;
 
-  // menus
+  // vars for the menus
   top_menu            : array[1..7] of string;
   qos_menu            : array[1..7] of string;
   Show_menu           : array[1..80] of string;
@@ -143,19 +139,20 @@ Var
   debug_ip_menu       : array[1..16] of string;
   dm_menu             : array[1..129] of string;
 
-  procedure splash_screen;
+  Procedure splash_screen;
 
   Begin
       textcolor(lightgray);
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r41                                                ║');
-      writeln(' ║                 Dated 14th of April 2012                                   ║');
+      writeln(' ║   Brocade-Sim : Version r42                                                ║');
+      writeln(' ║                 Dated 5th of Aug 2012                                      ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
       writeln(' ║                 FastIron devices and syntax - simulating FSX 1600 7.2.02d  ║');
+      writeln(' ║                 To aid people studying for their BCNE                      ║');
       writeln(' ╠════════════════════════════════════════════════════════════════════════════╣');
       writeln(' ║ Keys:                                                                      ║');
       writeln(' ║      Ctrl A - move to start of the line                                    ║');
@@ -169,11 +166,11 @@ Var
       writeln(' ║             press any key to continue.... To exit type ''exit''              ║');
       writeln(' ║                                                                            ║');
       write(' ║ ');
-      write('e-mail comments to');
+      write('Please e-mail comments to');
       textcolor(yellow);
       write(' brocade.sim@gmail.com');
       textcolor(lightgray);
-      writeln('                                   ║');
+      writeln('                            ║');
       writeln(' ╚════════════════════════════════════════════════════════════════════════════╝');
       gotoxy(79,24);
       readkey;
@@ -181,7 +178,7 @@ Var
       gotoxy(1,25);
   End;
 
-  function check_int(validport : shortstring) : boolean;
+  Function check_int(validport : shortstring) : boolean;
 
   var
     loop : integer;
@@ -189,33 +186,31 @@ Var
   Begin
      check_int := false;
      for loop := 1 to port_count do
-         begin
+         Begin
               if validport = interfaces[loop].port_no then
-                 begin
+                 Begin
                       check_int := true;
                       break;
-                 end;
+                 End;
          end;
   End;
 
-  function is_word(check, target : string) : boolean;
+  Function is_word(check, target : string) : boolean;
 
-  begin
+  Begin
 
        is_word := strutils.AnsiContainsStr(target,check);
   end;
 
-  function is_number(check : string) : boolean;
+  Function is_number(check : string) : boolean;
 
   var
       a : integer;
 
-  begin
+  Begin
        a := 0; is_number := false;
-//       writeln('check is, ',check);
        try
           a := strtoint(check);
- //         writeln('The value of a is, ',a);
        except
           on Exception : EConvertError do
               is_number := false;
@@ -223,26 +218,26 @@ Var
        if a <> 0 then
          if a < 4096 then
             is_number := true
-         else
+         Else
             Begin
               writeln('Error - Invalid input ',check,'. Valid range is between 1 and 4095');
               is_number := false;
             End;
-  end;
+  End;
 
 
-  function is_help(check : string) : boolean;
+  Function is_help(check : string) : boolean;
 
   var
       Loop : integer;
-  begin
+  Begin
        is_help := false;
        for loop := 1 to length(check) do
-         begin
+         Begin
               if check[loop] = '?' then
                  is_help := true;
-         end
-  end;
+         End
+  End;
 
   Procedure search_run(thisstr : string; var foundat : integer);
 
@@ -253,132 +248,130 @@ Var
   Begin
        loop := 0; found := false;
        while found = false do
-         begin
+         Begin
               inc(loop);
               if is_word(thisstr,running_config[loop]) = true then
-                 begin
+                 Begin
                      foundat := loop;
                      break;
-                 end;
+                 End;
               if running_config[loop] = 'ENDofLINES' then
-                 begin
+                 Begin
                     foundat := 0;
                     break;
-                 end;
-         end;
+                 End;
+         End;
   End;
-  procedure Get_words;
+  Procedure Get_words;
 
   var
     a, word_count : integer;
     strlength : integer;
 
-  begin
+  Begin
         a := 1; word_count := 1;
         strlength := length(input);
         while (input[a] <> '') and (a <= strlength)do
-          begin
+          Begin
                while (input[a] <> ' ') and (a <= strlength)do
                  Begin
                      word_list[word_count] := word_list[word_count] + input[a];
                      if input[a] <> '' then
-                        begin
+                        Begin
                             inc(a);
-//                            write(input[a]);
-                        end
-                     else
+                        End
+                     Else
                         break;
                  End;
                inc(a);
                inc(word_count);
-          end;
-  end;
+          End;
+  End;
 
-  procedure Page_display(lines : array of string);
+  Procedure Page_display(lines : array of string);
 
   var
     count : integer;
     key : char;
     goodkey, ctrlc : boolean;
-  begin
+  Begin
       count := 0; goodkey := false; ctrlc := false;
 //      key := #255;
       if skip_page_display = false then
       Begin
         while (lines[count] <> 'ENDofLINES') and (ctrlc = false) do
-          begin
+          Begin
                if (count mod 22 = 0) and (count > 21) then
-                  begin
+                  Begin
                       if lines[count] <> 'DELETED' then
                          writeln(lines[count]);
                       writeln('--More--, next page: Space, next line: Return key, quit: Control-c');
                       repeat
-                        begin
+                        Begin
                             key := readkey;
                             case key of
-                              #3  : begin
+                              #3  : Begin
                                       ctrlc := true;
                                       goodkey := true;
-                                    end;
+                                    End;
                               #32 : goodkey := true;
-                              #13 : begin
+                              #13 : Begin
                                       if lines[count+1] = 'ENDofLINES' then
-                                         begin
+                                         Begin
                                               ctrlc := true;
                                               goodkey := true;
-                                         end
-                                      else
-                                      begin
+                                         End
+                                      Else
+                                      Begin
                                         gotoxy(1,whereY-1);
                                         write('                                                                               ');
                                         gotoxy(1,whereY);
-                                        //inc(count);
                                         if lines[count] <> 'DELETED' then
                                            writeln(lines[count+1]);
                                         writeln('--More--, next page: Space, next line: Return key, quit: Control-c');
                                         inc(count);
-                                      end;
-                                    end;
-                              'q' : begin
+                                      End;
+                                    End;
+                              'q' : Begin
                                       goodkey := true;
                                       ctrlc := true;
-                                    end;
-                              'Q' : begin
+                                    End;
+                              'Q' : Begin
                                       goodkey := true;
                                       ctrlc := true;
-                                    end;
-                            end;
-                        end
+                                    End;
+                            End;
+                        End
                       until goodkey = true;
                       inc(count);
-                  end
-               else
-                 begin
+                  End
+               Else
+                 Begin
                      if lines[count] <> 'DELETED' then
                         writeln(lines[count]);
                      inc(count);
-                 end;
-          end;
+                 End;
+          End;
       End
-    else
+    Else
       Begin
            while (lines[count] <> 'ENDofLINES') and (ctrlc = false) do
-              begin
+              Begin
                   writeln(lines[count]);
                   inc(count);
-              end;
+              End;
       End;
-  end;
+  End;
 
-  procedure bad_command(command:string);
+  Procedure bad_command(command:string);
 
-  begin
+  Begin
     writeln('Invalid input -> ',command);
     writeln('Type ? for a list');
-  end;
+  End;
 
 
-  procedure help_match(findword : string; var list : array of string);
+  Procedure help_match(findword : string; var list : array of string);
 
   var
     loop, len: integer;
@@ -386,16 +379,15 @@ Var
 
   Begin
        len := Length(findword)-1;
-//       writeln('wordlist, ',findword);
        for loop := 0 to high(list) do
-          begin
+          Begin
             astring := Copy(list[loop], 3, len) + '?';
             if astring = findword then
               writeln(list[loop]);
-          end;
+          End;
   End;
 
-  procedure tab_match(findword : string; var list : array of string);
+  Procedure tab_match(findword : string; var list : array of string);
 
   var
     a, loop, len: integer;
@@ -405,41 +397,37 @@ Var
 
   Begin
        len := Length(findword); only_one := 0;
-//       writeln('wordlist, ',findword);
        for loop := 0 to high(list) do
-          begin
+          Begin
             astring := Copy(list[loop], 3, len);
             if astring = findword then
-              begin
+              Begin
                   inc(only_one);
                   if list[loop] <> 'ENDofLINES' then
                      writeln(list[loop]);
                   tmp_str := list[loop];
-              end;
-          end;
+              End;
+          End;
        if only_one = 1 then
-          begin
+          Begin
                 a := 3;
                 if word_list[2] = '' then
                    input := ''
-                else
+                Else
                    input := word_list[1] + ' ';
                 while (tmp_str[a] <> ' ') do
                    Begin
                        input := input + tmp_str[a];
                        if tmp_str[a] <> '' then
-                          begin
-                              inc(a);
-  //                            write(input[a]);
-                          end
-                       else
+                          inc(a)
+                       Else
                           break;
                    End;
                input := input + ' ';
-          end;
+          End;
   End;
 
-  procedure Read_startup_config;
+  Procedure Read_startup_config;
 
   var
       sc : textfile;
@@ -478,19 +466,19 @@ Var
        running_config[24] := aline;
        inc(loop);
        while not EOF(sc) do
-            begin
+            Begin
 //              writeln('-------',aline);   readln;
               readln(sc,aline);
               startup_config[loop] := aline;
               running_config[loop+23] := aline;
               inc(loop);
-            end;
+            End;
        running_config[loop+23] := 'ENDofLINES';
        last_line_of_running := loop +23;
        closefile(sc);
   End;
 
-  procedure read_config;
+  Procedure read_config;
 
   var
       sc : textfile;
@@ -499,14 +487,13 @@ Var
       isend : boolean;
       slot : integer;
 
-  begin
+  Begin
        isend := false; loop := 1; slot := 1; port_count := 1;
        assignfile(sc,ModulesFile);
-//       fileh := FileOpen('c:\modules.txt',1);
        reset(sc);
        readln(sc, aline);
        if aline = 'Insatalled-modules' then
-          begin
+          Begin
               readln(sc,aline);
               modules[1] := aline;
               readln(sc,aline);
@@ -518,20 +505,19 @@ Var
                     readln(sc,aline);
                     if aline = 'END' then
                        isend := true
-                    else
-                      begin
+                    Else
+                      Begin
                         modules[loop] := aline;
-//                        writeln(modules[loop]); readkey;
                         // setup interface ports
                         if (is_word('Management',aline) = false) then
-                           begin
+                           Begin
 //                                writeln(aline);
                                 if is_word('EMPTY',aline) = true then
                                    inc(slot)
-                                else
-                                begin
+                                Else
+                                Begin
                                  for loop2 := 1 to 24 do
-                                    begin
+                                    Begin
                                           interfaces[port_count].no_config := true;
                                           interfaces[port_count].admin_disable := false;
                                           interfaces[port_count].port_no := shortstring(inttostr(slot) + '/' + inttostr(loop2));
@@ -542,118 +528,116 @@ Var
                                           interfaces[port_count].priority := 0;
 //                                          writeln(interfaces[port_count].port_no);
                                           inc(port_count);
-                                    end;
+                                    End;
                                 inc(slot);
-                                end;
-                           end
-                        else
-                           begin
+                                End;
+                           End
+                        Else
+                           Begin
                                 inc(slot);
                                 readln(sc,aline);
                                 inc(loop);
                                 modules[loop] := aline;
-                           end;
+                           End;
                         inc(loop);
-                      end;
+                      End;
               until (isend = true);
               dec(port_count);
-          end;
+          End;
 
        modules[loop] := 'ENDofMODULES';
-//       readln(sc);
        readln(sc,aline); // version
        loop := 1; isend := false;
        repeat
-             begin
+             Begin
                   readln(sc,aline);
                   if aline = 'END' then
                      isend := true
-                  else
-                     begin
+                  Else
+                     Begin
                        code_version[loop] := aline;
                        inc(loop);
-                     end;
-             end;
+                     End;
+             End;
        until (isend = true);
        code_version[loop] := 'ENDofLINES';
-//       writeln(code_version);
        readln(sc, aline);
        isend := false;    loop := 1;
        if aline = 'FLASH' then
-          begin
+          Begin
               //writeln(aline);
               repeat
                     readln(sc,aline);
                     if aline = 'END' then
                        isend := true
-                    else
-                      begin
+                    Else
+                      Begin
                         flash[loop] := aline;
 //                        writeln(aline); readln;
                         inc(loop);
-                      end;
+                      End;
               until (isend = true);
-          end;
+          End;
        flash[loop] := 'ENDofFLASH';
        isend := false; loop := 1;
        readln(sc,aline);
        if aline = 'CHASIS' then
-          begin
+          Begin
               //writeln(aline);
               repeat
                     readln(sc,aline);
                     if aline = 'END' then
                        isend := true
-                    else
-                      begin
+                    Else
+                      Begin
                         chassis[loop] := aline;
 //                        writeln(aline);
                         inc(loop);
-                      end;
+                      End;
               until (isend = true);
-          end;
+          End;
        chassis[loop] := 'ENDofLINES';
        isend := false; loop := 1;
        readln(sc,aline);
        if aline = 'SHOWMEMORY' then
-          begin
+          Begin
               //writeln(aline);
               repeat
                     readln(sc,aline);
                     if aline = 'END' then
                        isend := true
-                    else
-                      begin
+                    Else
+                      Begin
                         show_memory[loop] := aline;
 //                        writeln(aline);
                         inc(loop);
-                      end;
+                      End;
               until (isend = true);
-          end;
+          End;
           show_Memory[loop] := 'ENDofMEMORY';
        isend := false; loop := 1;
        readln(sc,aline);
        if aline = 'SHOWARP' then
-          begin
+          Begin
               //writeln(aline);
               repeat
                     readln(sc,aline);
                     if aline = 'END' then
                        isend := true
-                    else
-                      begin
+                    Else
+                      Begin
                         show_arp[loop] := aline;
 //                        writeln(aline);
                         inc(loop);
-                      end;
+                      End;
               until (isend = true);
-          end;
+          End;
           show_arp[loop] := 'ENDofARP';
  //      write('******** ',flash[1]);
        closefile(sc);
   //     readln;
 
-  end;
+  End;
 
   Procedure init_top_menu;
 
@@ -667,9 +651,9 @@ Var
     top_menu[7] := 'ENDofLINES';
   End;
 
-  procedure init_dm_menu;
+  Procedure init_dm_menu;
 
-  begin
+  Begin
     dm_menu[1] := '  HEX                           Number';
     dm_menu[2] := '  48gc                          48GC related commands';
     dm_menu[3] := '  802-1w                        show 802-1w internal information';
@@ -678,7 +662,7 @@ Var
     dm_menu[6] := '  app_vlan_debug                App VLAN table (shadow)';
     dm_menu[7] := '  auq-resync                    Sync Auq for a device';
     dm_menu[8] := '  auq-status                    show auq status';
-    dm_menu[9] := '  auto-dfcdl                    Test Auto DFCDL function';
+    dm_menu[9] := '  auto-dfcdl                    Test Auto DFCDL Function';
     dm_menu[10] := '  badaddr                       Test only, will reboot';
     dm_menu[11] := '  blink                         Show gig link changes due to PHY blink';
     dm_menu[12] := '  clear_boot_count              Clear crash dump';
@@ -799,8 +783,8 @@ Var
     dm_menu[127] := '  xbar-device                   external crossbar device';
     dm_menu[128] := '  <cr>';
     dm_menu[129] := 'ENDofLINES';
-  end;
-  procedure init_debug_ip_menu;
+  End;
+  Procedure init_debug_ip_menu;
 
   Begin
     debug_ip_menu[1] := '  arp             ARP messages';
@@ -820,9 +804,9 @@ Var
     debug_ip_menu[15] := '  web-ssl         WEB Secured Socket Layer information';
     debug_ip_menu[16] := 'ENDofLINES';
   End;
-  procedure init_debug_menu;
+  Procedure init_debug_menu;
 
-  begin
+  Begin
     debug_menu[1] :='  48gc                 48GC related commands';
     debug_menu[2] :='  802.1w               RSTP (802.1w) Debug information';
     debug_menu[3] :='  acl                  access-list';
@@ -848,9 +832,9 @@ Var
     debug_menu[23] :='  web                  Enable Web related debugging';
     debug_menu[24] :='  webauth              Enable Web Authentication debugging';
     debug_menu[25] :='ENDofLINES';
-  end;
+  End;
 
-procedure init_enable_menu;
+Procedure init_enable_menu;
 
   Begin
     enable_menu[1] := '  alias                     Display configured aliases';
@@ -893,15 +877,15 @@ procedure init_enable_menu;
     enable_menu[38] := 'ENDofLINES';
   End;
 
-  procedure init_qos_menu;
+  Procedure init_qos_menu;
 
-  begin
+  Begin
       qos_menu[1] := '  mechanism         Change mechanism';
       qos_menu[2] := '  name              Change name';
       qos_menu[3] := '  profile           Change bandwidth allocation';
       qos_menu[4] := '  tagged-priority   Change tagged frame priority to profile mapping';
       qos_menu[5] := 'ENDofLINES';
-  end;
+  End;
 
   Procedure init_access_list_menu;
 
@@ -910,21 +894,21 @@ procedure init_enable_menu;
       access_list_menu[2] := '  <100-199>    Extended IP access list';
       access_list_menu[3] := 'ENDofLINES';
   End;
-  procedure init_chassis_menu;
+  Procedure init_chassis_menu;
 
-  begin
+  Begin
       chassis_menu[1] := '  name        Chassis name';
       chassis_menu[2] := '  poll-time   Change hardware sensors polling interval seconds';
       chassis_menu[3] := '  trap-log';
       chassis_menu[4] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_configterm_menu;
+  Procedure init_configterm_menu;
 
-  begin
+  Begin
     configterm_menu[1] := '  terminal';
     configterm_menu[2] := 'ENDofLINES';
-  end;
+  End;
 
   Procedure init_ip_menu;
 
@@ -979,17 +963,17 @@ procedure init_enable_menu;
     ip_menu[49] := 'ENDofLINES';
   End;
 
-  procedure init_banner_menu;
+  Procedure init_banner_menu;
 
-  begin
+  Begin
     banner_menu[1] := '  ASCII string   c banner text c, where ''c'' is a delimiting character';
     banner_menu[2] := '  exec           Set EXEC process creation banner';
     banner_menu[3] := '  incoming       Set incoming terminal line banner';
     banner_menu[4] := '  motd           Set Message-of-the-day banner';
     banner_menu[5] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_clear_menu;
+  Procedure init_clear_menu;
 
   Begin
       clear_menu[1] := '  access-list              Clear ACL counters';
@@ -1020,20 +1004,20 @@ procedure init_enable_menu;
       clear_menu[26] := '  web-connection           All web connections';
       clear_menu[27] := '  webauth                  Web Authentication';
       clear_menu[28] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_aaa_menu;
+  Procedure init_aaa_menu;
 
-  begin
+  Begin
     aaa_menu[1] := '  accounting       Accounting configurations parameters';
     aaa_menu[2] := '  authentication   Authentication configurations parameters';
     aaa_menu[3] := '  authorization    Authorization configurations parameters;';
     aaa_menu[4] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_lldp_menu;
+  Procedure init_lldp_menu;
 
-  begin
+  Begin
     lldp_menu[1] := '  advertise                    Control advertising of information';
     lldp_menu[2] := '  enable                       Enable LLDP on interfaces, SNMP notifications';
     lldp_menu[3] := '  max-neighbors-per-port       Specify the maximum number of neighbors per port';
@@ -1051,14 +1035,14 @@ procedure init_enable_menu;
     lldp_menu[15] := '  transmit-interval            Specify the interval between regular LLDP';
     lldp_menu[16] := '                               transmissions';
     lldp_menu[17] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_show_menu;
+  Procedure init_show_menu;
 
 //  var
 //   lines : array[1..80] of string;
 
-  begin
+  Begin
     show_menu[1]  := '  802-1w                 Rapid Spanning tree IEEE 802.1w D10 status';
     show_menu[2]  := '  aaa                    Show TACACS+ and RADIUS server statistics';
     show_menu[3]  := '  access-list            Show access list hit statistics';
@@ -1138,11 +1122,11 @@ procedure init_enable_menu;
     show_menu[77] := '  |                      Output modifiers';
     show_menu[78] := '  <cr>';
     show_menu[79] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_config_term_menu;
+  Procedure init_config_term_menu;
 
-  begin
+  Begin
     config_term_menu[1] :=   '  aaa                           Define authentication method list      --> 4 ?';
     config_term_menu[2] :=   '  access-list                   Define Access Control List (ACL)       --> 4 ?';
     config_term_menu[3] :=   '  aggregated-vlan               Support for larger Ethernet frames up to 1536';
@@ -1167,7 +1151,7 @@ procedure init_enable_menu;
     config_term_menu[22] :=  '  disable-hw-ip-checksum-check';
     config_term_menu[23] :=  '  dot1x-enable                  Enable dot1x system authentication control';
     config_term_menu[24] :=  '  enable                        Password, page-mode and other options';
-    config_term_menu[25] :=  '  end                           End Configuration level and go to Privileged';
+    config_term_menu[25] :=  '  End                           End Configuration level and go to Privileged';
     config_term_menu[26] :=  '                                level';
     config_term_menu[27] :=  '  errdisable                    Set Error Disable Attributions';
     config_term_menu[28] :=  '  exit                          Exit current level';
@@ -1189,7 +1173,7 @@ procedure init_enable_menu;
     config_term_menu[44] :=  '  ipv4-subnet-response          Allow ipv4 subnet broadcast';
     config_term_menu[45] :=  '  ipv6                          IPv6 settings';
     config_term_menu[46] :=  '  jumbo                         gig port jumbo frame support (10240 bytes)';
-    config_term_menu[47] :=  '  lacp-cfg-det-dis              Disable remote end LACP config remove detection';
+    config_term_menu[47] :=  '  lacp-cfg-det-dis              Disable remote End LACP config remove detection';
     config_term_menu[48] :=  '  legacy-inline-power           set legacy (capacitance-based) PD detection -';
     config_term_menu[49] :=  '                                default';
     config_term_menu[50] :=  '  link-config                   Link Configuration                     --> 4 ?';
@@ -1262,9 +1246,9 @@ procedure init_enable_menu;
     config_term_menu[117] := '  write                         Write running configuration to flash or terminal';
     config_term_menu[118] := '  <cr>';
     config_term_menu[119] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_fast_menu;
+  Procedure init_fast_menu;
   Begin
       fast_menu[1] := '  port-span     Fast spanning tree for end station ports';
       fast_menu[2] := '  uplink-span   Fast spanning tree for uplink ports';
@@ -1279,7 +1263,7 @@ procedure init_enable_menu;
       fdp_menu[4] := 'ENDofLINES';
   End;
 
-  procedure init_link_config_menu;
+  Procedure init_link_config_menu;
   Begin
       Link_config_menu[1] := '  gig    GiG Link';
       Link_config_menu[2] := '  x10g   10G Link';
@@ -1295,7 +1279,7 @@ procedure init_enable_menu;
       link_keepalive_menu[5] := 'ENDofLINES';
   End;
 
-  procedure init_logging_menu;
+  Procedure init_logging_menu;
   Begin
       logging_menu[1] :='  buffered';
       logging_menu[2] :='  console';
@@ -1307,7 +1291,7 @@ procedure init_enable_menu;
       logging_menu[8] :='ENDofLINES';
   End;
 
-  procedure init_mac_authentication_menu;
+  Procedure init_mac_authentication_menu;
   Begin
       mac_authentication_menu[1] := '  auth-fail-dot1x-override     Specify to use dot1x VLAN when MAC';
       mac_authentication_menu[2] := '                               authentication fails as restricted';
@@ -1326,15 +1310,15 @@ procedure init_enable_menu;
       mac_authentication_menu[15] := 'ENDofLINES';
   End;
 
-  procedure init_rmon_menu;
-  begin
+  Procedure init_rmon_menu;
+  Begin
       rmon_menu[1] := '  alarm     Configure an RMON alarm';
       rmon_menu[2] := '  event     Configure an RMON event';
       rmon_menu[3] := '  history   Configure an RMON history control';
       rmon_menu[4] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_sflow_menu;
+  Procedure init_sflow_menu;
   Begin
       sflow_menu[1] := '  agent-ip           specify an sflow agent IP address';
       sflow_menu[2] := '  destination        Set sflow datagrams export destination';
@@ -1347,14 +1331,14 @@ procedure init_enable_menu;
       sflow_menu[9] := 'ENDofLINES';
   End;
 
-  procedure init_sntp_menu;
+  Procedure init_sntp_menu;
   Begin
       sntp_menu[1] := '  server             **specify the SNTP peer IP address';
       sntp_menu[2] := '  poll-interval      **Set SNTP poll-interval in seconds';
       sntp_menu[3] := 'ENDofLINES';
   End;
 
-  procedure init_snmp_server_menu;
+  Procedure init_snmp_server_menu;
   Begin
       snmp_server_menu[1] := '  community     Enable SNMP; set community string and access privs';
       snmp_server_menu[2] := '  contact       Text for mib object sysContact';
@@ -1371,7 +1355,7 @@ procedure init_enable_menu;
       snmp_server_menu[13] := 'ENDofLINES';
   End;
 
-  procedure init_snmp_client_menu;
+  Procedure init_snmp_client_menu;
   Begin
       snmp_client_menu[1] := '  A.B.C.D   IP address';
       snmp_client_menu[2] := '  any';
@@ -1379,7 +1363,7 @@ procedure init_enable_menu;
       snmp_client_menu[4] := 'ENDofLINES';
   End;
 
-  procedure init_web_management_menu;
+  Procedure init_web_management_menu;
   Begin
       web_management_Menu[1] := '  allow-no-password            Allow web server to have no password';
       web_management_Menu[2] := '  connection-receive-timeout   Web connection receive timeout';
@@ -1399,9 +1383,9 @@ procedure init_enable_menu;
       web_management_Menu[16] := 'ENDofLINES';
   End;
 
-  procedure init_mstp_menu;
+  Procedure init_mstp_menu;
 
-  begin
+  Begin
     mstp_menu[1] := '  admin-edge-port         Define this port to be an edge port';
     mstp_menu[2] := '  admin-pt2pt-mac         Define this port to be a point-to-point link';
     mstp_menu[3] := '  disable                 Disable MSTP on this interface';
@@ -1418,11 +1402,11 @@ procedure init_enable_menu;
     mstp_menu[14] := '  scope                   Configure MSTP scope';
     mstp_menu[15] := '  start                   Start/stop MSTP operation';
     mstp_menu[16] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_interface_menu;
+  Procedure init_interface_menu;
 
-  begin
+  Begin
       interface_menu[1] := '  100-fx                  100 FX Mode';
       interface_menu[2] := '  100-tx                  100 TX Mode';
       interface_menu[3] := '  acl-logging             enable logging of deny acl';
@@ -1492,11 +1476,11 @@ procedure init_enable_menu;
       interface_menu[67] := '  write                   Write running configuration to flash or terminal';
       interface_menu[68] := '  <cr>';
       interface_menu[69] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure init_vlan_menu;
+  Procedure init_vlan_menu;
 
-  begin
+  Begin
       vlan_menu[1] := '  atalk-proto                   Set AppleTalk protocol VLAN';
       vlan_menu[2] := '  clear                         Clear table/statistics/keys';
       vlan_menu[3] := '  decnet-proto                  Set decnet protocol VLAN';
@@ -1527,9 +1511,9 @@ procedure init_enable_menu;
       vlan_menu[28] := '  write                         Write running configuration to flash or terminal';
       vlan_menu[29] := '  <cr>';
       vlan_menu[30] := 'ENDofLINES';
-  end;
+  End;
 
-  procedure display_help_match(findword : string);
+  Procedure display_help_match(findword : string);
 
   var
     loop, len: integer;
@@ -1539,14 +1523,14 @@ procedure init_enable_menu;
        len := Length(findword)-1;
 //       writeln('wordlist, ',findword);
        for loop := 1 to 80 do
-          begin
+          Begin
             astring := Copy(show_menu[loop], 3, len) + '?';
             if astring = findword then
               writeln(show_menu[loop]);
-          end;
+          End;
   End;
 
-  procedure display_show_arp;
+  Procedure display_show_arp;
 
   var
     loop : integer;
@@ -1557,16 +1541,16 @@ procedure init_enable_menu;
     repeat
           if show_arp[loop] = 'ENDofARP' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(show_arp[loop]);
                   inc(loop)
-              end;
+              End;
     until isend = true;
 //    writeln(chassis[loop]);
   End;
 
-  procedure display_show_boot_pref;
+  Procedure display_show_boot_pref;
 
   Begin
     writeln('1 percent busy, from 45 sec ago');
@@ -1580,11 +1564,11 @@ procedure init_enable_menu;
 
   Procedure display_show_clock;
 
-  begin
+  Begin
     writeln(timetostr(time), ' GMT+10 ',datetostr(date));
-  end;
+  End;
 
-  procedure display_show_cpu;
+  Procedure display_show_cpu;
 
   Begin
     writeln('1 percent busy, from 45 sec ago');
@@ -1594,9 +1578,9 @@ procedure init_enable_menu;
     writeln('300 sec avg:  1 percent busy');
   End;
 
-  procedure display_show_defaults;
+  Procedure display_show_defaults;
 
-  begin
+  Begin
     writeln('snmp ro community public   spanning tree disabled     fast port span disabled');
 writeln('auto sense port speed      port untagged              port flow control on');
 writeln('no username assigned       no password assigned       boot sys flash primary');
@@ -1614,7 +1598,7 @@ writeln('rip type:v2 only           rip poison rev enabled');
 writeln('');
 writeln('ipx disabled               appletalk disabled');
 
-  end;
+  End;
 
   Procedure display_show_dot1x;
 
@@ -1639,7 +1623,7 @@ writeln('ipx disabled               appletalk disabled');
       writeln('');
       writeln('--------------    -----------------   ---------------');
   End;
-  procedure display_show_fdp;
+  Procedure display_show_fdp;
 
   Begin
     writeln('Either FDP or CDP is not enabled');
@@ -1656,7 +1640,7 @@ writeln('ipx disabled               appletalk disabled');
   Begin
       index := 1; mac_base := 1201;
       for loop := 1 to 100 do
-        begin
+        Begin
             lines[index] := 'GigabitEthernet' + string(interfaces[loop].port_no) +' is down, line protocol is down';
 //            writeln(' --> ',lines[index]); readkey;
             inc(index);
@@ -1669,16 +1653,16 @@ writeln('ipx disabled               appletalk disabled');
             lines[index] := '  Member of L2 VLAN ID 1, port is untagged, port state is BLOCKING';
             inc(index);
             if interfaces[loop].bpdu = true then
-               begin
+               Begin
                   lines[index] := '  BPDU guard is Enabled, ROOT protect is ';
-               end
-            else
+               End
+            Else
                lines[index] := '  BPDU guard is Disabled, ROOT protect is ';
             if interfaces[loop].root_guard = true then
-               begin
+               Begin
                   lines[index] := lines[index]+ 'Enabled';
-               end
-            else
+               End
+            Else
                lines[index] := lines[index] + 'Disabled';
             inc(index);
             lines[index] := '  Link Error Dampening is Disabled';
@@ -1694,15 +1678,15 @@ writeln('ipx disabled               appletalk disabled');
             lines[index] := '  Not member of any configured trunks';
             inc(index);
             if interfaces[loop].descript = '' then
-               begin
+               Begin
                   lines[index] := '  No port name';
                   inc(index);
-               end
-            else
-               begin
+               End
+            Else
+               Begin
                   lines[index] := '  ' + interfaces[loop].descript;
                   inc(index);
-               end;
+               End;
             lines[index] := '  IPG MII 96 bits-time, IPG GMII 96 bits-time';
             inc(index);
             lines[index] := '  IP MTU 1500 bytes, encapsulation ethernet';
@@ -1727,7 +1711,7 @@ writeln('ipx disabled               appletalk disabled');
             inc(index);
             lines[index] := '  Relay Agent Information option: Disabled';
             inc(index);
-        end;
+        End;
       lines[index] := 'ENDofLINES';
       page_display(lines);
   End;
@@ -1742,7 +1726,7 @@ writeln('ipx disabled               appletalk disabled');
       index := 1; mac_base := 1201;
       for loop := 1 to 360 do
         if interfaces[loop].port_no = port then
-            begin
+            Begin
             lines[index] := 'GigabitEthernet' + string(interfaces[loop].port_no) +' is down, line protocol is down';
 //            writeln(' --> ',lines[index]); readkey;
             inc(index);
@@ -1755,16 +1739,16 @@ writeln('ipx disabled               appletalk disabled');
             lines[index] := '  Member of L2 VLAN ID 1, port is untagged, port state is BLOCKING';
             inc(index);
             if interfaces[loop].bpdu = true then
-               begin
+               Begin
                   lines[index] := '  BPDU guard is Enabled, ROOT protect is ';
-               end
-            else
+               End
+            Else
                lines[index] := '  BPDU guard is Disabled, ROOT protect is ';
             if interfaces[loop].root_guard = true then
-               begin
+               Begin
                   lines[index] := lines[index]+ 'Enabled';
-               end
-            else
+               End
+            Else
                lines[index] := lines[index] + 'Disabled';
             inc(index);
             lines[index] := '  Link Error Dampening is Disabled';
@@ -1780,15 +1764,15 @@ writeln('ipx disabled               appletalk disabled');
             lines[index] := '  Not member of any configured trunks';
             inc(index);
             if interfaces[loop].descript = '' then
-               begin
+               Begin
                   lines[index] := '  No port name';
                   inc(index);
-               end
-            else
-               begin
+               End
+            Else
+               Begin
                   lines[index] := '  ' + interfaces[loop].descript;
                   inc(index);
-               end;
+               End;
             lines[index] := '  IPG MII 96 bits-time, IPG GMII 96 bits-time';
             inc(index);
             lines[index] := '  IP MTU 1500 bytes, encapsulation ethernet';
@@ -1813,11 +1797,11 @@ writeln('ipx disabled               appletalk disabled');
             inc(index);
             lines[index] := '  Relay Agent Information option: Disabled';
             inc(index);
-        end;
+        End;
       lines[index] := 'ENDofLINES';
       page_display(lines);
   End;
-  procedure display_show_int_bri;
+  Procedure display_show_int_bri;
 
   var
     lines : array[1..385] of string;
@@ -1827,26 +1811,26 @@ writeln('ipx disabled               appletalk disabled');
        lines[1] := '';
        lines[2] := 'Port    Link      State  Dupl Speed Trunk Tag Pvid Pri MAC            Name';
        for loop := 1 to port_count do
-         begin
+         Begin
              if length(interfaces[loop].port_no) < 4 then
                 lines[loop+2] := string(interfaces[loop].port_no) + '     '
-             else
+             Else
                if length(interfaces[loop].port_no) < 5 then
                    lines[loop+2] := string(interfaces[loop].port_no) + '    '
-               else
+               Else
                    lines[loop+2] := string(interfaces[loop].port_no) + '   ';
              if interfaces[loop].admin_disable = true then
                 lines[loop+2] := lines[loop+2] + 'Disabled  None   None None  None  No  100  0   0012.f2cf.1200 '
-             else
+             Else
                 lines[loop+2] := lines[loop+2] + 'Down      None   None None  None  No  100  0   0012.f2cf.1200 ';
              //  show intrface brieft will only show the first 8 chars
              lines[loop+2] := lines[loop+2] + leftstr(interfaces[loop].descript,8);
-         end;
+         End;
        lines[loop+1] := 'ENDofLINES';
        page_display(lines);
   End;
 
-  procedure display_show_modules;
+  Procedure display_show_modules;
 
   var
     loop : integer;
@@ -1857,15 +1841,15 @@ writeln('ipx disabled               appletalk disabled');
     repeat
           if modules[loop] = 'ENDofMODULES' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(modules[loop]);
                   inc(loop)
-              end;
+              End;
     until isend = true;
   End;
 
-  procedure display_show_flash;
+  Procedure display_show_flash;
 
   var
     loop : integer;
@@ -1876,15 +1860,15 @@ writeln('ipx disabled               appletalk disabled');
     repeat
           if flash[loop] = 'ENDofFLASH' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(flash[loop]);
                   inc(loop)
-              end;
+              End;
     until isend = true;
   End;
 
-  procedure display_show_memory;
+  Procedure display_show_memory;
 
   var
     loop : integer;
@@ -1895,11 +1879,11 @@ writeln('ipx disabled               appletalk disabled');
     repeat
           if show_memory[loop] = 'ENDofMEMORY' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(show_memory[loop]);
                   inc(loop)
-              end;
+              End;
     until isend = true;
   End;
 
@@ -2292,7 +2276,7 @@ writeln('ipx disabled               appletalk disabled');
       Writeln(' All Ports VLAN        4092       4092        4092');
   End;
 
-  procedure display_running_config;
+  Procedure display_running_config;
 
   var
     loop : integer;
@@ -2301,19 +2285,19 @@ writeln('ipx disabled               appletalk disabled');
   Begin
    { isend := false; loop := 1;
     repeat
-          if running_config[loop] = 'end' then
+          if running_config[loop] = 'End' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(running_config[loop]);
                   inc(loop)
-              end;
+              End;
     until isend = true;
     writeln(running_config[loop]);}
     for loop := 1 to port_count do
-         begin
+         Begin
              if interfaces[loop].no_config = false then
-             begin
+             Begin
                 writeln('interface eithernet ', interfaces[loop].port_no);
                 if interfaces[loop].descript <> '' then
                    writeln(' port-name ', string(interfaces[loop].descript));
@@ -2323,14 +2307,14 @@ writeln('ipx disabled               appletalk disabled');
                     writeln(' stp-bdpu-guard');
                 if interfaces[loop].root_guard = true then
                    writeln(' spanning-tree root-protect');
-             end
-         end;
+             End
+         End;
     writeln('!');
     writeln('!');
-    writeln('end');
+    writeln('End');
   End;
 
-  procedure display_stp_protect;
+  Procedure display_stp_protect;
 
   var
     lines        : array[1..385] of string;
@@ -2341,24 +2325,24 @@ writeln('ipx disabled               appletalk disabled');
        lines[index] := '        Port    BPDU Drop Count';
        inc(index);
        for loop := 1 to port_count do
-         begin
+         Begin
              if interfaces[loop].bpdu = true then
-              begin
+              Begin
                 if length(interfaces[loop].port_no) < 4 then
                       lines[index] := '        ' + string(interfaces[loop].port_no) + '     0'
-                else
+                Else
                      if length(interfaces[loop].port_no) < 5 then
                          lines[index] := '        ' + string(interfaces[loop].port_no) + '    0'
-                     else
+                     Else
                          lines[index] := '        ' + string(interfaces[loop].port_no) + '   0';
                 inc(index);
-              end;
-         end;
+              End;
+         End;
        lines[index] := 'ENDofLINES';
        page_display(lines);
   End;
 
-  procedure display_startup_config;
+  Procedure display_startup_config;
 
   var
     loop : integer;
@@ -2369,8 +2353,8 @@ writeln('ipx disabled               appletalk disabled');
     repeat
           if startup_config[loop] = 'end' then
              isend := true
-          else
-              begin
+          Else
+              Begin
                   writeln(startup_config[loop]);
                   inc(loop)
               end;
@@ -2401,21 +2385,21 @@ writeln('ipx disabled               appletalk disabled');
       writeln(' 5      closed');
   End;
 
-  procedure display_show_version;
+  Procedure display_show_version;
 
   Begin
     page_display(code_version);
   End;
 
-  procedure display_show_web;
+  Procedure display_show_web;
 
   Begin
        writeln('No WEB-MANAGEMENT sessions are currently established!');
   End;
 
-  procedure display_show_who;
+  Procedure display_show_who;
 
-  begin
+  Begin
     writeln('Console connections:');
     writeln('        established, monitor enabled');
     writeln('        60 days 9 hours 11 minutes 2 seconds in idle');
@@ -2435,27 +2419,27 @@ writeln('ipx disabled               appletalk disabled');
     writeln(' 5      closed');
   end;
 
-  procedure display_show;
+  Procedure display_show;
 
   var
      strLength, word_count, a : integer;
      word_list : array[1..10] of string;
      show_input : string;
 
-  begin
+  Begin
         a := 1; word_count := 1;
         show_input := input;
         strlength := length(show_input);
         while (show_input[a] <> '') and (a <= strlength)do
-          begin
+          Begin
                while (show_input[a] <> ' ') and (a <= strlength)do
                  Begin
                      word_list[word_count] := word_list[word_count] + show_input[a];
                      if show_input[a] <> '' then
-                        begin
+                        Begin
                             inc(a);
                         end
-                     else
+                     Else
                         break;
                  End;
                inc(a);
@@ -2464,122 +2448,122 @@ writeln('ipx disabled               appletalk disabled');
         case show_input[1] of
            's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
                                writeln('Incomplete command.')
-                 else
+                 Else
                  if (show_input = 'sh ?') or (show_input = 'sho ?') or (show_input = 'show ?') then
                     page_Display(show_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_help(word_list[2]) = TRUE) then
-                    begin
+                    Begin
                       display_help_match(word_list[2]);
                     end
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'arp') = TRUE) then
                     display_show_arp
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'boot-preference') = TRUE) then
                     display_show_boot_pref
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'clock') = TRUE) then
                     display_show_clock
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'chassis') = TRUE) then
                     page_display(chassis)
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'cpu-utilization') = TRUE) then
                     display_show_cpu
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'defaults') = TRUE) then
                     display_show_defaults
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'dot1x') = TRUE) then
                     display_show_dot1x
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'errdisable') = TRUE) and (word_list[3] = '') then
                   Writeln('Incomplete command.')
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'errdisable') = TRUE) and (word_list[3] = '?') then
-                    begin
+                    Begin
                         Writeln('  recovery   Error disable recovery');
                         Writeln('  summary    Error disable summary')
                     end
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'errdisable') = TRUE) and (is_word(word_list[3],'summary') = TRUE)then
                     writeln
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'errdisable') = TRUE) and (is_word(word_list[3],'recovery') = TRUE)then
                     display_show_errdisabled_recovery
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'fdp') = TRUE) then
                     display_show_fdp
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'flash') = TRUE) then
                     display_show_flash
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) and (is_word(word_list[3],'ethernet') = TRUE)then
-                    begin
+                    Begin
                         if check_int(shortstring(word_list[4])) = true then
                            display_show_int_eth(shortstring(word_list[4]))
-                        else
+                        Else
                           Writeln('port not valid');
                     end
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) and (is_word(word_list[3],'brief') = TRUE)then
                     display_show_int_bri
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) then
                     display_show_int
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'modules') = TRUE) then
                     display_show_modules
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'memory') = TRUE) then
                     display_show_memory
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'port') = TRUE) and (is_word(word_list[3],'security') = TRUE) then
                     display_show_port_security
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'reload') = TRUE) then
                     display_show_reload
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'reserved-vlan-map') = TRUE) then
                     display_show_reserved_vlan
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'running-config') = TRUE) then
                     Begin
                         page_display(running_config);
                         display_running_config;
                     End
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'startup-config') = TRUE) then
                     display_startup_config
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'stp-protect') = TRUE) then
                     display_stp_protect
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'telnet') = TRUE) then
                     display_show_telnet
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'version') = TRUE) then
                     display_show_version
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'web-connection') = TRUE) then
                     display_show_web
-                 else
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'who') = TRUE) then
                     display_show_who
-                 else
-                    begin
+                 Else
+                    Begin
                       bad_command(show_input);
                      end;
         end;
   end;
 
-  procedure vlan_loop(vlanid :string);
+  Procedure vlan_loop(vlanid :string);
 
   var
      end_vlan_loop : boolean;
 
-  begin
+  Begin
         end_vlan_loop := false;
         input := input;
         Inc(what_level);
@@ -2597,14 +2581,14 @@ writeln('ipx disabled               appletalk disabled');
                 Begin
                    help_match(word_list[1], vlan_menu)
                 End
-             else
+             Else
              if ((is_word(word_list[1],'tagged')) = true) and (out_key = #9) then //tab key
                 //tab_match(word_list[1],vlan_menu)
                 writeln('ethernet')
-             else
+             Else
              if out_key = #9 then //tab key
                 tab_match(word_list[1],vlan_menu)
-            else
+            Else
                 case input[1] of
                  '?' : page_display(vlan_menu);
                  'e' : if (input = 'ex') or (input = 'exi') or (input = 'exit')then
@@ -2615,8 +2599,8 @@ writeln('ipx disabled               appletalk disabled');
                        End;
                  's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                           writeln('Incomplete command.')
-                       else
-                          begin
+                       Else
+                          Begin
                             input := input;
                             display_show;
                           end;
@@ -2624,7 +2608,7 @@ writeln('ipx disabled               appletalk disabled');
                        Begin
                           if (is_word(word_list[2],'ethernet')) = true then
                             write('TAG ethernet')
-                          else
+                          Else
                             bad_command(input);
                        End;
                  'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
@@ -2637,11 +2621,11 @@ writeln('ipx disabled               appletalk disabled');
                        Begin
                           if (is_word(word_list[2],'ethernet')) = true then
                             write('UNTAG ethernet')
-                          else
+                          Else
                             bad_command(input);
                        End;
-                 else
-                       begin
+                 Else
+                       Begin
                           bad_command(input);
                        end;
           end;
@@ -2650,38 +2634,38 @@ writeln('ipx disabled               appletalk disabled');
 
 
 
-  procedure int_loop(intid : string);
+  Procedure int_loop(intid : string);
 
   var
      find_int     : integer;
      end_int_loop : boolean;
 
-    procedure remove_config;
+    Procedure remove_config;
 
     var
        find_int     : integer;
 
-    begin
+    Begin
             case input[4] of
              '?' : page_display(interface_menu);
              'd' : if (is_word(word_list[1],'disable')) = true then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
-                                  begin
+                                  Begin
                                     interfaces[find_int].admin_disable := true;
                                     interfaces[find_int].no_config := false;
                                   end;
                       end;
              'i' : if (is_word(word_list[1],'interface') = true) and (is_word(word_list[2],'ethernet') = true) then
-                      begin
+                      Begin
                            if check_int(shortstring(word_list[3])) = true then
                                intid := word_list[3]
-                            else
+                            Else
                                writeln('port not valid');
                       end;
              'p' : if (is_word(word_list[2],'port-name')) = true then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
                                   Begin
@@ -2690,19 +2674,19 @@ writeln('ipx disabled               appletalk disabled');
                       end;
              's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                  writeln('Incomplete command.')
-                   else
+                   Else
                     if (is_word(word_list[1],'stp-bpdu-guard')) = true then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
-                                  begin
+                                  Begin
                                     interfaces[find_int].bpdu := true;
                                     interfaces[find_int].no_config := false;
                                   end;
                       end
-                    else
+                    Else
                     if (is_word(word_list[1],'spanning-tree') = true) and (is_word(word_list[2],'root-protect') = true)then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
                                   Begin
@@ -2710,66 +2694,66 @@ writeln('ipx disabled               appletalk disabled');
                                     interfaces[find_int].no_config := false;
                                   End;
                       end
-                    else
+                    Else
                      if (is_word(word_list[1],'speed-duplex')) = true then
-                        begin
+                        Begin
                              if (is_word(word_list[2],'10-full')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '10-full';
                                  end;
                              if (is_word(word_list[2],'10-half')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '10-half';
                                  end;
                              if (is_word(word_list[2],'100-half')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '100-half';
                                  end;
                              if (is_word(word_list[2],'100-full')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '100-full';
                                  end;
                              if (is_word(word_list[2],'1000-full-master')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '1000-full-master';
                                  end;
                              if (is_word(word_list[2],'1000-full-slave')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := '1000-full-slave';
                                  end;
                              if (is_word(word_list[2],'auto')) = true then
-                                 begin
+                                 Begin
                                     for find_int := 1 to port_count do
                                        if interfaces[find_int].port_no = shortstring(intid) then
                                           interfaces[find_int].speed := 'auto';
                                  end;
                         end
-                     else
-                        begin
+                     Else
+                        Begin
                           input := input;
                           display_show;
                         end;
              'n' : if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'stp-bpdu-guard') = true) then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
                                   interfaces[find_int].bpdu := false;
                       end
-                   else
+                   Else
                    if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'spanning-tree') = true) and (is_word(word_list[3],'root-protect') = true)then
-                      begin
+                      Begin
                            for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
                                   interfaces[find_int].root_guard := false;
@@ -2786,22 +2770,22 @@ writeln('ipx disabled               appletalk disabled');
                           dec(what_level);
                           end_int_loop := true;
                        End
-                    else
+                    Else
                        if (is_word(word_list[1],'enable')) = true then
-                          begin
+                          Begin
                              for find_int := 1 to port_count do
                                if interfaces[find_int].port_no = shortstring(intid) then
                                   interfaces[find_int].admin_disable := false
                           end;
             #0 :;
-            else
-                      begin
+            Else
+                      Begin
                         bad_command(input);
                       end;
             end;
     end;
 
-  begin
+  Begin
         end_int_loop := false;
         input := input;
         Inc(what_level);
@@ -2820,30 +2804,30 @@ writeln('ipx disabled               appletalk disabled');
              Begin
                 help_match(word_list[1], interface_menu)
              End
-          else
+          Else
              if out_key = #9 then //tab key
                 tab_match(word_list[1],interface_menu)
-          else
+          Else
           case input[1] of
            '?' : page_display(interface_menu);
            'd' : if (is_word(word_list[1],'disable')) = true then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                begin
+                                Begin
                                   interfaces[find_int].admin_disable := true;
                                   interfaces[find_int].no_config := false;
                                 end;
                     end;
            'i' : if (is_word(word_list[1],'interface') = true) and (is_word(word_list[2],'ethernet') = true) then
-                    begin
+                    Begin
                          if check_int(shortstring(word_list[3])) = true then
                              intid := word_list[3]
-                          else
+                          Else
                              writeln('port not valid');
                     end;
            'p' : if (is_word(word_list[1],'port-name')) = true then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 Begin
@@ -2853,19 +2837,19 @@ writeln('ipx disabled               appletalk disabled');
                     end;
            's' : if (input = 'sh') or (input = 'sho') or (input = 'show') then
                                writeln('Incomplete command.')
-                 else
+                 Else
                   if (is_word(word_list[1],'stp-bpdu-guard')) = true then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
-                                begin
+                                Begin
                                   interfaces[find_int].bpdu := true;
                                   interfaces[find_int].no_config := false;
                                 end;
                     end
-                  else
+                  Else
                   if (is_word(word_list[1],'spanning-tree') = true) and (is_word(word_list[2],'root-protect') = true)then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 Begin
@@ -2873,71 +2857,71 @@ writeln('ipx disabled               appletalk disabled');
                                   interfaces[find_int].no_config := false;
                                 End;
                     end
-                  else
+                  Else
                    if (is_word(word_list[1],'speed-duplex')) = true then
-                      begin
+                      Begin
                            if (is_word(word_list[2],'10-full')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '10-full';
                                end;
                            if (is_word(word_list[2],'10-half')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '10-half';
                                end;
                            if (is_word(word_list[2],'100-half')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '100-half';
                                end;
                            if (is_word(word_list[2],'100-full')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '100-full';
                                end;
                            if (is_word(word_list[2],'1000-full-master')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '1000-full-master';
                                end;
                            if (is_word(word_list[2],'1000-full-slave')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := '1000-full-slave';
                                end;
                            if (is_word(word_list[2],'auto')) = true then
-                               begin
+                               Begin
                                   for find_int := 1 to port_count do
                                      if interfaces[find_int].port_no = shortstring(intid) then
                                         interfaces[find_int].speed := 'auto';
                                end;
                       end
-                   else
-                      begin
+                   Else
+                      Begin
                         input := input;
                         display_show;
                       end;
            'n' : if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'stp-bpdu-guard') = true) then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].bpdu := false;
                     end
-                 else
+                 Else
                  if (is_word(word_list[1],'no') = true) and (is_word(word_list[2],'spanning-tree') = true) and (is_word(word_list[3],'root-protect') = true)then
-                    begin
+                    Begin
                          for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].root_guard := false;
                     end
-                 else
+                 Else
                  if (is_word(word_list[1],'no') = true) then
                     remove_config;
            'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
@@ -2952,16 +2936,16 @@ writeln('ipx disabled               appletalk disabled');
                         dec(what_level);
                         end_int_loop := true;
                      End
-                  else
+                  Else
                      if (is_word(word_list[1],'enable')) = true then
-                        begin
+                        Begin
                            for find_int := 1 to port_count do
                              if interfaces[find_int].port_no = shortstring(intid) then
                                 interfaces[find_int].admin_disable := false
                         end;
           #0 :;
-          else
-                    begin
+          Else
+                    Begin
                       bad_command(input);
                     end;
           end;
@@ -2969,79 +2953,79 @@ writeln('ipx disabled               appletalk disabled');
   end;
 
 
-  procedure configure_term_loop;
+  Procedure configure_term_loop;
 
   var
      end_con_term : boolean;
      foundat : integer;
 
-     procedure looking_for_help;
+     Procedure looking_for_help;
 
-     begin
+     Begin
           if is_help(word_list[1]) = true then
-             begin
+             Begin
                writeln('  vlan                          VLAN settings');
                writeln('  vlan-group                    VLAN group settings');
              end
-          else
+          Else
              if is_help(word_list[2]) = true then
                 writeln('Unrecognized command')
-             else
+             Else
                 if is_help(word_list[3]) = true then
                   Begin
                     if length(word_list[3]) = 1 then
-                      begin
+                      Begin
                         writeln('  by     VLAN type');
                         writeln('  name   VLAN name');
                         writeln('  <cr>');
                        end
-                    else
+                    Else
                       if (word_list[3] = 'b?') or (word_list[3] = 'by?') then
                          writeln('  by     VLAN type')
-                      else
+                      Else
                          if (word_list[3] = 'n?') or (word_list[3] = 'na?') or (word_list[3] = 'nam?') or (word_list[3] = 'name?') then
                             writeln('  name   VLAN name');
                   End
-                else
+                Else
                   if (word_list[4]) = '?' then
                      writeln('  ASCII string   VLAN name');
      end; // looking for help
 
-     procedure remove_config;
+     Procedure remove_config;
 
-     begin
+     Begin
         case input[4] of
            '?' : page_display(config_term_menu);
            'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(aaa_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'access-list') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(access_list_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(banner_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'c' : if (is_word(word_list[2],'chassis') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(chassis_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'clear') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(clear_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'cdp') = TRUE) and (word_list[3] = '?') then
                     writeln('Run')
-                 else
+                 Else
                  if (is_word(word_list[2],'cdp') = TRUE) and (is_word(word_list[3],'run') = TRUE) then
-                    begin
+                    Begin
                        search_run('cdp run',foundat);
                            if foundat <> 0 then
-                              begin
+                              Begin
                                    running_config[foundat] := 'DELETED';
                                   // hostname := 'Fastiron';
                               end;
                     end
-                  else
+                  Else
                     writeln('Incomplete command.');
            'e' : if is_word(word_list[1], 'exit') = true then
                      Begin
@@ -3051,73 +3035,73 @@ writeln('ipx disabled               appletalk disabled');
                      End;
            'f' : if (is_word(word_list[2],'fast') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(fast_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'fdp') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(fdp_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'fdp') = TRUE) and (is_word(word_list[3],'run') = TRUE) then
-                    begin
+                    Begin
                           search_run('fdp run',foundat);
                           if foundat <> 0 then
-                              begin
+                              Begin
                                    running_config[foundat] := 'DELETED';
                               end;
                     end
-                 else
+                 Else
                     writeln('Incomplete command.');
            'h' :  if (is_word(word_list[2],'hostname') = TRUE) then
                      if word_list[2] <> '' then
-                        begin
+                        Begin
                            search_run('hostname',foundat);
                            if foundat <> 0 then
-                              begin
+                              Begin
                                    running_config[foundat] := 'DELETED';
                                    hostname := 'Fastiron';
                               end;
                         end
-                     else
+                     Else
                         writeln('Incomplete command.');
            'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
-                     begin
+                     Begin
                           if check_int(shortstring(word_list[3])) = true then
                              int_loop(word_list[3])
-                          else
+                          Else
                              writeln('port not valid');
                      end
-                 else
+                 Else
                  if (is_word(word_list[1],'ip') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(ip_menu)
-                 else
+                 Else
                      writeln('Incomplete command.');
            'l' : if (is_word(word_list[2],'lldp') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(lldp_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'link-keepalive') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(link_keepalive_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'link-config') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(link_config_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(logging_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'host') = TRUE) then
                     if word_list[4] <> '' then
-                        begin
+                        Begin
                            search_run(concat('logging host ',word_list[4]),foundat);
                            if foundat <> 0 then
-                              begin
+                              Begin
                                    running_config[foundat] := 'DELETED';
                               end;
                         end
-                 else
+                 Else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(mstp_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'mac-authentication') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(mac_authentication_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'q' : if is_word(word_list[1],'quit') = true then
                      Begin
@@ -3125,92 +3109,92 @@ writeln('ipx disabled               appletalk disabled');
                         dec(what_level);
                         end_con_term := true;
                      End
-                 else
+                 Else
                  if (is_word(word_list[1],'qos') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(qos_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'r' : Begin
                     if (is_word(word_list[1],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                         page_display(rmon_menu);
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
-                       begin
+                       Begin
                            writeln('  rip    Enable rip');
                            writeln('  vrrp   Enable vrrp');
                        End;
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (is_word(word_list[3],'?') = true) then
                        writeln('rip    Enable rip')
-                    else
+                    Else
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (is_word(word_list[3],'?') = true) then
                        writeln('vrrp    Enable vrrp')
-                    else
+                    Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
-                         begin
+                         Begin
 
                          End
-                    else
+                    Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
-                         begin
+                         Begin
 
                          End
-                    //else
+                    //Else
                     //   bad_command(word_list[3]);
                  End;
            's' : if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(snmp_server_menu)
-                 else
+                 Else
                  if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'host') = TRUE) then
                     if word_list[3] <> '' then
-                        begin
+                        Begin
                            search_run(concat('SNMP-Server Host ',word_list[4]),foundat);
                            if foundat <> 0 then
-                              begin
+                              Begin
                                    running_config[foundat] := 'DELETED';
                               end;
                         end
-                     else
+                     Else
                         writeln('Incomplete command.')
                  Else
                  if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_client_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(sflow_menu)
-                 else
+                 Else
                  if (input = 'sh') or (input = 'sho') or (input = 'show') then
                     writeln('Incomplete command.')
-                 else
-                     begin
+                 Else
+                     Begin
                          input := input;
                          display_show;
                      End;
           'v' : if (is_help(input) = TRUE) then
-                    begin
+                    Begin
                         looking_for_help
                     End
-                else
+                Else
                   if (is_word(word_list[1],'vlan') = TRUE) then
                     if (is_number(word_list[2]) = TRUE) then
-                      begin
+                      Begin
                         vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
                         vlans[strtoint(word_list[2])].name := word_list[4];
                         vlan_loop(word_list[2]);
                       End
-                    else
+                    Else
                       bad_command(word_list[2]);
           'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(web_management_menu)
-                 else
+                 Else
                          bad_command(word_list[2]);
           #0 :;
-           else
-                    begin
+           Else
+                    Begin
                       bad_command(input);
                     End;
          End;
      end;
 
-  begin //configure_term_loop
+  Begin //configure_term_loop
         end_con_term := false;
         Inc(what_level);
         level := level3;
@@ -3229,113 +3213,122 @@ writeln('ipx disabled               appletalk disabled');
 
            if (word_list[1] = 'ip' = TRUE) and (length(input) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],ip_menu)
-           else
-           if (is_word(word_list[1],'lldp') = TRUE) and (out_key = #9) then //tab key
+           Else
+           if (is_word(word_list[1],'lldp') = TRUE) and (length(input) = 5) and (out_key = #9) then //tab key
                     tab_match(word_list[2],lldp_menu)
-           else
-           if (is_word(word_list[1],'mstp') = TRUE) and (out_key = #9) then //tab key
+           Else
+           if (is_word(word_list[1],'lldp') = TRUE) and (length(input) > 5) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],lldp_menu)
+           Else
+           if (is_word(word_list[1],'mstp') = TRUE) and (length(input) = 5) and (out_key = #9) then //tab key
                     tab_match(word_list[2],mstp_menu)
-           else
-           if (is_word(word_list[1],'sntp') = TRUE) and (out_key = #9) then //tab key
+           Else
+           if (is_word(word_list[1],'mstp') = TRUE) and (length(input) > 5) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],mstp_menu)
+           Else
+           if (is_word(word_list[1],'sntp') = TRUE) and (length(input) = 5) and (out_key = #9) then //tab key
                     tab_match(word_list[2],sntp_menu)
-           else
+           Else
+           if (is_word(word_list[1],'sntp') = TRUE) and (length(input) > 5) and (out_key = #9) then //tab key
+                    tab_match(word_list[2],sntp_menu)
+           Else
            if (is_word(word_list[1],'qos') = TRUE) and (length(input) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],qos_menu)
-           else
+           Else
            if (is_word(word_list[1],'snmp-server') = TRUE) and (length(input) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_server_menu)
-           else
+           Else
            if (is_word(word_list[1],'chassis') = TRUE) and (length(word_list[1]) > 3)and (out_key = #9) then //tab key
                     tab_match(word_list[2],chassis_menu)
-           else
+           Else
            if (is_word(word_list[1],'banner') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],banner_menu)
-           else
+           Else
            if (is_word(word_list[1],'aaa') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],aaa_menu)
-           else
+           Else
            if (is_word(word_list[1],'clear') = true) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],clear_menu)
-           else
+           Else
            if (is_word(word_list[1],'fast') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fast_menu)
-           else
+           Else
            if (is_word(word_list[1],'fdp') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],fdp_menu)
-           else
+           Else
            if (is_word(word_list[1],'link-config') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_config_menu)
-           else
+           Else
            if (is_word(word_list[1],'link-keepalive') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],link_keepalive_menu)
-           else
+           Else
            if (is_word(word_list[1],'logging') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],logging_menu)
-           else
+           Else
            if (is_word(word_list[1],'mac-authentication') = TRUE) and (length(word_list[1]) > 5)and (out_key = #9) then //tab key
                     tab_match(word_list[2],mac_authentication_menu)
-           else
+           Else
            if (is_word(word_list[1],'rmon') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],rmon_menu)
-           else
+           Else
            if (is_word(word_list[1],'sflow') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],sflow_menu)
-           else
+           Else
            if (is_word(word_list[1],'snmp-client') = TRUE) and (length(word_list[1]) > 6) and (out_key = #9) then //tab key
                     tab_match(word_list[2],snmp_client_menu)
-           else
+           Else
            if (is_word(word_list[1],'web-management') = TRUE) and (length(word_list[1]) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],web_management_menu)
-           else
+           Else
            if (is_word(word_list[1],'access-list') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],access_list_menu)
-           else
+           Else
            if (is_word(word_list[1],'cdp') = TRUE) and (length(word_list[1]) > 2) and (length(word_list[1]) < 3) and (out_key = #9) then //tab key
-              begin
+              Begin
                   writeln('Run   Enable CDP in listen mode');
                   input := input + ' ';
                   word_list[1] := word_list[1] + ' ';
               end
-           else
+           Else
            if (input = 'cdp ') and (out_key = #9) then //tab key
-              begin
+              Begin
                   writeln('Run   Enable CDP in listen mode');
                   input := input + 'run';
                   word_list[1] := word_list[1] + 'run';
               end
-           else
+           Else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
-         else
+         Else
           case input[1] of
            '?' : page_display(config_term_menu);
            'a' : if (is_word(word_list[1],'aaa') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(aaa_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'access-list') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(access_list_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(banner_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'c' : if (is_word(word_list[1],'chassis') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(chassis_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'clear') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(clear_menu)
-                 else
+                 Else
                   if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                      writeln('Run')
-                  else
+                  Else
                   if (is_word(word_list[1],'cdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
-                    begin
+                    Begin
                       running_config[last_line_of_running] := 'cdp run';
                       inc(last_line_of_running);
                       running_config[last_line_of_running] := 'ENDofLINES';
                     end
-                  else
+                  Else
                     writeln('Incomplete command.');
            'e' : if is_word(word_list[1], 'exit') = true then
                      Begin
@@ -3345,73 +3338,73 @@ writeln('ipx disabled               appletalk disabled');
                      End;
            'f' : if (is_word(word_list[1],'fast') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(fast_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(fdp_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'fdp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
-                    begin
+                    Begin
                       running_config[last_line_of_running] := 'fdp run';
                       inc(last_line_of_running);
                       running_config[last_line_of_running] := 'ENDofLINES';
                     end
-                 else
+                 Else
                     writeln('Incomplete command.');
            'h' :  if (is_word(word_list[1],'hostname') = TRUE) then
                      if word_list[2] <> '' then
-                        begin
+                        Begin
                           hostname := word_list[2];
                           search_run('hostname',foundat);
                            if foundat = 0 then
-                             begin
+                             Begin
                                 running_config[last_line_of_running] := concat('hostname ',word_list[2]);
                                 inc(last_line_of_running);
                                 running_config[last_line_of_running] := 'ENDofLINES';
                              end
-                          else
+                          Else
                              running_config[foundat] := concat('hostname ',word_list[2]);
                         end
-                     else
+                     Else
                         writeln('Incomplete command.');
            'i' : if (is_word(word_list[1],'interface') = TRUE) and (is_word(word_list[2],'ethernet') = TRUE) then
-                     begin
+                     Begin
                           if check_int(shortstring(word_list[3])) = true then
                              int_loop(word_list[3])
-                          else
+                          Else
                              writeln('port not valid');
                      end
-                 else
+                 Else
                  if (is_word(word_list[1],'ip') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(ip_menu)
-                 else
+                 Else
                      writeln('Incomplete command.');
            'l' : if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(lldp_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'link-keepalive') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(link_keepalive_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'link-config') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(link_config_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(logging_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
                     if word_list[3] <> '' then
-                        begin
+                        Begin
                           running_config[last_line_of_running] := concat('logging host ',word_list[3]);
                           inc(last_line_of_running);
                           running_config[last_line_of_running] := 'ENDofLINES';
                         end
-                 else
+                 Else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(mstp_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'mac-authentication') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(mac_authentication_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'n' : if word_list[1] = 'no' then
                     remove_config;
@@ -3421,87 +3414,87 @@ writeln('ipx disabled               appletalk disabled');
                         dec(what_level);
                         end_con_term := true;
                      End
-                 else
+                 Else
                  if (is_word(word_list[1],'qos') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(qos_menu)
-                 else
+                 Else
                     writeln('Incomplete command.');
            'r' : Begin
                     if (is_word(word_list[1],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                         page_display(rmon_menu);
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
-                       begin
+                       Begin
                            writeln('  rip    Enable rip');
                            writeln('  vrrp   Enable vrrp');
                        End;
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (is_word(word_list[3],'?') = true) then
                        writeln('rip    Enable rip')
-                    else
+                    Else
                     if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (is_word(word_list[3],'?') = true) then
                        writeln('vrrp    Enable vrrp')
-                    else
+                    Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
-                         begin
+                         Begin
 
                          End
-                    else
+                    Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
-                         begin
+                         Begin
 
                          End
-                    //else
+                    //Else
                     //   bad_command(word_list[3]);
                  End;
            's' : if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_server_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
                     if word_list[2] <> '' then
-                        begin
+                        Begin
                           running_config[last_line_of_running] := concat('SNMP-Server Host ',word_list[3]);
                           inc(last_line_of_running);
                           running_config[last_line_of_running] := 'ENDofLINES';
                         end
-                     else
+                     Else
                         writeln('Incomplete command.')
                  Else
                  if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_client_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(sflow_menu)
-                 else
+                 Else
                  if (is_word(word_list[1],'sntp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(sntp_menu)
-                 else
+                 Else
                  if (input = 'sh') or (input = 'sho') or (input = 'show') then
                     writeln('Incomplete command.')
-                 else
-                     begin
+                 Else
+                     Begin
                          input := input;
                          display_show;
                      End;
           'v' : if (is_help(input) = TRUE) then
-                    begin
+                    Begin
                         looking_for_help
                     End
-                else
+                Else
                   if (is_word(word_list[1],'vlan') = TRUE) then
                     if (is_number(word_list[2]) = TRUE) then
-                      begin
+                      Begin
                         vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
                         vlans[strtoint(word_list[2])].name := word_list[4];
                         vlan_loop(word_list[2]);
                       End
-                    else
+                    Else
                       bad_command(word_list[2]);
           'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(web_management_menu)
-                 else
+                 Else
                          bad_command(word_list[2]);
           #0 :;
-           else
-                    begin
+           Else
+                    Begin
                       bad_command(input);
                     End;
          End;
@@ -3526,46 +3519,46 @@ writeln('ipx disabled               appletalk disabled');
          word_list[4] := ''; word_list[5] := '';
          get_words;
          if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
-                    begin
+                    Begin
                       help_match(word_list[1],enable_menu);
                     End
-         else
+         Else
            if (is_word(word_list[1],'debug') = TRUE) and (word_list[2] = 'ip') and (out_key = #9) then //tab key
                tab_match(word_list[3],debug_ip_menu)
-           else
+           Else
            if (is_word(word_list[1],'debug') = TRUE) and (length(word_list[1]) > 4) and (out_key = #9) then //tab key
                tab_match(word_list[2],debug_menu)
-           else
+           Else
            if (is_word(word_list[1],'configure') = TRUE) and (length(input) > 2) and (length(input) < 9) and (out_key = #9) then //tab key
-               begin
+               Begin
                    tab_match(word_list[1],enable_menu);
                end
-           else
+           Else
            if (input = 'configure ') and (out_key = #9) then //tab key
-               begin
+               Begin
                    writeln('  terminal   Configure thru terminal');
                    input := input + 'terminal';
                end
-           else
+           Else
            if (word_list[1] ='dm') and (length(word_list[2]) >= 1) and (out_key = #9) then //tab key
                tab_match(word_list[2],dm_menu)
-           else
+           Else
            if (word_list[1] ='dm') and (out_key = #9) then //tab key
                tab_match(word_list[2],dm_menu)
-           else
+           Else
            if out_key = #9 then //tab key
               tab_match(word_list[1],enable_menu)
-         else
+         Else
          case input[1] of
             'a' : ;
             'b' : ;
             'c' : if (is_word(word_list[1],'configure') = true) and (is_word(word_list[2],'terminal') = true)then
                      Configure_term_loop
-                  else
+                  Else
                      bad_command(input);
             'd' : if (is_word(word_list[1],'dm') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                         page_Display(dm_menu)
-                     else
+                     Else
                   if (is_word(word_list[1],'debug') = true) then
                      page_display(debug_menu);
             'e' : if (is_word(word_list[1],'exit') = true) then
@@ -3576,9 +3569,9 @@ writeln('ipx disabled               appletalk disabled');
                      End;
             'k' : if (is_word(word_list[1],'kill') = true) then
                         writeln('*  Kill not implemented in Brocade-Sim')
-                  else
+                  Else
                      if (input = 'kill ?') then
-                        begin
+                        Begin
                           writeln('  console   Console session');
                           writeln('  ssh       SSH session');
                           writeln('  telnet    Telnet session');
@@ -3587,29 +3580,29 @@ writeln('ipx disabled               appletalk disabled');
                         writeln('*  ncopy not implemented in Brocade-Sim');
             'p' : if (is_word(word_list[1],'ping') = true) then
                         writeln('*  Ping not implemented in Brocade-Sim')
-                        else
+                        Else
                         if (is_word(input,'page-display') = TRUE) then
                             skip_page_display := false;
             'r' : if (input = 're') or (input = 'rel') or (input = 'relo') or (input = 'reloa') or (input = 'reload') then
                      writeln('*  Reload not implemented in Brocade-Sim as yet');
             's' : if (is_word(word_list[1],'skip-page-display') = TRUE) then
                      skip_page_display := true
-                  else
+                  Else
                      if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                         page_Display(show_menu)
-                     else
+                     Else
                         if (is_word(word_list[1],'show') = true) then
                              display_show;
             't' : if (is_word(word_list[1],'telnet') = TRUE) and (word_list[2] = '') then
                      writeln('Incomplete command.')
-                  else
+                  Else
                       if (is_word(word_list[2],'?') = TRUE) then
-                         begin
+                         Begin
                              writeln('  ASCII string      Host name');
                              writeln('  A.B.C.D           Host IP address');
                              writeln('  X:X::X:X          Host IP6 address');
                          End
-                      else
+                      Else
                          writeln('Telnet not implemented in Brocade simulate');
             'u' : if (input = 'un') or (input = 'und') or (input = 'unde') or (input = 'undeb') or (input = 'undebug') then
                         writeln('*  Undebug not implemented in Brocade-Sim');
@@ -3617,7 +3610,7 @@ writeln('ipx disabled               appletalk disabled');
                         writeln('*  verify not implemented in Brocade-Sim');
             'w' : if (input = 'wr') or (input = 'wri') or (input = 'writ') or (input = 'write') then
                     writeln('*  Write not implemented in Brocade-Sim as yet')
-                  else
+                  Else
                     if (input = 'wh') or (input = 'who') or (input = 'whoi') or (input = 'whowis') then
                        writeln('*  Whois not implemented in Brocade-Sim as yet');
             'q' : if (input = 'qu') or (input = 'qui') or (input = 'quit')then
@@ -3649,73 +3642,70 @@ writeln('ipx disabled               appletalk disabled');
              until input <> '';
              get_words;
              if (is_help(word_list[1]) = TRUE) and (length(word_list[1]) > 1) then
-                    begin
+                    Begin
                       help_match(word_list[1],top_menu);
                     End
-             else
+             Else
              if out_key = #9 then //tab key
                  tab_match(word_list[1],top_menu)
-             else
+             Else
              case input[1] of
                 'e' : if is_word(word_list[1],'enable') = true then
                          Begin
                             level := level2; inc(what_level);
                             Enable_Loop;
                          End
-                      else
+                      Else
                          if is_word(word_list[1],'exit')then
                             End_program := true
-                         else
+                         Else
                             bad_command(input);
                 'p' : if is_word(word_list[1],'ping') then
                         writeln('  Ping not implemented in Brocade-Sim');
                 's' : if is_word(word_list[1],'stop-traceroute') then
                                   writeln('  There is no Trace Route Operation in progress!')
-                      else
+                      Else
                          if (is_word(word_list[1],'show') = true) and (is_word(word_list[2],'?') = true) then
                              page_Display(top_menu)
-                         else
+                         Else
                            if (is_word(word_list[1],'show') = true) then
                              display_show;
                 't' : if is_word(word_list[1],'traceroute') = true then
                           writeln('  TreaceRoute not implemented in Brocade-Sim');
                 '?' : page_Display(top_menu);
-                else
+                Else
                    bad_command(input);
              End;
        until (End_program = True);
   End; // of my_loop
 
-  procedure BrocadeExceptionHandler(ExceptObject: TObject; ExceptAddr: Pointer);
+  Procedure BrocadeExceptionHandler(ExceptObject: TObject; ExceptAddr: Pointer);
   const
     ErrorMessages : array[0..0] of string = ( 'EInOutError' ) ;
-  begin
+  Begin
     case AnsiIndexText(Exception(ExceptObject).Classname,ErrorMessages) of
       0:WriteLn('Brocade-Sim Missing files detected, please check configuration files in the program directory.');
-      else
+      Else
         WriteLn('Brocade-Sim Exception Occured [' + Exception(ExceptObject).Classname + '] : ' + Exception(ExceptObject).Message);
-    end;
+    End;
     Flush(Output);
     Halt(1);
-  end;
+  End;
 
-  procedure BrocadeErrorProcedure(ErrorCode: Integer; ErrorAddr: Pointer);
-  begin
+  Procedure BrocadeErrorProcedure(ErrorCode: Integer; ErrorAddr: Pointer);
+  Begin
     WriteLn('Brocade-Sim Error Procedure Initiated [' + IntToStr(ErrorCode) + ']');
     Flush(Output);
     Halt(2);
-  end;
+  End;
 
-begin
+Begin
   ExceptProc := @BrocadeExceptionHandler;
 //  ErrorProc := @BrocadeErrorProcedure;
   SetErrorMode(SEM_NOGPFAULTERRORBOX);
 
   clrscr;
-//  try
-    // Set gobal var
     skip_page_display := false;
-    // init all the menus
     init_top_menu;
     init_show_menu;
     init_dm_menu;
@@ -3756,9 +3746,5 @@ begin
     history_pos := 1; // starting possition for CLI history.
     // main loop
     my_loop;
-//  except
-//    on E:Exception do
-//      Writeln(E.Classname, ': ', E.Message);
-//  End;
 End.
 
