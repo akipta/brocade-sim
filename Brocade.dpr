@@ -142,6 +142,7 @@ Var
   boot_menu           : array[1..2] of string;
   boot_menu1          : array[1..2] of string;
   boot_menu2          : array[1..3] of string;
+  int_eth_menu        : array[1..3] of string;
 
   Procedure splash_screen;
 
@@ -150,7 +151,7 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r44                                                ║');
+      writeln(' ║   Brocade-Sim : Version r45                                                ║');
       writeln(' ║                 Dated 5th of August 2012                                   ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
@@ -1026,6 +1027,14 @@ Procedure init_enable_menu;
     boot_menu[2] := 'ENDofLINES';
   End;
 
+  Procedure init_int_eth_menu;
+
+  Begin
+    int_eth_menu[1] := '  ethernet';
+    int_eth_menu[2] := '  brief';
+    int_eth_menu[3] := 'ENDofLINES';
+  End;
+
   Procedure init_boot1_menu;
 
   Begin
@@ -1690,10 +1699,17 @@ Procedure init_enable_menu;
 
   Procedure display_show_boot_pref;
 
+  var
+    foundat : integer;
+
   Begin
     writeln('1 percent busy, from 45 sec ago');
     writeln('Boot system preference(Configured):');
-    writeln('        Boot system flash primary');
+    search_run('boot system flash secondary',foundat);
+    if foundat <> 0 then
+       writeln('        Boot system flash secondary')
+    else
+       writeln('        Boot system flash primary');
     writeln('');
     writeln('Boot system preference(Default):');
     writeln('        Boot system flash primary');
@@ -2583,6 +2599,9 @@ writeln('ipx disabled               appletalk disabled');
                inc(a);
                inc(word_count);
           end;
+//        if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE)and (word_list[3] ='') and (out_key = #9) then //tab key
+//           tab_match2(3,word_list[3],int_eth_menu)
+//        Else
         case show_input[1] of
            's' : if (show_input = 'sh') or (show_input = 'sho') or (show_input = 'show') then
                                writeln('Incomplete command.')
@@ -2645,10 +2664,10 @@ writeln('ipx disabled               appletalk disabled');
                           Writeln('port not valid');
                     end
                  Else
-                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) and (is_word(word_list[3],'brief') = TRUE)then
+                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interfaces') = TRUE) and (is_word(word_list[3],'brief') = TRUE)then
                     display_show_int_bri
                  Else
-                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interface') = TRUE) then
+                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'interfaces') = TRUE) then
                     display_show_int
                  Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'modules') = TRUE) then
@@ -2693,8 +2712,8 @@ writeln('ipx disabled               appletalk disabled');
                     Begin
                       bad_command(show_input);
                      end;
-        end;
-  end;
+        End;
+  End; // of display_show
 
   Procedure vlan_loop(vlanid :string);
 
@@ -3457,6 +3476,13 @@ writeln('ipx disabled               appletalk disabled');
            Else
            if (is_word(word_list[1],'access-list') = TRUE) and (length(word_list[1]) > 3) and (out_key = #9) then //tab key
                     tab_match(word_list[2],access_list_menu)
+           else
+           if is_word(word_list[1],'show') and (word_list[2] = 'interfaces') and (out_key = #9) then //tab key
+               tab_match2(3,word_list[3],int_eth_menu)
+           else
+           if is_word(word_list[1],'show') and (out_key = #9) and (word_list[3] = '') then //tab key
+               tab_match(word_list[2],show_menu)
+
            Else
            if (is_word(word_list[1],'cdp') = TRUE) and (length(word_list[1]) > 2) and (length(word_list[1]) < 3) and (out_key = #9) then //tab key
               Begin
@@ -3472,6 +3498,9 @@ writeln('ipx disabled               appletalk disabled');
                   word_list[1] := word_list[1] + 'run';
               end
            Else
+           if (word_list[1] ='show') and (out_key = #9) then //tab key
+               tab_match(word_list[2],show_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
          Else
@@ -3728,7 +3757,6 @@ writeln('ipx disabled               appletalk disabled');
      repeat
          repeat
             write(hostname, level);
-//            input := get_command;
             get_input(input,out_key);
             writeln;
          until input <> '';
@@ -3781,6 +3809,15 @@ writeln('ipx disabled               appletalk disabled');
            if (word_list[1] ='dm') and (out_key = #9) then //tab key
                tab_match(word_list[2],dm_menu)
            Else
+           if is_word(word_list[1],'show') and (word_list[2] = 'interfaces') and (out_key = #9) then //tab key
+               tab_match2(3,word_list[3],int_eth_menu)
+           else
+           if is_word(word_list[1],'show') and (out_key = #9) and (word_list[3] = '') then //tab key
+               tab_match(word_list[2],show_menu)
+           else
+           if (word_list[1] ='show') and (out_key = #9) then //tab key
+               tab_match(word_list[2],show_menu)
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],enable_menu)
          Else
@@ -3883,7 +3920,7 @@ writeln('ipx disabled               appletalk disabled');
        End_program := false; what_level := 1;
        Hostname := 'Fastiron'; level := level1;
        repeat
-             word_list[1] := ''; word_list[1] := '';
+             word_list[1] := ''; word_list[2] := ''; word_list[3] := '';
              repeat
                 write(hostname, level);
                 get_input(input,out_key);
@@ -3895,6 +3932,13 @@ writeln('ipx disabled               appletalk disabled');
                       help_match(word_list[1],top_menu);
                     End
              Else
+             if is_word(word_list[1],'show') and (word_list[2] = 'interfaces') and (out_key = #9) then //tab key
+               tab_match2(3,word_list[3],int_eth_menu)
+             else
+             if is_word(word_list[1],'show') and (out_key = #9) and (word_list[3] = '') then //tab key
+               tab_match(word_list[2],show_menu)
+
+             else
              if out_key = #9 then //tab key
                  tab_match(word_list[1],top_menu)
              Else
@@ -3955,6 +3999,7 @@ Begin
 
   clrscr;
     skip_page_display := false;
+    init_int_eth_menu;
     init_boot_menu;
     init_boot1_menu;
     init_boot2_menu;
