@@ -14,6 +14,7 @@ const
   level5 = '(config-vlan-';
 
   StartupConfigFile = 'startup-config.txt';
+  sim_outputFile = 'sim-output.txt';
   ModulesFile = 'modules.txt';
 
 Function check_int(validport : shortstring) : boolean; forward;
@@ -138,6 +139,9 @@ Var
   debug_Menu          : array[1..25] of string;
   debug_ip_menu       : array[1..16] of string;
   dm_menu             : array[1..129] of string;
+  boot_menu           : array[1..2] of string;
+  boot_menu1          : array[1..2] of string;
+  boot_menu2          : array[1..3] of string;
 
   Procedure splash_screen;
 
@@ -146,8 +150,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r42                                                ║');
-      writeln(' ║                 Dated 5th of Aug 2012                                      ║');
+      writeln(' ║   Brocade-Sim : Version r44                                                ║');
+      writeln(' ║                 Dated 5th of August 2012                                   ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -288,6 +292,44 @@ Var
           End;
   End;
 
+  Procedure write_memory(lines : array of string);
+
+  var
+    count : integer;
+    dest : textfile;
+
+  Begin
+      assignfile(dest,sim_outputFile);
+      rewrite(dest);
+      count := 0;
+      while (lines[count] <> 'ENDofLINES') do
+          Begin
+               if lines[count] <> 'DELETED' then
+                  writeln(dest,lines[count]);
+               inc(count);
+          End;
+       for count := 1 to port_count do
+         Begin
+             if interfaces[count].no_config = false then
+             Begin
+                writeln(dest,'interface eithernet ', interfaces[count].port_no);
+                if interfaces[count].descript <> '' then
+                   writeln(dest,' port-name ', string(interfaces[count].descript));
+                if interfaces[count].admin_disable = true then
+                   writeln(dest,' disbaled');
+                if interfaces[count].bpdu = true then
+                    writeln(dest,' stp-bdpu-guard');
+                if interfaces[count].root_guard = true then
+                   writeln(dest,' spanning-tree root-protect');
+             End
+         End;
+    writeln(dest,'!');
+    writeln(dest,'!');
+    writeln(dest,'End');
+      close(dest);
+
+  End;
+
   Procedure Page_display(lines : array of string);
 
   var
@@ -425,6 +467,80 @@ Var
                    End;
                input := input + ' ';
           End;
+  End;
+
+  Procedure tab_match2(level : integer; findword : string; var list : array of string);
+
+  var
+    a, loop, len: integer;
+    astring : string;
+    tmp_str : string;
+    only_one : integer;
+
+  Begin
+       len := Length(findword); only_one := 0;
+       for loop := 0 to high(list) do
+          Begin
+            astring := Copy(list[loop], 3, len);
+            if astring = findword then
+              Begin
+                  inc(only_one);
+                  if list[loop] <> 'ENDofLINES' then
+                     writeln(list[loop]);
+                  tmp_str := list[loop];
+              End;
+          End;
+       if only_one = 1 then
+         case level of
+            2 : Begin
+                  a := 3;
+                  if word_list[2] = '' then
+                   input := ''
+                  Else
+                   input := word_list[1] + ' ';
+                  while (tmp_str[a] <> ' ') do
+                   Begin
+                       input := input + tmp_str[a];
+                       if tmp_str[a] <> '' then
+                          inc(a)
+                       Else
+                          break;
+                   End;
+                 input := input + ' ';
+                End;
+           3 : Begin
+                  a := 3;
+                  if word_list[3] = '' then
+                   input := ''
+                  Else
+                   input := word_list[1] + ' ' + word_list[2] + ' ';
+                  while (tmp_str[a] <> ' ') do
+                   Begin
+                       input := input + tmp_str[a];
+                       if tmp_str[a] <> '' then
+                          inc(a)
+                       Else
+                          break;
+                   End;
+                 input := input + ' ';
+                End;
+           4 : Begin
+                  a := 3;
+                  if word_list[4] = '' then
+                   input := ''
+                  Else
+                   input := word_list[1] + ' ' + word_list[2] + ' ' + word_list[3] + ' ';
+                  while (tmp_str[a] <> ' ') do
+                   Begin
+                       input := input + tmp_str[a];
+                       if tmp_str[a] <> '' then
+                          inc(a)
+                       Else
+                          break;
+                   End;
+                 input := input + ' ';
+                End;
+       end;
   End;
 
   Procedure Read_startup_config;
@@ -901,6 +1017,28 @@ Procedure init_enable_menu;
       chassis_menu[2] := '  poll-time   Change hardware sensors polling interval seconds';
       chassis_menu[3] := '  trap-log';
       chassis_menu[4] := 'ENDofLINES';
+  End;
+
+  Procedure init_boot_menu;
+
+  Begin
+    boot_menu[1] := '  system';
+    boot_menu[2] := 'ENDofLINES';
+  End;
+
+  Procedure init_boot1_menu;
+
+  Begin
+    boot_menu1[1] := '  flash';
+    boot_menu1[2] := 'ENDofLINES';
+  End;
+
+  Procedure init_boot2_menu;
+
+  Begin
+    boot_menu2[1] := '  primary';
+    boot_menu2[2] := '  secondary';
+    boot_menu2[3] := 'ENDofLINES';
   End;
 
   Procedure init_configterm_menu;
@@ -3006,6 +3144,26 @@ writeln('ipx disabled               appletalk disabled');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(banner_menu)
                  Else
+                 if (is_word(word_list[2],'boot') = TRUE) and (is_word(word_list[3],'system') = TRUE) and (is_word(word_list[4],'flash') = TRUE) and (is_word(word_list[5],'primary') = TRUE) then
+                    Begin
+                       search_run('boot system flash primary',foundat);
+                           if foundat <> 0 then
+                              Begin
+                                   running_config[foundat] := 'DELETED';
+                                  // hostname := 'Fastiron';
+                              end;
+                    end
+                 else
+                 if (is_word(word_list[2],'boot') = TRUE) and (is_word(word_list[3],'system') = TRUE) and (is_word(word_list[4],'flash') = TRUE) and (is_word(word_list[5],'secondary') = TRUE) then
+                    Begin
+                       search_run('boot system flash secondary',foundat);
+                           if foundat <> 0 then
+                              Begin
+                                   running_config[foundat] := 'DELETED';
+                                  // hostname := 'Fastiron';
+                              end;
+                    end
+                 Else
                     writeln('Incomplete command.');
            'c' : if (is_word(word_list[2],'chassis') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(chassis_menu)
@@ -3210,7 +3368,24 @@ writeln('ipx disabled               appletalk disabled');
            Begin
                 help_match(word_list[1], config_term_menu);
            End;
-
+           if is_word(word_list[1],'boot') and is_word(word_list[2],'system') and is_word(word_list[3],'flash') and (length(word_list[3]) > 1)and (out_key = #9)then
+              Begin
+                tab_match2(4,word_list[4],boot_menu2)
+              End
+           Else
+           if is_word(word_list[1],'boot') and is_word(word_list[2],'system') and (length(word_list[2]) > 1)and (out_key = #9)then
+              Begin
+                if word_list[3] <> '' then
+                  tab_match2(3,word_list[3],boot_menu1)
+                else
+                  tab_match2(2,word_list[2],boot_menu)
+              End
+           Else
+           if is_word(word_list[1],'boot') and (length(word_list[1]) > 3) and (out_key = #9)then
+              Begin
+                tab_match(word_list[2],boot_menu)
+              End
+           Else
            if (word_list[1] = 'ip' = TRUE) and (length(input) > 2) and (out_key = #9) then //tab key
                     tab_match(word_list[2],ip_menu)
            Else
@@ -3311,6 +3486,45 @@ writeln('ipx disabled               appletalk disabled');
                     writeln('Incomplete command.');
            'b' : if (is_word(word_list[1],'banner') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(banner_menu)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(boot_menu)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
+                    page_display(boot_menu1)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'?') = TRUE) then
+                    page_display(boot_menu2)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'primary') = TRUE) then
+                    //writeln('boot the system from the pri flash on next reload')
+                    begin
+                      search_run('boot system flash secondary',foundat);
+                      if foundat <> 0 then
+                         running_config[foundat] := 'DELETED';
+                      running_config[last_line_of_running] := 'boot system flash primary';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'secondary') = TRUE) then
+                    //writeln('boot the system from the sec flash on next reload')
+                    begin
+                      search_run('boot system flash primary',foundat);
+                           if foundat <> 0 then
+                              running_config[foundat] := 'DELETED';
+                      running_config[last_line_of_running] := 'boot system flash secondary';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'secondary') = TRUE) then
+                    //writeln('boot the system from the sec flash on next reload')
+                    begin
+                      running_config[last_line_of_running] := 'boot system flash secondary';
+                      inc(last_line_of_running);
+                      running_config[last_line_of_running] := 'ENDofLINES';
+                    end
                  Else
                     writeln('Incomplete command.');
            'c' : if (is_word(word_list[1],'chassis') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
@@ -3491,7 +3705,10 @@ writeln('ipx disabled               appletalk disabled');
           'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(web_management_menu)
                  Else
-                         bad_command(word_list[2]);
+                 if (is_word(word_list[1],'write') = TRUE) and (is_word(word_list[2],'memory') = TRUE) then
+                    write_memory(running_config)
+                 else
+                    bad_command(word_list[2]);
           #0 :;
            Else
                     Begin
@@ -3523,6 +3740,24 @@ writeln('ipx disabled               appletalk disabled');
                       help_match(word_list[1],enable_menu);
                     End
          Else
+           if is_word(word_list[1],'boot') and is_word(word_list[2],'system') and is_word(word_list[3],'flash') and (length(word_list[3]) > 1)and (out_key = #9)then
+              Begin
+                tab_match2(4,word_list[4],boot_menu2)
+              End
+           Else
+           if is_word(word_list[1],'boot') and is_word(word_list[2],'system') and (length(word_list[2]) > 1)and (out_key = #9)then
+              Begin
+                if word_list[3] <> '' then
+                  tab_match2(3,word_list[3],boot_menu1)
+                else
+                  tab_match2(2,word_list[2],boot_menu)
+              End
+           Else
+           if is_word(word_list[1],'boot') and (length(word_list[1]) > 3) and (out_key = #9)then
+              Begin
+                tab_match(word_list[2],boot_menu)
+              End
+           Else
            if (is_word(word_list[1],'debug') = TRUE) and (word_list[2] = 'ip') and (out_key = #9) then //tab key
                tab_match(word_list[3],debug_ip_menu)
            Else
@@ -3551,7 +3786,20 @@ writeln('ipx disabled               appletalk disabled');
          Else
          case input[1] of
             'a' : ;
-            'b' : ;
+            'b' : if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    page_display(boot_menu)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
+                    page_display(boot_menu1)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'?') = TRUE) then
+                    page_display(boot_menu2)
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'primary') = TRUE) then
+                    writeln('boot the system from the pri flash one time only and NOW')
+                 Else
+                 if (is_word(word_list[1],'boot') = TRUE) and (is_word(word_list[2],'system') = TRUE) and (is_word(word_list[3],'flash') = TRUE) and (is_word(word_list[4],'secondary') = TRUE) then
+                    writeln('boot the system from the sec flash one time only and NOW');
             'c' : if (is_word(word_list[1],'configure') = true) and (is_word(word_list[2],'terminal') = true)then
                      Configure_term_loop
                   Else
@@ -3608,8 +3856,9 @@ writeln('ipx disabled               appletalk disabled');
                         writeln('*  Undebug not implemented in Brocade-Sim');
             'v' : if (input = 've') or (input = 'ver') or (input = 'veri') or (input = 'verif') or (input = 'verify') then
                         writeln('*  verify not implemented in Brocade-Sim');
-            'w' : if (input = 'wr') or (input = 'wri') or (input = 'writ') or (input = 'write') then
-                    writeln('*  Write not implemented in Brocade-Sim as yet')
+            'w' : if (is_word(word_list[1],'write') = TRUE) and (is_word(word_list[2],'memory') = TRUE) then
+                    //writeln('*  Write not implemented in Brocade-Sim as yet')
+                    write_memory(running_config)
                   Else
                     if (input = 'wh') or (input = 'who') or (input = 'whoi') or (input = 'whowis') then
                        writeln('*  Whois not implemented in Brocade-Sim as yet');
@@ -3706,6 +3955,9 @@ Begin
 
   clrscr;
     skip_page_display := false;
+    init_boot_menu;
+    init_boot1_menu;
+    init_boot2_menu;
     init_top_menu;
     init_show_menu;
     init_dm_menu;
