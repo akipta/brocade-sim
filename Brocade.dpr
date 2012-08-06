@@ -133,7 +133,7 @@ Var
   mac_authentication_menu : array[1..15] of string;
   rmon_menu           : array[1..4] of string;
   sflow_menu          : array[1..9] of string;
-  sntp_menu           : array[1..3] of string;
+  sntp_menu           : array[1..5] of string;
   snmp_client_menu    : array[1..4] of string;
   web_management_Menu : array[1..16] of string;
   debug_Menu          : array[1..25] of string;
@@ -151,8 +151,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r45                                                ║');
-      writeln(' ║                 Dated 5th of August 2012                                   ║');
+      writeln(' ║   Brocade-Sim : Version r46                                                ║');
+      writeln(' ║                 Dated 6th of August 2012                                   ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -230,6 +230,28 @@ Var
             End;
   End;
 
+  Function is_number_inrange(check : string; min,max : integer) : boolean;
+
+  var
+      a : integer;
+
+  Begin
+       a := 0; is_number_inrange := false;
+       try
+          a := strtoint(check);
+       except
+          on Exception : EConvertError do
+              is_number_inrange := false;
+       end;
+       if a >= min then
+         if a <= max then
+            is_number_inrange := true
+         Else
+            Begin
+//              writeln('Error - Invalid input ',check,'. Valid range is between 1 and 4095');
+              is_number_inrange := false;
+            End;
+  End;
 
   Function is_help(check : string) : boolean;
 
@@ -592,6 +614,7 @@ Var
             End;
        running_config[loop+23] := 'ENDofLINES';
        last_line_of_running := loop +23;
+       startup_config[loop+1] := 'end';
        closefile(sc);
   End;
 
@@ -955,7 +978,7 @@ Procedure init_enable_menu;
 
   Begin
     enable_menu[1] := '  alias                     Display configured aliases';
-    enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image';
+    enable_menu[2] := '  boot                      Boot system from bootp/tftp server/flash image -->';
     enable_menu[3] := '  clear                     Clear table/statistics/keys';
     enable_menu[4] := '  clock                     Set clock';
     enable_menu[5] := '  configure                 Enter configuration mode                 --> done';
@@ -990,7 +1013,7 @@ Procedure init_enable_menu;
     enable_menu[34] := '  undebug                   Disable debugging functions (see also ''debug'')';
     enable_menu[35] := '  verify                    Verify object contents';
     enable_menu[36] := '  whois                     WHOIS lookup';
-    enable_menu[37] := '  write                     Write running configuration to flash or terminal';
+    enable_menu[37] := '  write                     Write running configuration to flash or terminal -->';
     enable_menu[38] := 'ENDofLINES';
   End;
 
@@ -1283,10 +1306,10 @@ Procedure init_enable_menu;
     config_term_menu[7] :=   '  arp                           Enter a static IP ARP entry';
     config_term_menu[8] :=   '  banner                        Define a login banner                  --> 4 ?';
     config_term_menu[9] :=   '  batch                         Define a group of commands';
-    config_term_menu[10] :=  '  boot                          Set system boot options';
+    config_term_menu[10] :=  '  boot                          Set system boot options                --> done';
     config_term_menu[11] :=  '  bootp-relay-max-hops          Set maximum allowed hop counts for BOOTP';
     config_term_menu[12] :=  '  buffer-sharing-full           Remove buffer allocation limits per port';
-    config_term_menu[13] :=  '  cdp                           Global CDP configuration command';
+    config_term_menu[13] :=  '  cdp                           Global CDP configuration command       --> done';
     config_term_menu[14] :=  '  chassis                       Configure chassis name and polling options-->4?';
     config_term_menu[15] :=  '  clear                         Clear table/statistics/keys            --> 4 ?';
     config_term_menu[16] :=  '  clock                         Set system time and date';
@@ -1301,12 +1324,12 @@ Procedure init_enable_menu;
     config_term_menu[25] :=  '  End                           End Configuration level and go to Privileged';
     config_term_menu[26] :=  '                                level';
     config_term_menu[27] :=  '  errdisable                    Set Error Disable Attributions';
-    config_term_menu[28] :=  '  exit                          Exit current level';
+    config_term_menu[28] :=  '  exit                          Exit current level                     --> done';
     config_term_menu[29] :=  '  extern-config-file            extern configuration file';
     config_term_menu[30] :=  '  fan-speed                     set fan speed';
     config_term_menu[31] :=  '  fan-threshold                 set temperature threshold for fan speed';
     config_term_menu[32] :=  '  fast                          Fast spanning tree options             --> 4 ?';
-    config_term_menu[33] :=  '  fdp                           Global FDP configuration subcommands   --> 4 ?';
+    config_term_menu[33] :=  '  fdp                           Global FDP configuration subcommands   --> done';
     config_term_menu[34] :=  '  flash-copy-block-size         Configure block size of code flash copy';
     config_term_menu[35] :=  '  flow-control                  Enable 802.3x flow control on full duplex port';
     config_term_menu[36] :=  '  gig-default                   Set Gig port default options';
@@ -1325,10 +1348,10 @@ Procedure init_enable_menu;
     config_term_menu[49] :=  '                                default';
     config_term_menu[50] :=  '  link-config                   Link Configuration                     --> 4 ?';
     config_term_menu[51] :=  '  link-keepalive                Link Layer Keepalive                   --> 4 ?';
-    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol--> 4 ?';
+    config_term_menu[52] :=  '  lldp                          Configure Link Layer Discovery Protocol--> done';
     config_term_menu[53] :=  '  local-userdb                  Configure local user database';
     config_term_menu[54] :=  '  lock-address                  Limit number of addresses for a port';
-    config_term_menu[55] :=  '  logging                       Event logging settings';
+    config_term_menu[55] :=  '  logging                       Event logging settings                 --> done';
     config_term_menu[56] :=  '  loop-detection-interval       set period to send loop-detection packets,';
     config_term_menu[57] :=  '                                unit: 0.1 sec';
     config_term_menu[58] :=  '  mac                           Set up MAC filtering';
@@ -1339,7 +1362,7 @@ Procedure init_enable_menu;
     config_term_menu[63] :=  '  mirror-port                   Enable a port to act as mirror-port';
     config_term_menu[64] :=  '  module                        Specify module type';
     config_term_menu[65] :=  '  mstp                          Configure MSTP (IEEE 802.1s)           --> 4 ?';
-    config_term_menu[66] :=  '  no                            Undo/disable commands';
+    config_term_menu[66] :=  '  no                            Undo/disable commands                  --> done';
     config_term_menu[67] :=  '  optical-monitor               Enable optical monitoring with default';
     config_term_menu[68] :=  '                                alarm/warn interval(3 minutes)';
     config_term_menu[69] :=  '  password-change               Restrict access methods with right to change';
@@ -1368,8 +1391,8 @@ Procedure init_enable_menu;
     config_term_menu[92] :=  '  sflow                         Set sflow params                       --> 4 ?';
     config_term_menu[93] :=  '  show                          Show system information                --> 4 ?';
     config_term_menu[94] :=  '  snmp-client                   Restrict SNMP access to a certain IP node';
-    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties     --> 4 ?';
-    config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval      --> 4 ?';
+    config_term_menu[95] :=  '  snmp-server                   Set onboard SNMP server properties     --> done';
+    config_term_menu[96] :=  '  sntp                          Set SNTP server and poll interval      --> done';
     config_term_menu[97] :=  '  spanning-tree                 Set spanning tree parameters';
     config_term_menu[98] :=  '  ssh                           Restrict ssh access by ACL';
     config_term_menu[99] :=  '  stp-group                     Spanning Tree Group settings';
@@ -1480,9 +1503,11 @@ Procedure init_enable_menu;
 
   Procedure init_sntp_menu;
   Begin
-      sntp_menu[1] := '  server             **specify the SNTP peer IP address';
-      sntp_menu[2] := '  poll-interval      **Set SNTP poll-interval in seconds';
-      sntp_menu[3] := 'ENDofLINES';
+      sntp_menu[1] := '  broadcast       Enable/disable sntp broadcast client';
+      sntp_menu[2] := '  poll-interval   ';
+      sntp_menu[3] := '  server          Server IP address';
+      sntp_menu[4] := '  server-mode     Enable/disable server-mode';
+      sntp_menu[5] := 'ENDofLINES';
   End;
 
   Procedure init_snmp_server_menu;
@@ -2685,14 +2710,17 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'reserved-vlan-map') = TRUE) then
                     display_show_reserved_vlan
                  Else
+                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'configuration') = TRUE) then
+                    display_startup_config
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'running-config') = TRUE) then
                     Begin
-                        page_display(running_config);
-                        display_running_config;
+                        if word_list[2,1] ='r' then
+                            begin
+                              page_display(running_config);
+                              display_running_config;
+                            end
                     End
-                 Else
-                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'startup-config') = TRUE) then
-                    display_startup_config
                  Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'stp-protect') = TRUE) then
                     display_stp_protect
@@ -3192,6 +3220,15 @@ writeln('ipx disabled               appletalk disabled');
                  Else
                  if (is_word(word_list[2],'cdp') = TRUE) and (word_list[3] = '?') then
                     writeln('Run')
+                 else
+                 if (is_word(word_list[2],'console') = TRUE) and (is_word(word_list[3],'timeout')) then
+                    Begin
+                       search_run('console timeout',foundat);
+                       if foundat <> 0 then
+                          Begin
+                              running_config[foundat] := 'DELETED';
+                          end;
+                    end
                  Else
                  if (is_word(word_list[2],'cdp') = TRUE) and (is_word(word_list[3],'run') = TRUE) then
                     Begin
@@ -3253,24 +3290,60 @@ writeln('ipx disabled               appletalk disabled');
            'l' : if (is_word(word_list[2],'lldp') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(lldp_menu)
                  Else
+                 if (is_word(word_list[2],'lldp') = TRUE) and (is_word(word_list[3],'run') = TRUE) then
+                    begin
+                        search_run('lldp run',foundat);
+                        if foundat <> 0 then
+                           Begin
+                                running_config[foundat] := 'DELETED';
+                           end;
+                    end
+                 Else
                  if (is_word(word_list[2],'link-keepalive') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
                     page_display(link_keepalive_menu)
                  Else
-                 if (is_word(word_list[2],'link-config') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
-                    page_display(link_config_menu)
+                 if (is_word(word_list[2],'link-config') = TRUE) and ((is_word(word_list[3],'?') = TRUE) or (out_key = #9)) then
+                    tab_match2(3,word_list[3],link_config_menu)
                  Else
-                 if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
-                    page_display(logging_menu)
+                 if (is_word(word_list[2],'logging') = TRUE) and ((is_word(word_list[3],'?') = TRUE) or (out_key = #9)) then
+                    begin
+                          if input[length(input)] = ' ' then
+                             tab_match2(3,word_list[3],logging_menu)
+                          else
+                             if word_list[3] = '?' then
+                                page_display(logging_menu)
+                             else
+                                if (word_list[2] = 'logging') or (word_list[3] <> '') then
+                                   tab_match2(3,word_list[3],logging_menu)
+                                else
+                                    tab_match2(2,word_list[2],config_term_menu)
+                    end
                  Else
                  if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'host') = TRUE) then
-                    if word_list[4] <> '' then
+                    begin
+                      if word_list[4] <> '' then
                         Begin
                            search_run(concat('logging host ',word_list[4]),foundat);
+                           if foundat <> 0 then
+                              running_config[foundat] := 'DELETED';
+                        end
+                    end
+                 Else
+                 if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'persistence') = TRUE) then
+                    begin
+                         search_run('logging persistence',foundat);
+                         if foundat <> 0 then
+                            running_config[foundat] := 'DELETED';
+                    end
+                 Else
+                 if (is_word(word_list[2],'logging') = TRUE) and (is_word(word_list[3],'console') = TRUE) then
+                    begin
+                           search_run('logging console',foundat);
                            if foundat <> 0 then
                               Begin
                                    running_config[foundat] := 'DELETED';
                               end;
-                        end
+                    end
                  Else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
@@ -3292,33 +3365,52 @@ writeln('ipx disabled               appletalk disabled');
                  Else
                     writeln('Incomplete command.');
            'r' : Begin
-                    if (is_word(word_list[1],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
+                    if (is_word(word_list[2],'rmon') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                         page_display(rmon_menu);
-                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'?') = true)then
+                    if (is_word(word_list[2],'router') = true) and (is_word(word_list[3],'?') = true)then
                        Begin
                            writeln('  rip    Enable rip');
                            writeln('  vrrp   Enable vrrp');
                        End;
-                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (is_word(word_list[3],'?') = true) then
+                    if (is_word(word_list[3],'router') = true) and (is_word(word_list[3],'rip') = true) and (is_word(word_list[4],'?') = true) then
                        writeln('rip    Enable rip')
                     Else
-                    if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (is_word(word_list[3],'?') = true) then
+                    if (is_word(word_list[2],'router') = true) and (is_word(word_list[3],'vrrp') = true) and (is_word(word_list[4],'?') = true) then
                        writeln('vrrp    Enable vrrp')
                     Else
-                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
+                       if (is_word(word_list[2],'router') = true) and (is_word(word_list[3],'rip') = true) and (word_list[4] = '') then
                          Begin
-
+                           search_run(concat('router rip',word_list[4]),foundat);
+                           if foundat <> 0 then
+                              Begin
+                                   running_config[foundat] := 'DELETED';
+                              end;
                          End
                     Else
-                       if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
+                       if (is_word(word_list[2],'router') = true) and (is_word(word_list[3],'vrrp') = true) and (word_list[4] = '') then
                          Begin
-
+                           search_run(concat('router vrrp',word_list[4]),foundat);
+                           if foundat <> 0 then
+                              Begin
+                                   running_config[foundat] := 'DELETED';
+                              end;
                          End
                     //Else
                     //   bad_command(word_list[3]);
                  End;
-           's' : if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'?') = TRUE) then
-                    page_display(snmp_server_menu)
+           's' : if (is_word(word_list[2],'snmp-server') = TRUE) and ((is_word(word_list[3],'?') = TRUE) or (out_key = #9)) then
+                    begin
+                          if input[length(input)] = ' ' then
+                             tab_match2(3,word_list[3],snmp_server_menu)
+                          else
+                             if word_list[3] = '?' then
+                                page_display(snmp_server_menu)
+                             else
+                                if (word_list[2] = 'snmp-server') or (word_list[3] <> '') then
+                                   tab_match2(3,word_list[3],snmp_server_menu)
+                                else
+                                    tab_match2(2,word_list[2],config_term_menu)
+                    end
                  Else
                  if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'host') = TRUE) then
                     if word_list[3] <> '' then
@@ -3332,38 +3424,52 @@ writeln('ipx disabled               appletalk disabled');
                      Else
                         writeln('Incomplete command.')
                  Else
-                 if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
-                    page_display(snmp_client_menu)
+                 if (is_word(word_list[2],'snmp-server') = TRUE) and (is_word(word_list[3],'location') = TRUE) then
+                    if word_list[3] <> '' then
+                        Begin
+                           search_run('SNMP-Server location ',foundat);
+                           if foundat <> 0 then
+                              Begin
+                                   running_config[foundat] := 'DELETED';
+                              end;
+                        end
+                     Else
+                        writeln('Incomplete command.')
                  Else
-                 if (is_word(word_list[1],'sflow') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
-                    page_display(sflow_menu)
-                 Else
-                 if (input = 'sh') or (input = 'sho') or (input = 'show') then
-                    writeln('Incomplete command.')
+                 if (is_word(word_list[2],'sntp') = TRUE) and ((is_word(word_list[3],'?') = TRUE) or (out_key = #9)) then
+                     begin
+                          if input[length(input)] = ' ' then
+                             tab_match2(3,word_list[3],sntp_menu)
+                          else
+                             if word_list[3] = '?' then
+                                page_display(sntp_menu)
+                             else
+                                if (word_list[2] = 'sntp') or (word_list[3] <> '') then
+                                   tab_match2(3,word_list[3],sntp_menu)
+                                else
+                                    tab_match2(2,word_list[2],config_term_menu)
+                     end
+                 else
+                 if (is_word(word_list[2],'sntp') = TRUE) and (is_word(word_list[3],'poll-interval') = TRUE) then
+                    begin
+                         search_run('sntp poll-interval '+word_list[4],foundat);
+                         if foundat <> 0 then
+                            running_config[foundat] := 'DELETED';
+                    end
+                 else
+                 if (is_word(word_list[2],'sntp') = TRUE) and (is_word(word_list[3],'server') = TRUE) then
+                    begin
+                         search_run('sntp server '+word_list[4],foundat);
+                         if foundat <> 0 then
+                            running_config[foundat] := 'DELETED';
+                    end
                  Else
                      Begin
                          input := input;
                          display_show;
                      End;
-          'v' : if (is_help(input) = TRUE) then
-                    Begin
-                        looking_for_help
-                    End
-                Else
-                  if (is_word(word_list[1],'vlan') = TRUE) then
-                    if (is_number(word_list[2]) = TRUE) then
-                      Begin
-                        vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
-                        vlans[strtoint(word_list[2])].name := word_list[4];
-                        vlan_loop(word_list[2]);
-                      End
-                    Else
-                      bad_command(word_list[2]);
-          'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
-                    page_display(web_management_menu)
-                 Else
-                         bad_command(word_list[2]);
-          #0 :;
+          'v' : ;
+          'w' : ;
            Else
                     Begin
                       bad_command(input);
@@ -3501,6 +3607,9 @@ writeln('ipx disabled               appletalk disabled');
            if (word_list[1] ='show') and (out_key = #9) then //tab key
                tab_match(word_list[2],show_menu)
            else
+           if (word_list[1] = 'no') and (out_key = #9) then //tab key
+              remove_config
+           else
            if out_key = #9 then //tab key
               tab_match(word_list[1],config_term_menu)
          Else
@@ -3571,6 +3680,28 @@ writeln('ipx disabled               appletalk disabled');
                       inc(last_line_of_running);
                       running_config[last_line_of_running] := 'ENDofLINES';
                     end
+                  else
+                  if (is_word(word_list[1],'console') = TRUE) and (is_word(word_list[2],'timeout') = TRUE) then
+                      begin
+                          if (is_word(word_list[3],'?') = TRUE) then
+                              writeln('DECIMAL   in minutes (valid range is 0 to 240).')
+                          else
+                          begin
+                           search_run('console timeout',foundat);
+                           if is_number_inrange(word_list[3],0,240) = true then
+                             if foundat = 0 then
+                               Begin
+                                    running_config[last_line_of_running] := 'console timeout '+ word_list[3];;
+                                    inc(last_line_of_running);
+                                    running_config[last_line_of_running] := 'ENDofLINES';
+                               end
+                             Else
+                               running_config[foundat] := concat('console timeout ',word_list[3])
+                           else
+                             writeln('valid range is 0 to 240.');
+                          end
+
+                    end
                   Else
                     writeln('Incomplete command.');
            'e' : if is_word(word_list[1], 'exit') = true then
@@ -3624,6 +3755,17 @@ writeln('ipx disabled               appletalk disabled');
            'l' : if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(lldp_menu)
                  Else
+                 if (is_word(word_list[1],'lldp') = TRUE) and (is_word(word_list[2],'run') = TRUE) then
+                    begin
+                        search_run('lldp run',foundat);
+                             if foundat = 0 then
+                               Begin
+                                  running_config[last_line_of_running] := 'lldp run';
+                                  inc(last_line_of_running);
+                                  running_config[last_line_of_running] := 'ENDofLINES';
+                               end
+                    end
+                 Else
                  if (is_word(word_list[1],'link-keepalive') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(link_keepalive_menu)
                  Else
@@ -3634,12 +3776,36 @@ writeln('ipx disabled               appletalk disabled');
                     page_display(logging_menu)
                  Else
                  if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'host') = TRUE) then
-                    if word_list[3] <> '' then
+                    begin
+                       if word_list[3] <> '' then
                         Begin
                           running_config[last_line_of_running] := concat('logging host ',word_list[3]);
                           inc(last_line_of_running);
                           running_config[last_line_of_running] := 'ENDofLINES';
                         end
+                    end
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'persistence') = TRUE) then
+                      Begin
+                        search_run('logging persistence',foundat);
+                        if foundat = 0 then
+                          Begin
+                            running_config[last_line_of_running] := 'logging persistence';
+                            inc(last_line_of_running);
+                            running_config[last_line_of_running] := 'ENDofLINES';
+                          End
+                      End
+                 else
+                 if (is_word(word_list[1],'logging') = TRUE) and (is_word(word_list[2],'console') = TRUE) then
+                      Begin
+                        search_run('logging console',foundat);
+                        if foundat = 0 then
+                          Begin
+                            running_config[last_line_of_running] := 'logging console';
+                            inc(last_line_of_running);
+                            running_config[last_line_of_running] := 'ENDofLINES';
+                          End
+                      End
                  Else
                     writeln('Incomplete command.');
            'm' : if (is_word(word_list[1],'mstp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
@@ -3678,12 +3844,24 @@ writeln('ipx disabled               appletalk disabled');
                     Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'rip') = true) and (word_list[3] = '') then
                          Begin
-
+                             search_run('router rip',foundat);
+                             if foundat = 0 then
+                               Begin
+                                  running_config[last_line_of_running] := 'router rip';
+                                  inc(last_line_of_running);
+                                  running_config[last_line_of_running] := 'ENDofLINES';
+                               end
                          End
                     Else
                        if (is_word(word_list[1],'router') = true) and (is_word(word_list[2],'vrrp') = true) and (word_list[3] = '') then
                          Begin
-
+                             search_run('router vrrp',foundat);
+                             if foundat = 0 then
+                               Begin
+                                  running_config[last_line_of_running] := 'router vrrp';
+                                  inc(last_line_of_running);
+                                  running_config[last_line_of_running] := 'ENDofLINES';
+                               end
                          End
                     //Else
                     //   bad_command(word_list[3]);
@@ -3700,6 +3878,17 @@ writeln('ipx disabled               appletalk disabled');
                         end
                      Else
                         writeln('Incomplete command.')
+                 else
+                 if (is_word(word_list[1],'snmp-server') = TRUE) and (is_word(word_list[2],'location') = TRUE) then
+                    if word_list[3] <> '' then
+                        Begin
+                          running_config[last_line_of_running] := 'SNMP-Server location ' + word_list[3] + ' '
+                                                      + word_list[4] + ' ' + word_list[5] + ' ' + word_list[6];
+                          inc(last_line_of_running);
+                          running_config[last_line_of_running] := 'ENDofLINES';
+                        end
+                     Else
+                        writeln('Incomplete command.')
                  Else
                  if (is_word(word_list[1],'snmp-client') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(snmp_client_menu)
@@ -3709,6 +3898,45 @@ writeln('ipx disabled               appletalk disabled');
                  Else
                  if (is_word(word_list[1],'sntp') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(sntp_menu)
+                 else
+                 if (is_word(word_list[1],'sntp') = TRUE) and (is_word(word_list[2],'server') = TRUE) then
+                    begin
+                        if (is_word(word_list[3],'?') = TRUE) then
+                          begin
+                           writeln('  ASCII string   Host Name');
+                           writeln('  A.B.C.D        IP address');
+                           writeln('  ipv6           IPv6 address');
+                          end
+                        else
+                          begin
+                                  running_config[last_line_of_running] := concat('sntp server ',word_list[3]);
+                                  inc(last_line_of_running);
+                                  running_config[last_line_of_running] := 'ENDofLINES';
+                          end
+//                             Else
+//                               writeln('Maximum of 3 SNTP time servers are supported');
+                    end
+                 else
+                 if (is_word(word_list[1],'sntp') = TRUE) and (is_word(word_list[2],'poll-interval') = TRUE) then
+                    begin
+                          if (is_word(word_list[3],'?') = TRUE) then
+                              writeln('DECIMAL   in secs (valid range is 16 to 131072).')
+                          else
+                          begin
+                           search_run('sntp poll-interval',foundat);
+                           if is_number_inrange(word_list[3],16,131072) = true then
+                             if foundat = 0 then
+                               Begin
+                                  running_config[last_line_of_running] := concat('sntp poll-interval ',word_list[3]);
+                                  inc(last_line_of_running);
+                                  running_config[last_line_of_running] := 'ENDofLINES';
+                               end
+                             Else
+                               running_config[foundat] := concat('sntp poll-interval ',word_list[3])
+                           else
+                             writeln('valid range is 16 to 131072).');
+                          end
+                    End
                  Else
                  if (input = 'sh') or (input = 'sho') or (input = 'show') then
                     writeln('Incomplete command.')
