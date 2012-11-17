@@ -59,6 +59,7 @@ Procedure display_stp_protect; forward;
 Procedure display_startup_config; forward;
 Procedure display_show_telnet; forward;
 Procedure display_show_version; forward;
+Procedure display_show_vlan; forward;
 Procedure display_show_web; forward;
 Procedure display_show_who; forward;
 Procedure display_show; forward;
@@ -72,8 +73,8 @@ type
     vlan_records = record
         id : string[4];
         name : string;
-        tag : string;
-        untag : string;
+        tag : array[1..384] of string[5];
+        untag : array[1..384] of string[5];
     end;
 
 Type interface_records = record
@@ -100,7 +101,7 @@ Var
   startup_config : array[1..1024] of string;
   running_config : array[1..1024] of string;
   last_line_of_running : integer;
-  vlans : array[1..4095] of vlan_records;
+  vlans : array[1..4096] of vlan_records;
   interfaces : array[1..384] of interface_records;
   word_list : array [1..10] of string;
   skip_page_display : boolean;
@@ -151,8 +152,8 @@ Var
       writeln;
       writeln(' ╔════════════════════════════════════════════════════════════════════════════╗');
       writeln(' ║                                                                            ║');
-      writeln(' ║   Brocade-Sim : Version r46                                                ║');
-      writeln(' ║                 Dated 6th of August 2012                                   ║');
+      writeln(' ║   Brocade-Sim : Version r47                                                ║');
+      writeln(' ║                 Dated 17th of November 2012                                ║');
       writeln(' ║                                                                            ║');
       Writeln(' ║   Coded by    : Michael Schipp And Jiri Kosar                              ║');
       writeln(' ║   Purpose     : To aid network administrators to get to know Brocade       ║');
@@ -182,6 +183,43 @@ Var
       clrscr;
       gotoxy(1,25);
   End;
+
+  procedure insert_run(textstr : string; where : integer);
+
+  var
+    temp_config : array[1..1024] of string;
+    index : integer;
+
+  begin
+       index := 1;
+//       while running_config[index] <> 'ENDofLINES' do
+       while index <= (where+1) do
+         begin
+            temp_config[index] := running_config[index];
+            inc(index);
+         end;
+       temp_config[index] := textstr;
+       inc(index);
+       temp_config[index] := '!';
+       inc(index);
+       inc(where);
+       while running_config[where] <> 'ENDofLINES' do
+         begin
+            temp_config[index] := running_config[where];
+            inc(index); inc(where);
+         end;
+       temp_config[index] :='ENDofLINES';
+       index := 1;
+       while temp_config[index] <> 'ENDofLINES' do
+           begin
+               running_config[index] := temp_config[index];
+               inc(index);
+           end;
+       running_config[index] :='ENDofLINES';
+       inc(last_line_of_running,3);
+
+//       writeln('   test');
+   end;
 
   Function check_int(validport : shortstring) : boolean;
 
@@ -217,11 +255,15 @@ Var
        try
           a := strtoint(check);
        except
-          on Exception : EConvertError do
-              is_number := false;
+          on E : EConvertError do
+              begin
+                  is_number := false;
+                  writeln('Invalid input -> ',check);
+                  writeln('Type ? for a list');
+              end;
        end;
        if a <> 0 then
-         if a < 4096 then
+         if a <= 4096 then
             is_number := true
          Else
             Begin
@@ -289,6 +331,7 @@ Var
                  End;
          End;
   End;
+
   Procedure Get_words;
 
   var
@@ -629,6 +672,14 @@ Var
 
   Begin
        isend := false; loop := 1; slot := 1; port_count := 1;
+       vlans[1].id := '1';
+       vlans[1].name := 'DEFAULT-VLAN';
+       for loop := 1 to 16 do
+          begin
+              if loop <> 14 then
+                for loop2 := 1 to 24 do
+                   vlans[1].untag[loop*24-24+loop2] := inttostr(loop) + '/' + inttostr(loop2);
+          end;
        assignfile(sc,ModulesFile);
        reset(sc);
        readln(sc, aline);
@@ -2570,6 +2621,294 @@ writeln('ipx disabled               appletalk disabled');
     page_display(code_version);
   End;
 
+  Procedure display_show_vlan;
+
+  var
+    count, index, index2,index3,index4 : integer;
+    test : boolean;
+
+  Begin
+    index := 1; index2 :=1; index3 := 1; count := 0; test := false;
+    for index  := 1 to 4095 do
+       if vlans[index].id <> '' then
+          inc(count);
+    writeln('Total PORT-VLAN entries: ',count);
+    count := 1; // reset cound var
+    writeln('Maximum PORT-VLAN entries: 64'); // should be changed to system max
+    writeln;
+    writeln('Legend: [Stk=Stack-Id, S=Slot]');
+    writeln;
+    for index := 1 to 4095 do
+      begin
+       if vlans[index].id <> '' then
+         begin
+          if vlans[index].name <> '' then
+            writeln('PORT-VLAN ',vlans[index].id,', Name ',vlans[index].name,', Priority level0, Spanning tree On')
+          else
+            writeln('PORT-VLAN ',vlans[index].id,', Name [None], Priority level0, Spanning tree On');
+          index2 := 1;
+          while (test = false) and (index2 < 385) do
+              begin
+                if vlans[index].tag[index2] <> '' then
+                   test := true;
+                inc(index2);
+              end;
+          if test = false then
+             writeln('   Tagged Ports: None')
+          else
+             begin
+                 for index3 := 1 to 16 do
+                   begin
+                       count := 1; test := false;
+                       for index4 := 1 to 24 do
+                        begin
+                            if (vlans[index].tag[index3*24-24+index4] <> '') and (test = false)then
+                                begin
+                                  if (index3*24-24+index4) mod 24 = 0 then
+                                      write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                  else
+                                      write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                  test := true;
+                                end
+                            else
+                             if (vlans[index].tag[index3*24-24+index4] <> '') and (test = true) then
+                                     begin
+                                        if count < 12 then
+                                          begin
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('  24')
+                                              else
+                                                  write('  ',(index3*24-24+index4) mod 24);
+                                              inc(count);
+                                          end
+                                        else
+                                           Begin
+                                              count :=1;
+                                              writeln;
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                              else
+                                                  write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                           end;
+                                     end;
+                        end;
+                        if test = true then
+                                writeln;
+                   end;
+             end;
+          index2 := 1;
+          while (test = false) and (index2 < 385) do
+              begin
+                if vlans[index].untag[index2] <> '' then
+                   test := true;
+                inc(index2);
+              end;
+          if test = false then
+             writeln('   Untagged Ports: None')
+          else
+             begin
+                 for index3 := 1 to 16 do
+                   begin
+                       count := 1; test := false;
+                       for index4 := 1 to 24 do
+                        begin
+                            if (vlans[index].untag[index3*24-24+index4] <> '') and (test = false)then
+                                begin
+                                  if (index3*24-24+index4) mod 24 = 0 then
+                                      write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                  else
+                                      write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                  test := true;
+                                end
+                            else
+                             if (vlans[index].untag[index3*24-24+index4] <> '') and (test = true) then
+                                     begin
+                                        if count < 12 then
+                                          begin
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('  24')
+                                              else
+                                                  write('  ',(index3*24-24+index4) mod 24);
+                                              inc(count);
+                                          end
+                                        else
+                                           Begin
+                                              count :=1;
+                                              writeln;
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                              else
+                                                  write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                           end;
+                                     end;
+                        end;
+                        if test = true then
+                                writeln;
+                   end;
+             end;
+        writeln('DualMode Ports: None');
+        writeln('  RX Monitoring: Disabled');
+        writeln('  TX Monitoring: Disabled');
+       end
+      end;
+   index := 1; index2 :=1; index3 := 1; count := 0; test := false;
+{ Untagged Ports: (U1/M1)   1   2   3   4   5   6   7   8   9  15  16  18
+ Untagged Ports: (U1/M1)  19  20  21  22  23  24
+ Untagged Ports: (U1/M2)   1   2   3   4
+   Tagged Ports: None
+   Uplink Ports: None
+ DualMode Ports: None
+ Mac-Vlan Ports: None
+     Monitoring: Disabled
+PORT-VLAN 20, Name [None], Priority level0, Spanning tree On
+ Untagged Ports: (U1/M1)  10  11  12  13  14  17
+   Tagged Ports: None}
+  End;
+
+  Procedure display_show_vlan_num(num : integer);
+
+  var
+    count, index, index2,index3,index4 : integer;
+    test : boolean;
+
+  Begin
+    index := 1; index2 :=1; index3 := 1; count := 0; test := false;
+    for index  := 1 to 4095 do
+       if vlans[index].id <> '' then
+          inc(count);
+    writeln('Total PORT-VLAN entries: ',count);
+    count := 1; // reset cound var
+    writeln('Maximum PORT-VLAN entries: 64'); // should be changed to system max
+    writeln;
+    writeln('Legend: [Stk=Stack-Id, S=Slot]');
+    writeln;
+    for index := num to num do
+      begin
+       if vlans[index].id <> '' then
+         begin
+          if vlans[index].name <> '' then
+            writeln('PORT-VLAN ',vlans[index].id,', Name ',vlans[index].name,', Priority level0, Spanning tree On')
+          else
+            writeln('PORT-VLAN ',vlans[index].id,', Name [None], Priority level0, Spanning tree On');
+          index2 := 1;
+          while (test = false) and (index2 < 385) do
+              begin
+                if vlans[index].tag[index2] <> '' then
+                   test := true;
+                inc(index2);
+              end;
+          if test = false then
+             writeln('   Tagged Ports: None')
+          else
+             begin
+                 for index3 := 1 to 16 do
+                   begin
+                       count := 1; test := false;
+                       for index4 := 1 to 24 do
+                        begin
+                            if (vlans[index].tag[index3*24-24+index4] <> '') and (test = false)then
+                                begin
+                                  if (index3*24-24+index4) mod 24 = 0 then
+                                      write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                  else
+                                      write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                  test := true;
+                                end
+                            else
+                             if (vlans[index].tag[index3*24-24+index4] <> '') and (test = true) then
+                                     begin
+                                        if count < 12 then
+                                          begin
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('  24')
+                                              else
+                                                  write('  ',(index3*24-24+index4) mod 24);
+                                              inc(count);
+                                          end
+                                        else
+                                           Begin
+                                              count :=1;
+                                              writeln;
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                              else
+                                                  write('   Tagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                           end;
+                                     end;
+                        end;
+                        if test = true then
+                                writeln;
+                   end;
+             end;
+          index2 := 1;
+          while (test = false) and (index2 < 385) do
+              begin
+                if vlans[index].untag[index2] <> '' then
+                   test := true;
+                inc(index2);
+              end;
+          if test = false then
+             writeln('   Untagged Ports: None')
+          else
+             begin
+                 for index3 := 1 to 16 do
+                   begin
+                       count := 1; test := false;
+                       for index4 := 1 to 24 do
+                        begin
+                            if (vlans[index].untag[index3*24-24+index4] <> '') and (test = false)then
+                                begin
+                                  if (index3*24-24+index4) mod 24 = 0 then
+                                      write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                  else
+                                      write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                  test := true;
+                                end
+                            else
+                             if (vlans[index].untag[index3*24-24+index4] <> '') and (test = true) then
+                                     begin
+                                        if count < 12 then
+                                          begin
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('  24')
+                                              else
+                                                  write('  ',(index3*24-24+index4) mod 24);
+                                              inc(count);
+                                          end
+                                        else
+                                           Begin
+                                              count :=1;
+                                              writeln;
+                                              if (index3*24-24+index4) mod 24 = 0 then
+                                                  write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  24')
+                                              else
+                                                  write('   Untagged Ports: (S',(index3*24-24+index4) div 24 +1,')  ',(index3*24-24+index4) mod 24);
+                                           end;
+                                     end;
+                        end;
+                        if test = true then
+                                writeln;
+                   end;
+             end;
+        writeln('DualMode Ports: None');
+        writeln('  RX Monitoring: Disabled');
+        writeln('  TX Monitoring: Disabled');
+       end
+      end;
+   index := 1; index2 :=1; index3 := 1; count := 0; test := false;
+{ Untagged Ports: (U1/M1)   1   2   3   4   5   6   7   8   9  15  16  18
+ Untagged Ports: (U1/M1)  19  20  21  22  23  24
+ Untagged Ports: (U1/M2)   1   2   3   4
+   Tagged Ports: None
+   Uplink Ports: None
+ DualMode Ports: None
+ Mac-Vlan Ports: None
+     Monitoring: Disabled
+PORT-VLAN 20, Name [None], Priority level0, Spanning tree On
+ Untagged Ports: (U1/M1)  10  11  12  13  14  17
+   Tagged Ports: None}
+  End;
+
   Procedure display_show_web;
 
   Begin
@@ -2707,6 +3046,18 @@ writeln('ipx disabled               appletalk disabled');
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'reload') = TRUE) then
                     display_show_reload
                  Else
+                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'vlan') = TRUE) and (word_list[3] <> '') then
+                     begin
+                     if is_number_inrange(shortstring(word_list[3]),1,4096) = true then
+                       if vlans[strtoint(word_list[3])].id <> '' then
+                          display_show_vlan_num(strtoint(word_list[3]))
+                        Else
+                          Writeln('Error - port-vlan ',word_list[3],' does not exist.')
+                     end
+                 else
+                 if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'vlan') = TRUE) then
+                    display_show_vlan
+                 Else
                  if (is_word(word_list[1],'show') = TRUE) and (is_word(word_list[2],'reserved-vlan-map') = TRUE) then
                     display_show_reserved_vlan
                  Else
@@ -2747,12 +3098,66 @@ writeln('ipx disabled               appletalk disabled');
 
   var
      end_vlan_loop : boolean;
+     vlan_id, code : integer;
+
+     Procedure calc_vlan(tagged : boolean);
+
+     var
+       str : string[5];
+       port, slash, module_no, port_no : integer;
+
+     Begin
+        str := rightSTR(input,5);
+        if str[1] = 'e' then
+          str := rightSTR(str,3)
+        else
+          str := trim(str);
+        slash := pos('/',str);
+        if slash = 2 then
+          begin
+            val(leftSTR(str,1),module_no,code);
+            if length(str) = 3 then
+               val(rightstr(str,1),port_no,code)
+            else
+               val(rightstr(str,2),port_no,code)
+          end;
+        if slash = 3 then
+          begin
+            val(leftSTR(str,2),module_no,code);
+            if length(str) = 4 then
+               val(rightstr(str,1),port_no,code)
+            else
+               val(rightstr(str,2),port_no,code)
+          end;
+         //writeln('Vlan ID ', vlan_id, ' ',module_no,'-',port_no);
+         if module_no > 1 then
+            port := module_no * 24 - 24 + port_no
+         else
+            port := port_no;
+         if tagged = true then
+            begin
+              vlans[vlan_id].tag[port] := str;
+              vlans[1].untag[port] := ''
+            end
+         else
+            begin
+                if vlans[1].untag[port] <> '' then
+                   begin
+                       vlans[vlan_id].untag[port] := str;
+                       vlans[1].untag[port] := ''
+                   end
+                else
+                  writeln('error - port ethe ',word_list[3],' are not member of default vlan');
+            end;
+     End;
 
   Begin
         end_vlan_loop := false;
         input := input;
         Inc(what_level);
         level := level5 + vlanid + ')#';
+        val(vlanid,vlan_id,code);
+        vlans[vlan_id].id := vlanid;
         repeat
             repeat
                 write(hostname, level);
@@ -2792,7 +3197,7 @@ writeln('ipx disabled               appletalk disabled');
                  't' : if (is_word(word_list[1],'tagged')) = true then
                        Begin
                           if (is_word(word_list[2],'ethernet')) = true then
-                            write('TAG ethernet')
+                            calc_vlan(true)
                           Else
                             bad_command(input);
                        End;
@@ -2805,7 +3210,7 @@ writeln('ipx disabled               appletalk disabled');
                  'u' : if (is_word(word_list[1],'untag')) = true then
                        Begin
                           if (is_word(word_list[2],'ethernet')) = true then
-                            write('UNTAG ethernet')
+                            calc_vlan(false)
                           Else
                             bad_command(input);
                        End;
@@ -3135,14 +3540,14 @@ writeln('ipx disabled               appletalk disabled');
                     end;
           end;
         until end_int_loop = true;
-  end;
+  end; // end of interface loop
 
 
   Procedure configure_term_loop;
 
   var
      end_con_term : boolean;
-     foundat : integer;
+     foundat, check_4_VLAN : integer;
 
      Procedure looking_for_help;
 
@@ -3154,7 +3559,7 @@ writeln('ipx disabled               appletalk disabled');
              end
           Else
              if is_help(word_list[2]) = true then
-                writeln('Unrecognized command')
+                writeln('   DECIMAL   VLAN number')
              Else
                 if is_help(word_list[3]) = true then
                   Begin
@@ -3951,14 +4356,30 @@ writeln('ipx disabled               appletalk disabled');
                     End
                 Else
                   if (is_word(word_list[1],'vlan') = TRUE) then
-                    if (is_number(word_list[2]) = TRUE) then
+                    if (word_list[2] <> '') and (is_number(word_list[2]) = TRUE) then
                       Begin
                         vlans[strtoint(word_list[2])].id := shortstring(word_list[2]);
                         vlans[strtoint(word_list[2])].name := word_list[4];
+                        search_run(word_list[1]+' '+word_list[2],foundat);
+                        if foundat = 0 then
+                           begin
+                                foundat := 0; check_4_VLAN := strtoint(word_list[2]) - 1;
+                                while foundat = 0 do
+                                    if vlans[check_4_VLAN].id <> '' then
+                                       foundat := check_4_VLAN
+                                    else
+                                       begin
+                                            dec(check_4_VLAN);
+                                       end;
+                                search_run(word_list[1]+' '+inttostr(check_4_VLAN),foundat);
+                                 insert_run(word_list[1]+ ' ' + word_list[2],foundat);
+//                                  writeln('closest vlan is, ',check_4_VLAN, ' - and is in config line, ',foundat);
+                           end;
                         vlan_loop(word_list[2]);
                       End
                     Else
-                      bad_command(word_list[2]);
+                      if word_list[2] = '' then
+                        writeln('Incomplete command.');
           'w' : if (is_word(word_list[1],'web-management') = TRUE) and (is_word(word_list[2],'?') = TRUE) then
                     page_display(web_management_menu)
                  Else
